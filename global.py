@@ -296,3 +296,528 @@ st.plotly_chart(
 #     fig,
 #     width='stretch'
 # )
+
+
+import streamlit as st
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+
+# ---------------------------------------------------------
+# 1. Get selected country from home page
+# ---------------------------------------------------------
+
+selected_country = st.session_state.get(
+    "iso_country",
+    None
+)
+
+selected_iso3 = st.session_state.get(
+    "iso_3",
+    None
+)
+
+if selected_country is None or selected_iso3 is None:
+    st.warning("Please select a country on the home page.")
+    st.stop()
+
+selected_iso3 = str(selected_iso3).strip().upper()
+
+# ---------------------------------------------------------
+# 2. Section title
+# ---------------------------------------------------------
+
+st.subheader(
+    "{0} in the Global Context".format(selected_country),
+    divider="grey"
+)
+
+# ---------------------------------------------------------
+# 3. Metric selector
+# ---------------------------------------------------------
+
+metric_global = st.segmented_control(
+    "What measure of cost relative to a BAU scenario are you interested in?",
+    options=[
+        "Maritime Transport Cost",
+        "Maritime Logistics Cost",
+        "CIF/FOB price of Imports/Exports",
+        "MTC as % of GDP"
+    ],
+    default="Maritime Transport Cost",
+    key="metric_global_context"
+)
+
+# ---------------------------------------------------------
+# 4. Year selector
+# ---------------------------------------------------------
+
+years = [
+    2029, 2032, 2035, 2038,
+    2041, 2044, 2047, 2050
+]
+
+selected_year = st.select_slider(
+    "Year",
+    options=years,
+    value=2050,
+    key="global_context_year"
+)
+
+# ---------------------------------------------------------
+# 5. Dataset mapping
+# ---------------------------------------------------------
+
+dataset_map = {
+
+    "Import": {
+        "Maritime Transport Cost":
+            "impact_im_costs_to_bau_pct_bau_v0.64_combined.csv",
+
+        "Maritime Logistics Cost":
+            "impact_im_costs_to_bau_pct_ciffob_v0.64_combined.csv",
+
+        "CIF/FOB price of Imports/Exports":
+            "impact_im_costs_to_bau_pct_cif_v0.64_combined.csv",
+
+        "MTC as % of GDP":
+            "impact_im_costs_to_bau_pct_gdp_v0.64_combined.csv"
+    },
+
+    "Export": {
+        "Maritime Transport Cost":
+            "impact_ex_costs_to_bau_pct_bau_v0.64_combined.csv",
+
+        "Maritime Logistics Cost":
+            "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
+
+        "CIF/FOB price of Imports/Exports":
+            "impact_im_costs_to_bau_pct_fob_v0.64_combined.csv",
+
+        "MTC as % of GDP":
+            "impact_ex_costs_to_bau_pct_gdp_v0.64_combined.csv"
+    }
+}
+
+# ---------------------------------------------------------
+# 6. Load and melt datasets
+# ---------------------------------------------------------
+
+base_url = (
+    "https://raw.githubusercontent.com/"
+    "UCL-ShippingGroup/Impact-Tracker/main/datasets/"
+)
+
+@st.cache_data
+def load_global_context_data(filename):
+
+    df = pd.read_csv(base_url + filename)
+
+    year_cols = [
+        "2029", "2032", "2035", "2038",
+        "2041", "2044", "2047", "2050"
+    ]
+
+    # Melt from wide to long
+    df = df.melt(
+        id_vars=["Country", "alpha-3", "Scenario"],
+        value_vars=year_cols,
+        var_name="Year",
+        value_name="Value"
+    )
+
+    # Convert data types
+    df["Year"] = df["Year"].astype(int)
+
+    df["Value"] = pd.to_numeric(
+        df["Value"],
+        errors="coerce"
+    )
+
+    df["alpha-3"] = (
+        df["alpha-3"]
+        .astype(str)
+        .str.strip()
+        .str.upper()
+    )
+
+    # Standardise scenario names
+    df["Scenario"] = (
+        df["Scenario"]
+        .astype(str)
+        .str.strip()
+        .str.strip("'\"")
+    )
+
+    df["Scenario"] = df["Scenario"].replace({
+        "as-is": "NZF"
+    })
+
+    return df
+
+
+# Load imports and exports
+imports_df = load_global_context_data(
+    dataset_map["Import"][metric_global]
+)
+
+exports_df = load_global_context_data(
+    dataset_map["Export"][metric_global]
+)
+
+# ---------------------------------------------------------
+# 7. Filter selected year
+# ---------------------------------------------------------
+
+imports_df = imports_df[
+    imports_df["Year"] == selected_year
+].copy()
+
+exports_df = exports_df[
+    exports_df["Year"] == selected_year
+].copy()
+
+# Remove missing observations
+imports_df = imports_df.dropna(
+    subset=["Value"]
+)
+
+exports_df = exports_df.dropna(
+    subset=["Value"]
+)
+
+# ---------------------------------------------------------
+# 8. Define scenarios
+# ---------------------------------------------------------
+
+scenarios = [
+    "NZF",
+    "Levy",
+    "Brazil",
+    "LISCR",
+    "Direct"
+]
+
+# ---------------------------------------------------------
+# 9. Function to create swarm and box plot
+# ---------------------------------------------------------
+
+def create_global_context_plot(data, selected_iso3):
+
+    fig = go.Figure()
+
+    # Loop through each scenario
+    for i, scenario in enumerate(scenarios):
+
+        subset = data[
+            data["Scenario"] == scenario
+        ].copy()
+
+        if subset.empty:
+            continue
+
+        position = i
+
+        # ---------------------------------------------
+        # Box plot
+        # ---------------------------------------------
+
+        values = subset["Value"].dropna()
+
+        mean_value = values.mean()
+        median_value = values.median()
+        q1_value = values.quantile(0.25)
+        q3_value = values.quantile(0.75)
+        min_value = values.min()
+        max_value = values.max()
+
+        fig.add_trace(
+            go.Box(
+                x=[position] * len(values),
+                y=values,
+
+                name=scenario,
+
+                boxpoints=False,
+                width=0.5,
+                showlegend=False,
+
+                # Display mean on the box
+                boxmean=True,
+
+                hovertemplate=(
+                    "<b>" + scenario + "</b><br>"
+                    + f"Maximum: {max_value:.2f}%<br>"
+                    + f"Q3 (75%): {q3_value:.2f}%<br>"
+                    + f"Median: {median_value:.2f}%<br>"
+                    + f"Mean: {mean_value:.2f}%<br>"
+                    + f"Q1 (25%): {q1_value:.2f}%<br>"
+                    + f"Minimum: {min_value:.2f}%<br>"
+                    + f"Countries: {len(values)}"
+                    + "<extra></extra>"
+                ),
+
+                line=dict(
+                    color="rgba(80,80,80,0.8)",
+                    width=1.5
+                ),
+
+                fillcolor="rgba(180,180,180,0.25)"
+            )
+        )
+
+        # ---------------------------------------------
+        # Jitter country dots
+        # ---------------------------------------------
+
+        rng = np.random.default_rng(42 + i)
+
+        jitter = rng.uniform(
+            -0.15,
+            0.15,
+            size=len(subset)
+        )
+
+        x_values = position + jitter
+
+        is_selected = (
+            subset["alpha-3"] == selected_iso3
+        )
+
+        # ---------------------------------------------
+        # Other countries - blue dots
+        # ---------------------------------------------
+
+        normal = subset[~is_selected]
+
+        normal_x = x_values[~is_selected.to_numpy()]
+
+        if len(normal) > 0:
+
+            fig.add_trace(
+                go.Scatter(
+                    x=normal_x,
+                    y=normal["Value"],
+
+                    mode="markers",
+
+                    showlegend=False,
+
+                    marker=dict(
+                        size=7,
+                        color="blue",
+                        opacity=0.65
+                    ),
+
+                    customdata=normal[
+                        ["Country", "alpha-3"]
+                    ].to_numpy(),
+
+                    hovertemplate=(
+                        "<b>%{customdata[0]}</b><br>"
+                        "ISO: %{customdata[1]}<br>"
+                        + scenario + "<br>"
+                        "Change: %{y:.2f}%"
+                        "<extra></extra>"
+                    )
+                )
+            )
+
+        # ---------------------------------------------
+        # Selected country - yellow dot
+        # ---------------------------------------------
+
+        selected = subset[is_selected]
+
+        selected_x = x_values[
+            is_selected.to_numpy()
+        ]
+
+        if len(selected) > 0:
+
+            fig.add_trace(
+                go.Scatter(
+                    x=selected_x,
+                    y=selected["Value"],
+
+                    mode="markers",
+
+                    showlegend=False,
+
+                    marker=dict(
+                        size=14,
+                        color="yellow",
+
+                        line=dict(
+                            color="black",
+                            width=1.5
+                        )
+                    ),
+
+                    customdata=selected[
+                        ["Country", "alpha-3"]
+                    ].to_numpy(),
+
+                    hovertemplate=(
+                        "<b>%{customdata[0]}</b><br>"
+                        "ISO: %{customdata[1]}<br>"
+                        + scenario + "<br>"
+                        "Change: %{y:.2f}%"
+                        "<extra></extra>"
+                    )
+                )
+            )
+
+    # -------------------------------------------------
+    # 10. Legend for country dots
+    # -------------------------------------------------
+
+    fig.add_trace(
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode="markers",
+            name="Other countries",
+
+            marker=dict(
+                size=7,
+                color="blue",
+                opacity=0.65
+            ),
+
+            hoverinfo="skip"
+        )
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode="markers",
+            name="Selected country",
+
+            marker=dict(
+                size=14,
+                color="yellow",
+
+                line=dict(
+                    color="black",
+                    width=1.5
+                )
+            ),
+
+            hoverinfo="skip"
+        )
+    )
+
+    # -------------------------------------------------
+    # 11. Layout
+    # -------------------------------------------------
+
+    fig.update_layout(
+
+        height=600,
+
+        template="plotly_white",
+
+        hovermode="closest",
+        hoverdistance=5,
+
+        margin=dict(
+            l=65,
+            r=20,
+            t=40,
+            b=85
+        ),
+
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.15,
+            xanchor="center",
+            x=0.5
+        ),
+
+        xaxis=dict(
+            tickmode="array",
+
+            tickvals=[
+                0, 1, 2, 3, 4
+            ],
+
+            ticktext=scenarios,
+
+            range=[
+                -0.5,
+                4.5
+            ],
+
+            title=None
+        ),
+
+        yaxis=dict(
+            title="Change relative to BAU (%)",
+            ticksuffix="%",
+
+            zeroline=True,
+            zerolinecolor="lightgrey"
+        ),
+
+        boxmode="overlay"
+    )
+
+    return fig
+
+
+# ---------------------------------------------------------
+# 12. Display imports and exports side by side
+# ---------------------------------------------------------
+
+col1, col2 = st.columns(2)
+
+with col1:
+
+    st.markdown("#### Imports")
+
+    imports_fig = create_global_context_plot(
+        imports_df,
+        selected_iso3
+    )
+
+    st.plotly_chart(
+        imports_fig,
+        use_container_width=True,
+        key="global_context_imports"
+    )
+
+
+with col2:
+
+    st.markdown("#### Exports")
+
+    exports_fig = create_global_context_plot(
+        exports_df,
+        selected_iso3
+    )
+
+    st.plotly_chart(
+        exports_fig,
+        use_container_width=True,
+        key="global_context_exports"
+    )
+
+# ---------------------------------------------------------
+# 13. Check whether selected country has data
+# ---------------------------------------------------------
+
+if not (
+    (imports_df["alpha-3"] == selected_iso3).any()
+    or
+    (exports_df["alpha-3"] == selected_iso3).any()
+):
+    st.info(
+        f"No observations for {selected_country} "
+        "in the selected datasets. "
+        "The charts show available countries."
+    )
+
