@@ -4,16 +4,9 @@ import plotly.express as px
 
 st.set_page_config(layout='wide')
 st.title('Global Overview')
+st.divider()
 
-# ---------------------------------------------------------
-# 1. Page title
-# ---------------------------------------------------------
-
-st.title("Maritime Trade Cost Impacts")
-
-# ---------------------------------------------------------
-# 2. Segmented controls
-# ---------------------------------------------------------
+#Segmented controls
 
 trade_flow = st.segmented_control(
     "Which Trade flow are you interested in?",
@@ -47,9 +40,8 @@ scenario = st.segmented_control(
     key="scenario"
 )
 
-# ---------------------------------------------------------
-# 3. Match selections to datasets
-# ---------------------------------------------------------
+
+#Match selections to datasets
 
 dataset_map = {
 
@@ -103,9 +95,8 @@ def load_data(filename):
 
 df = load_data(selected_file)
 
-# ---------------------------------------------------------
-# 5. Melt dataset from wide to long
-# ---------------------------------------------------------
+
+#Melt dataset from wide to long
 
 years = [
     "2029", "2032", "2035", "2038",
@@ -127,9 +118,7 @@ df_long["Value"] = pd.to_numeric(
     errors="coerce"
 )
 
-# ---------------------------------------------------------
-# 6. Standardise scenario names
-# ---------------------------------------------------------
+#Standardise scenario names
 
 df_long["Scenario"] = (
     df_long["Scenario"]
@@ -138,7 +127,6 @@ df_long["Scenario"] = (
     .str.strip("'\"")
 )
 
-# NZF is represented as 'as-is' in the source data
 df_long["Scenario"] = df_long["Scenario"].replace({
     "as-is": "NZF"
 })
@@ -215,7 +203,7 @@ fig = px.choropleth(
         "Year": "Year"
     },
 
-    projection="natural earth",
+    #projection="natural earth",
 
     title=f"{trade_flow} - {cost_measure} - {scenario}"
 )
