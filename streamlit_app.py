@@ -23,7 +23,7 @@ st.markdown(
 
 # Define the pages
 main = st.Page("main.py", title="Overview", icon="🏡")
-#globa = st.Page("global.py", title="Global Overview", icon="🌏")
+globa = st.Page("global.py", title="Global Overview", icon="🌏")
 #regional = st.Page("regional.py", title="Regional Overview", icon="🗺️")
 #inventories = st.Page("inventories.py", title="Voyage Inventories", icon="🚢")
 #trade = st.Page("trade.py", title="Seaborne Trade Portfolios", icon="📦")
@@ -32,7 +32,7 @@ main = st.Page("main.py", title="Overview", icon="🏡")
 #contact = st.Page("contact.py", title="Contact", icon="📒")
 
 # Set up navigation
-pg = st.navigation([main])
+pg = st.navigation([main, globa])
 
 # Run the selected page
 pg.run()
