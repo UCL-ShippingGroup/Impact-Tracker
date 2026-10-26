@@ -131,9 +131,7 @@ df_long["Scenario"] = df_long["Scenario"].replace({
     "as-is": "NZF"
 })
 
-# ---------------------------------------------------------
-# 7. Filter selected scenario
-# ---------------------------------------------------------
+#Filter selected scenario
 
 plot_df = df_long[
     df_long["Scenario"] == scenario
@@ -157,9 +155,8 @@ if plot_df.duplicated(["alpha-3", "Year"]).any():
     st.error("Duplicate country/year records detected.")
     st.stop()
 
-# ---------------------------------------------------------
-# 8. Set fixed colour scale across all years
-# ---------------------------------------------------------
+
+#Set fixed colour scale across all years
 
 min_value = min(0, plot_df["Value"].min())
 max_value = plot_df["Value"].max()
@@ -167,9 +164,8 @@ max_value = plot_df["Value"].max()
 if max_value <= min_value:
     max_value = min_value + 1
 
-# ---------------------------------------------------------
-# 9. Create animated choropleth map
-# ---------------------------------------------------------
+
+#Create animated choropleth map
 
 fig = px.choropleth(
     plot_df,
@@ -208,9 +204,6 @@ fig = px.choropleth(
     title=f"{trade_flow} - {cost_measure} - {scenario}"
 )
 
-# ---------------------------------------------------------
-# 10. Map styling
-# ---------------------------------------------------------
 
 fig.update_geos(
     fitbounds="locations",
@@ -246,9 +239,9 @@ fig.update_layout(
     paper_bgcolor="rgba(0,0,0,0)"
 )
 
-# ---------------------------------------------------------
-# 11. Animation controls
-# ---------------------------------------------------------
+
+#Animation controls
+
 
 if fig.layout.updatemenus:
 
@@ -260,9 +253,9 @@ if fig.layout.updatemenus:
         "transition"
     ]["duration"] = 300
 
-# ---------------------------------------------------------
-# 12. Display map
-# ---------------------------------------------------------
+
+#Display map
+
 
 st.plotly_chart(
     fig,
@@ -303,9 +296,9 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 
-# ---------------------------------------------------------
-# 1. Get selected country from home page
-# ---------------------------------------------------------
+-
+#Get selected country from home page
+
 
 selected_country = st.session_state.get(
     "iso_country",
@@ -323,18 +316,17 @@ if selected_country is None or selected_iso3 is None:
 
 selected_iso3 = str(selected_iso3).strip().upper()
 
-# ---------------------------------------------------------
-# 2. Section title
-# ---------------------------------------------------------
+
+#Section title
+
 
 st.subheader(
     "{0} in the Global Context".format(selected_country),
     divider="grey"
 )
 
-# ---------------------------------------------------------
-# 3. Metric selector
-# ---------------------------------------------------------
+
+#Metric selector
 
 metric_global = st.segmented_control(
     "What measure of cost relative to a BAU scenario are you interested in?",
@@ -348,9 +340,6 @@ metric_global = st.segmented_control(
     key="metric_global_context"
 )
 
-# ---------------------------------------------------------
-# 4. Year selector
-# ---------------------------------------------------------
 
 years = [
     2029, 2032, 2035, 2038,
@@ -364,9 +353,6 @@ selected_year = st.select_slider(
     key="global_context_year"
 )
 
-# ---------------------------------------------------------
-# 5. Dataset mapping
-# ---------------------------------------------------------
 
 dataset_map = {
 
@@ -399,9 +385,8 @@ dataset_map = {
     }
 }
 
-# ---------------------------------------------------------
-# 6. Load and melt datasets
-# ---------------------------------------------------------
+#Load and melt datasets
+
 
 base_url = (
     "https://raw.githubusercontent.com/"
@@ -465,9 +450,8 @@ exports_df = load_global_context_data(
     dataset_map["Export"][metric_global]
 )
 
-# ---------------------------------------------------------
-# 7. Filter selected year
-# ---------------------------------------------------------
+
+#Filter selected year
 
 imports_df = imports_df[
     imports_df["Year"] == selected_year
@@ -486,9 +470,9 @@ exports_df = exports_df.dropna(
     subset=["Value"]
 )
 
-# ---------------------------------------------------------
-# 8. Define scenarios
-# ---------------------------------------------------------
+
+# Define scenarios
+
 
 scenarios = [
     "NZF",
@@ -566,9 +550,7 @@ def create_global_context_plot(data, selected_iso3):
             )
         )
 
-        # ---------------------------------------------
-        # Jitter country dots
-        # ---------------------------------------------
+       
 
         rng = np.random.default_rng(42 + i)
 
@@ -584,9 +566,6 @@ def create_global_context_plot(data, selected_iso3):
             subset["alpha-3"] == selected_iso3
         )
 
-        # ---------------------------------------------
-        # Other countries - blue dots
-        # ---------------------------------------------
 
         normal = subset[~is_selected]
 
@@ -622,10 +601,6 @@ def create_global_context_plot(data, selected_iso3):
                     )
                 )
             )
-
-        # ---------------------------------------------
-        # Selected country - yellow dot
-        # ---------------------------------------------
 
         selected = subset[is_selected]
 
@@ -668,9 +643,9 @@ def create_global_context_plot(data, selected_iso3):
                 )
             )
 
-    # -------------------------------------------------
-    # 10. Legend for country dots
-    # -------------------------------------------------
+    
+    #Legend for country dots
+  
 
     fig.add_trace(
         go.Scatter(
@@ -710,10 +685,7 @@ def create_global_context_plot(data, selected_iso3):
         )
     )
 
-    # -------------------------------------------------
-    # 11. Layout
-    # -------------------------------------------------
-
+    
     fig.update_layout(
 
         height=600,
@@ -769,9 +741,8 @@ def create_global_context_plot(data, selected_iso3):
     return fig
 
 
-# ---------------------------------------------------------
-# 12. Display imports and exports side by side
-# ---------------------------------------------------------
+#Display imports and exports side by side
+
 
 col1, col2 = st.columns(2)
 
@@ -806,9 +777,9 @@ with col2:
         key="global_context_exports"
     )
 
-# ---------------------------------------------------------
-# 13. Check whether selected country has data
-# ---------------------------------------------------------
+
+# Check whether selected country has data
+
 
 if not (
     (imports_df["alpha-3"] == selected_iso3).any()
