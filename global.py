@@ -259,7 +259,7 @@ if fig.layout.updatemenus:
 
 st.plotly_chart(
     fig,
-    use_container_width=True,
+    width='Stretch',
     config={"displayModeBar": True}
 )
 
@@ -757,7 +757,7 @@ with col1:
 
     st.plotly_chart(
         imports_fig,
-        use_container_width=True,
+        width='Stretch',
         key="global_context_imports"
     )
 
@@ -773,7 +773,7 @@ with col2:
 
     st.plotly_chart(
         exports_fig,
-        use_container_width=True,
+        width='Stretch',
         key="global_context_exports"
     )
 
