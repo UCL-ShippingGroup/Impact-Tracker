@@ -76,9 +76,9 @@ dataset_map = {
 
 selected_file = dataset_map[trade_flow][cost_measure]
 
-# ---------------------------------------------------------
-# 4. Load selected dataset
-# ---------------------------------------------------------
+
+#Load selected dataset
+
 
 base_url = (
     "https://raw.githubusercontent.com/"
@@ -482,9 +482,9 @@ scenarios = [
     "Direct"
 ]
 
-# ---------------------------------------------------------
-# 9. Function to create swarm and box plot
-# ---------------------------------------------------------
+
+#Function to create swarm and box plot
+
 
 def create_global_context_plot(data, selected_iso3):
 
@@ -502,9 +502,9 @@ def create_global_context_plot(data, selected_iso3):
 
         position = i
 
-        # ---------------------------------------------
+       
         # Box plot
-        # ---------------------------------------------
+        
 
         values = subset["Value"].dropna()
 
