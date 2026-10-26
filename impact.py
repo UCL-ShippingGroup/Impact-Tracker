@@ -3,69 +3,38 @@ import pandas as pd
 import plotly.express as px
 
 st.set_page_config(layout='wide')
-st.title('Global Overview')
-st.divider()
 
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
 
 from urllib.parse import quote
 from urllib.error import HTTPError
 
-
 # ---------------------------------------------------------
-# 1. Get selected country from home page
+# 1. Selected country
 # ---------------------------------------------------------
 
-selected_country = st.session_state.get(
-    "iso_country",
-    None
-)
+selected_country = st.session_state.get("iso_country", None)
 
-selected_iso3 = st.session_state.get(
-    "iso_3",
-    None
-)
-
-selected_iso_code = st.session_state.get(
-    "iso_code",
-    None
-)
-
-if selected_country is None:
+if not selected_country:
     st.warning("Please select a country on the home page.")
     st.stop()
-
-
-# ---------------------------------------------------------
-# 2. Page title
-# ---------------------------------------------------------
 
 st.title(
     f"Economic Impact of NZF Scenarios on {selected_country}"
 )
 
+st.divider()
 
 # ---------------------------------------------------------
-# 3. Trade flow selector
+# 2. Segmented controls
 # ---------------------------------------------------------
 
 trade_flow = st.segmented_control(
     "Which Trade flow are you interested in?",
-    options=[
-        "Import",
-        "Export"
-    ],
+    options=["Import", "Export"],
     default="Import",
     key="economic_trade_flow"
 )
-
-
-# ---------------------------------------------------------
-# 4. Measure selector
-# ---------------------------------------------------------
 
 metric = st.segmented_control(
     "What measure of cost are you interested in?",
@@ -79,39 +48,28 @@ metric = st.segmented_control(
     key="economic_metric"
 )
 
-
 # ---------------------------------------------------------
-# 5. Map selections to country datasets
+# 3. Dataset mapping
 # ---------------------------------------------------------
 
 dataset_map = {
-
     "Import": {
-
         "Maritime Transport Cost":
             "impact_im_total_costs_usd_v0.64.csv",
-
         "Maritime Logistics Cost":
             "impact_im_total_costs_pct_ciffob_v0.64.csv",
-
         "CIF/FOB price of Imports/Exports":
             "impact_im_total_costs_pct_cif_v0.64.csv",
-
         "MTC as % of GDP":
             "impact_im_total_costs_pct_gdp_v0.64.csv"
     },
-
     "Export": {
-
         "Maritime Transport Cost":
             "impact_ex_total_costs_usd_v0.64.csv",
-
         "Maritime Logistics Cost":
             "impact_ex_total_costs_pct_ciffob_v0.64.csv",
-
         "CIF/FOB price of Imports/Exports":
             "impact_ex_total_costs_pct_fob_v0.64.csv",
-
         "MTC as % of GDP":
             "impact_ex_total_costs_pct_gdp_v0.64.csv"
     }
@@ -119,9 +77,8 @@ dataset_map = {
 
 selected_file = dataset_map[trade_flow][metric]
 
-
 # ---------------------------------------------------------
-# 6. Load selected country's dataset
+# 4. Load country data from results folder
 # ---------------------------------------------------------
 
 base_url = (
@@ -129,86 +86,69 @@ base_url = (
     "UCL-ShippingGroup/Impact-Tracker/main/impact/"
 )
 
-
 @st.cache_data
-def load_country_data(
-    filename,
-    country,
-    iso3,
-    iso_code
-):
+def load_country_data(country, filename):
 
-    # Support country-name or ISO-based folder names.
-    possible_folders = [
-        iso_code,
-        country,
-        iso3
-    ]
-
-    for folder in possible_folders:
-
-        if folder is None:
-            continue
-
-        folder = str(folder).strip()
-
-        url = (
-            base_url
-            + quote(folder, safe="")
-            + "/"
-            + filename
-        )
-
-        try:
-            return pd.read_csv(url)
-
-        except HTTPError as e:
-            if e.code == 404:
-                continue
-            raise
-
-    raise FileNotFoundError(
-        f"Could not locate {filename} "
-        f"for {country} in the impact directory."
+    # Country folders use the full country name
+    country_folder = quote(
+        str(country).strip(),
+        safe=""
     )
+
+    url = (
+        base_url
+        + country_folder
+        + "/results/"
+        + filename
+    )
+
+    try:
+        df = pd.read_csv(url)
+
+    except HTTPError as e:
+        if e.code == 404:
+            raise FileNotFoundError(
+                f"CSV not found at: {url}"
+            ) from e
+        raise
+
+    return df
 
 
 try:
-
     df = load_country_data(
-        selected_file,
         selected_country,
-        selected_iso3,
-        selected_iso_code
+        selected_file
     )
 
 except (FileNotFoundError, HTTPError) as e:
-
     st.error(str(e))
     st.stop()
 
+# ---------------------------------------------------------
+# 5. Melt dataset
+# ---------------------------------------------------------
 
-# ---------------------------------------------------------
-# 7. Melt dataset from wide to long format
-# ---------------------------------------------------------
+df.columns = df.columns.astype(str).str.strip()
 
 years = [
     "2029", "2032", "2035", "2038",
     "2041", "2044", "2047", "2050"
 ]
 
-# Ensure year columns exist
 available_years = [
     year for year in years
     if year in df.columns
 ]
 
 if not available_years:
-    st.error("No expected year columns found in the dataset.")
+    st.error("No expected year columns found.")
+    st.write("Available columns:", df.columns.tolist())
     st.stop()
 
 if "Scenario" not in df.columns:
-    st.error("The dataset does not contain a Scenario column.")
+    st.error("Scenario column not found.")
+    st.write("Available columns:", df.columns.tolist())
     st.stop()
 
 df_long = df.melt(
@@ -218,18 +158,15 @@ df_long = df.melt(
     value_name="Value"
 )
 
-# Convert years to integers
 df_long["Year"] = df_long["Year"].astype(int)
 
-# Convert values to numeric
 df_long["Value"] = pd.to_numeric(
     df_long["Value"],
     errors="coerce"
 )
 
-
 # ---------------------------------------------------------
-# 8. Standardise scenario names
+# 6. Standardise scenario names
 # ---------------------------------------------------------
 
 df_long["Scenario"] = (
@@ -239,11 +176,26 @@ df_long["Scenario"] = (
     .str.strip("'\"")
 )
 
-df_long["Scenario"] = df_long["Scenario"].replace({
-    "as-is": "NZF"
-})
+# Case-insensitive matching, retaining preferred labels
+scenario_lookup = {
+    "bau": "BAU",
+    "as-is": "NZF",
+    "nzf": "NZF",
+    "levy": "Levy",
+    "brazil": "Brazil",
+    "liscr": "LISCR",
+    "direct": "Direct"
+}
 
+df_long["Scenario"] = (
+    df_long["Scenario"]
+    .str.lower()
+    .map(scenario_lookup)
+)
+
+# Six scenarios including BAU
 scenarios = [
+    "BAU",
     "NZF",
     "Levy",
     "Brazil",
@@ -255,75 +207,76 @@ df_long = df_long[
     df_long["Scenario"].isin(scenarios)
 ].copy()
 
-df_long = df_long.dropna(
-    subset=["Value"]
-)
+df_long = df_long.dropna(subset=["Value"])
 
 df_long = df_long.sort_values(
     ["Scenario", "Year"]
 )
 
 if df_long.empty:
-    st.warning("No data available for the selected measure.")
+    st.warning("No data available for this selection.")
     st.stop()
 
-# Prevent unintended connections between duplicate observations
 if df_long.duplicated(["Scenario", "Year"]).any():
     st.error(
-        "Multiple values exist for the same scenario and year. "
-        "Please check the source CSV."
+        "Duplicate scenario/year observations found. "
+        "Check the selected dataset."
     )
     st.stop()
 
-
 # ---------------------------------------------------------
-# 9. Set y-axis based on selected measure
+# 7. Y-axis formatting
 # ---------------------------------------------------------
 
 if metric == "Maritime Transport Cost":
 
     y_axis_title = "Maritime Transport Cost (USD)"
 
-    hover_label = "Maritime Transport Cost"
-
     hover_format = "$%{y:,.2f}"
 
     tick_format = ",.2s"
-
     tick_prefix = "$"
-
     tick_suffix = ""
+
+elif metric == "Maritime Logistics Cost":
+
+    y_axis_title = "Maritime Logistics Cost (%)"
+
+elif metric == "CIF/FOB price of Imports/Exports":
+
+    if trade_flow == "Import":
+        y_axis_title = "CIF Price of Imports (%)"
+    else:
+        y_axis_title = "FOB Price of Exports (%)"
 
 else:
 
-    if metric == "Maritime Logistics Cost":
+    y_axis_title = "MTC as % of GDP (%)"
 
-        y_axis_title = "Maritime Logistics Cost (%)"
 
-    elif metric == "CIF/FOB price of Imports/Exports":
-
-        if trade_flow == "Import":
-            y_axis_title = "CIF Price of Imports (%)"
-        else:
-            y_axis_title = "FOB Price of Exports (%)"
-
-    else:
-
-        y_axis_title = "MTC as % of GDP (%)"
-
-    hover_label = y_axis_title
+if metric != "Maritime Transport Cost":
 
     hover_format = "%{y:,.2f}%"
 
     tick_format = ",.2f"
-
     tick_prefix = ""
-
     tick_suffix = "%"
 
+# ---------------------------------------------------------
+# 8. Scenario colours
+# ---------------------------------------------------------
+
+scenario_colors = {
+    "BAU": "#444444",
+    "NZF": "#1f77b4",
+    "Levy": "#d62728",
+    "Brazil": "#2ca02c",
+    "LISCR": "#9467bd",
+    "Direct": "#ff7f0e"
+}
 
 # ---------------------------------------------------------
-# 10. Create line chart
+# 9. Create line chart
 # ---------------------------------------------------------
 
 fig = px.line(
@@ -333,37 +286,28 @@ fig = px.line(
     y="Value",
 
     color="Scenario",
-
     markers=True,
 
     category_orders={
         "Scenario": scenarios
     },
 
+    color_discrete_map=scenario_colors,
+
     labels={
         "Year": "Year",
         "Value": y_axis_title,
         "Scenario": "Scenario"
-    },
-
-    color_discrete_map={
-        "NZF": "#1f77b4",
-        "Levy": "#d62728",
-        "Brazil": "#2ca02c",
-        "LISCR": "#9467bd",
-        "Direct": "#ff7f0e"
     }
 )
 
-
 # ---------------------------------------------------------
-# 11. Custom hover formatting
+# 10. Style lines, points and hover
 # ---------------------------------------------------------
 
 for trace in fig.data:
 
     trace.update(
-
         mode="lines+markers",
 
         line=dict(
@@ -377,15 +321,15 @@ for trace in fig.data:
         hovertemplate=(
             f"<b>{trace.name}</b><br>"
             "Year: %{x}<br>"
-            + hover_label + ": "
+            + y_axis_title
+            + ": "
             + hover_format
             + "<extra></extra>"
         )
     )
 
-
 # ---------------------------------------------------------
-# 12. Chart layout
+# 11. Chart layout
 # ---------------------------------------------------------
 
 fig.update_layout(
@@ -395,6 +339,7 @@ fig.update_layout(
     template="plotly_white",
 
     hovermode="closest",
+    hoverdistance=5,
 
     margin=dict(
         l=80,
@@ -422,14 +367,7 @@ fig.update_layout(
             2041, 2044, 2047, 2050
         ],
 
-        ticktext=[
-            "2029", "2032", "2035", "2038",
-            "2041", "2044", "2047", "2050"
-        ],
-
-        range=[
-            2028, 2051
-        ],
+        range=[2028, 2051],
 
         showgrid=True,
         gridcolor="rgba(200,200,200,0.3)"
@@ -439,9 +377,7 @@ fig.update_layout(
         title=y_axis_title,
 
         tickformat=tick_format,
-
         tickprefix=tick_prefix,
-
         ticksuffix=tick_suffix,
 
         showgrid=True,
@@ -452,9 +388,8 @@ fig.update_layout(
     )
 )
 
-
 # ---------------------------------------------------------
-# 13. Display chart
+# 12. Display chart
 # ---------------------------------------------------------
 
 st.plotly_chart(
@@ -462,4 +397,6 @@ st.plotly_chart(
     use_container_width=True,
     key="economic_impact_line_chart"
 )
+
+
 
