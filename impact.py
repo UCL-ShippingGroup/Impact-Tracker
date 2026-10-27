@@ -1209,7 +1209,7 @@ fig.update_layout(
 
 st.plotly_chart(
     fig,
-    use_container_width=True,
-    key="economic_impact_grouped_bars"
+    width='stretch',
+    key="economic_impact_grouped_bars1"
 )
 
