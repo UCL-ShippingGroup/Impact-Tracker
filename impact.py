@@ -894,11 +894,11 @@ st.subheader(
 # 2. Import / Export selector
 # ---------------------------------------------------------
 
-trade_flow_bar = st.segmented_control(
+trade_flow_bar1 = st.segmented_control(
     "Which Trade flow are you interested in?",
     options=["Import", "Export"],
     default="Import",
-    key="economic_bar_trade_flow"
+    key="economic_bar_trade_flow1"
 )
 
 
@@ -957,7 +957,7 @@ dataset_map_bar = {
 }
 
 selected_file = dataset_map_bar[
-    trade_flow_bar
+    trade_flow_bar1
 ][metric_bar]
 
 
