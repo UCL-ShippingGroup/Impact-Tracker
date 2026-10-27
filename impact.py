@@ -864,3 +864,352 @@ st.plotly_chart(
 )
 
 
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+from urllib.parse import quote
+from urllib.error import HTTPError, URLError
+
+
+# ---------------------------------------------------------
+# 1. Section title and selected country
+# ---------------------------------------------------------
+
+selected_country = st.session_state.get(
+    "iso_country",
+    None
+)
+
+if not selected_country:
+    st.warning("Please select a country on the home page.")
+    st.stop()
+
+st.subheader(
+    "Economic Impact Relative to BAU",
+    divider="grey"
+)
+
+
+# ---------------------------------------------------------
+# 2. Import / Export selector
+# ---------------------------------------------------------
+
+trade_flow_bar = st.segmented_control(
+    "Which Trade flow are you interested in?",
+    options=["Import", "Export"],
+    default="Import",
+    key="economic_bar_trade_flow"
+)
+
+
+# ---------------------------------------------------------
+# 3. Cost measure selector
+# ---------------------------------------------------------
+
+metric_bar = st.segmented_control(
+    "What measure of cost relative to a BAU scenario are you interested in?",
+    options=[
+        "Maritime Transport Cost",
+        "Maritime Logistics Cost",
+        "CIF/FOB price of Imports/Exports",
+        "MTC as % of GDP"
+    ],
+    default="Maritime Transport Cost",
+    key="economic_bar_metric"
+)
+
+
+# ---------------------------------------------------------
+# 4. Dataset mapping
+# ---------------------------------------------------------
+
+dataset_map_bar = {
+
+    "Import": {
+
+        "Maritime Transport Cost":
+            "impact_im_costs_to_bau_pct_bau_v0.64.csv",
+
+        "Maritime Logistics Cost":
+            "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
+
+        "CIF/FOB price of Imports/Exports":
+            "impact_im_costs_to_bau_pct_cif_v0.64.csv",
+
+        "MTC as % of GDP":
+            "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+    },
+
+    "Export": {
+
+        "Maritime Transport Cost":
+            "impact_ex_costs_to_bau_pct_bau_v0.64.csv",
+
+        "Maritime Logistics Cost":
+            "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
+
+        "CIF/FOB price of Imports/Exports":
+            "impact_ex_costs_to_bau_pct_fob_v0.64.csv",
+
+        "MTC as % of GDP":
+            "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+    }
+}
+
+selected_file = dataset_map_bar[
+    trade_flow_bar
+][metric_bar]
+
+
+# ---------------------------------------------------------
+# 5. Load country data
+# ---------------------------------------------------------
+
+base_url = (
+    "https://raw.githubusercontent.com/"
+    "UCL-ShippingGroup/Impact-Tracker/main/impact/"
+)
+
+
+@st.cache_data
+def load_bar_data(country, filename):
+
+    country_folder = quote(
+        str(country).strip(),
+        safe=""
+    )
+
+    url = (
+        base_url
+        + country_folder
+        + "/results/"
+        + filename
+    )
+
+    return pd.read_csv(url)
+
+
+try:
+    df = load_bar_data(
+        selected_country,
+        selected_file
+    )
+
+except (HTTPError, URLError, OSError) as e:
+    st.error(f"Could not load {selected_file}: {e}")
+    st.stop()
+
+
+# ---------------------------------------------------------
+# 6. Melt dataset
+# ---------------------------------------------------------
+
+df.columns = df.columns.astype(str).str.strip()
+
+years = [
+    "2029", "2032", "2035", "2038",
+    "2041", "2044", "2047", "2050"
+]
+
+available_years = [
+    year for year in years
+    if year in df.columns
+]
+
+if "Scenario" not in df.columns or not available_years:
+    st.error("Missing Scenario or year columns.")
+    st.write("Available columns:", df.columns.tolist())
+    st.stop()
+
+df_long = df.melt(
+    id_vars=["Scenario"],
+    value_vars=available_years,
+    var_name="Year",
+    value_name="Value"
+)
+
+df_long["Year"] = df_long["Year"].astype(int)
+
+df_long["Value"] = pd.to_numeric(
+    df_long["Value"],
+    errors="coerce"
+)
+
+
+# ---------------------------------------------------------
+# 7. Standardise scenario names
+# ---------------------------------------------------------
+
+scenario_lookup = {
+    "as-is": "NZF",
+    "nzf": "NZF",
+    "levy": "Levy",
+    "brazil": "Brazil",
+    "liscr": "LISCR",
+    "direct": "Direct"
+}
+
+df_long["Scenario"] = (
+    df_long["Scenario"]
+    .astype(str)
+    .str.strip()
+    .str.strip("'\"")
+    .str.lower()
+    .map(scenario_lookup)
+)
+
+scenarios = [
+    "NZF",
+    "Levy",
+    "Brazil",
+    "LISCR",
+    "Direct"
+]
+
+df_long = df_long[
+    df_long["Scenario"].isin(scenarios)
+].copy()
+
+df_long = df_long.dropna(
+    subset=["Value"]
+)
+
+if df_long.empty:
+    st.warning("No data available for this selection.")
+    st.stop()
+
+if df_long.duplicated(["Scenario", "Year"]).any():
+    st.error("Duplicate scenario/year observations found.")
+    st.stop()
+
+
+# ---------------------------------------------------------
+# 8. Set scenario colours
+# ---------------------------------------------------------
+
+scenario_colors = {
+    "NZF": "#1f77b4",
+    "Levy": "#d62728",
+    "Brazil": "#2ca02c",
+    "LISCR": "#9467bd",
+    "Direct": "#ff7f0e"
+}
+
+
+# ---------------------------------------------------------
+# 9. Create grouped bar chart
+# ---------------------------------------------------------
+
+fig = px.bar(
+    df_long,
+
+    x="Year",
+    y="Value",
+
+    color="Scenario",
+
+    barmode="group",
+
+    category_orders={
+        "Scenario": scenarios,
+        "Year": list(range(2029, 2051, 3))
+    },
+
+    color_discrete_map=scenario_colors,
+
+    labels={
+        "Year": "Year",
+        "Value": "Change relative to BAU (%)",
+        "Scenario": "Scenario"
+    },
+
+    custom_data=["Scenario"]
+)
+
+
+# ---------------------------------------------------------
+# 10. Hover formatting
+# ---------------------------------------------------------
+
+fig.update_traces(
+    hovertemplate=(
+        "<b>%{customdata[0]}</b><br>"
+        "Year: %{x}<br>"
+        "Change relative to BAU: %{y:,.2f}%"
+        "<extra></extra>"
+    )
+)
+
+
+# ---------------------------------------------------------
+# 11. Chart layout
+# ---------------------------------------------------------
+
+fig.update_layout(
+
+    height=600,
+
+    template="plotly_white",
+
+    barmode="group",
+
+    bargap=0.2,
+    bargroupgap=0.05,
+
+    hovermode="closest",
+
+    margin=dict(
+        l=80,
+        r=30,
+        t=40,
+        b=90
+    ),
+
+    legend=dict(
+        title=None,
+        orientation="h",
+        yanchor="top",
+        y=-0.15,
+        xanchor="center",
+        x=0.5
+    ),
+
+    xaxis=dict(
+        title="Year",
+
+        tickmode="array",
+
+        tickvals=[
+            2029, 2032, 2035, 2038,
+            2041, 2044, 2047, 2050
+        ],
+
+        range=[2027, 2052],
+
+        showgrid=False
+    ),
+
+    yaxis=dict(
+        title="Change relative to BAU (%)",
+
+        ticksuffix="%",
+
+        zeroline=True,
+        zerolinecolor="grey",
+
+        showgrid=True,
+        gridcolor="rgba(200,200,200,0.3)"
+    )
+)
+
+
+# ---------------------------------------------------------
+# 12. Display chart
+# ---------------------------------------------------------
+
+st.plotly_chart(
+    fig,
+    use_container_width=True,
+    key="economic_impact_grouped_bars"
+)
+
