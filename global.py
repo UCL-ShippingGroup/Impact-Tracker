@@ -206,7 +206,7 @@ fig = px.choropleth(
 
 
 fig.update_geos(
-    fitbounds="locations",
+    #fitbounds="locations",
     visible=False,
     showcountries=True,
     countrycolor="white",
