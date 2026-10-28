@@ -158,8 +158,10 @@ if plot_df.duplicated(["alpha-3", "Year"]).any():
 
 #Set fixed colour scale across all years
 
-min_value = min(0, plot_df["Value"].min())
-max_value = plot_df["Value"].max()
+all_values = df_long["Value"].dropna()
+
+min_value = min(0, all_values.min())
+max_value = max(0, all_values.max())
 
 if max_value <= min_value:
     max_value = min_value + 1
