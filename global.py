@@ -211,6 +211,7 @@ fig.update_geos(
     #fitbounds="locations",
     visible=False,
     showcountries=True,
+    center=dict(lat=0,lon=0),
     countrycolor="white",
     showcoastlines=True,
     coastlinecolor="lightgrey",
