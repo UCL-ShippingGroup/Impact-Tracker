@@ -77,28 +77,47 @@ else:
 # 6. Load selected country's data
 # ---------------------------------------------------------
 
-base_url = (
-    "https://github.com/"
-    "UCL-ShippingGroup/Impact-Tracker/raw/refs/heads/main/impact/"
-)
+# ---------------------------------------------------------
+# 6. Load selected country's data (Local Git LFS)
+# ---------------------------------------------------------
 
+from pathlib import Path
+
+# Get the directory where your Streamlit app is located
+base_dir = Path(__file__).resolve().parent
 
 @st.cache_data
 def load_trade_data(country, filename):
 
-    country_folder = quote(
-        str(country).strip(),
-        safe=""
+    # Construct the local file path
+    file_path = (
+        base_dir
+        / "impact"
+        / country
+        / filename
     )
 
-    url = (
-        base_url
-        + country_folder
-        + "/"
-        + filename
-    )
+    # Check whether the file exists
+    if not file_path.is_file():
+        raise FileNotFoundError(
+            f"File not found: {file_path}"
+        )
 
-    df = pd.read_csv(url)
+    # Check whether Git LFS has downloaded
+    # the actual CSV rather than just a pointer
+    with open(file_path, "rb") as f:
+        first_line = f.readline()
+
+    if first_line.startswith(
+        b"version https://git-lfs.github.com/spec/v1"
+    ):
+        raise RuntimeError(
+            f"{filename} is still a Git LFS pointer. "
+            "The actual CSV has not been downloaded."
+        )
+
+    # Read the actual CSV
+    df = pd.read_csv(file_path)
 
     return df
 
@@ -110,7 +129,7 @@ try:
         selected_file
     )
 
-except Exception as e:
+except (FileNotFoundError, RuntimeError, OSError) as e:
 
     st.error(
         f"Could not load trade data for {selected_country}: {e}"
