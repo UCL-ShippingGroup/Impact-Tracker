@@ -67,7 +67,7 @@ dataset_map = {
             "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
 
         "CIF/FOB price of Imports/Exports":
-            "impact_im_costs_to_bau_pct_fob_v0.64_combined.csv",
+            "impact_ex_costs_to_bau_pct_fob_v0.64_combined.csv",
 
         "MTC as % of GDP":
             "impact_ex_costs_to_bau_pct_gdp_v0.64_combined.csv"
@@ -381,7 +381,7 @@ dataset_map = {
             "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
 
         "CIF/FOB price of Imports/Exports":
-            "impact_im_costs_to_bau_pct_fob_v0.64_combined.csv",
+            "impact_ex_costs_to_bau_pct_fob_v0.64_combined.csv",
 
         "MTC as % of GDP":
             "impact_ex_costs_to_bau_pct_gdp_v0.64_combined.csv"
