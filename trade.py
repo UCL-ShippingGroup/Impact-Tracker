@@ -145,19 +145,16 @@ except (FileNotFoundError, RuntimeError, OSError) as e:
 if trade_measure == "Value, $":
 
     if trade_flow == "Imports":
-
         value_col = "cifvalue"
-
     else:
-
         value_col = "fobvalue"
 
-    value_title = "Trade Value (USD)"
-    unit = "$"
+    value_title = "Trade Value (Million USD)"
+    unit = "Million USD"
 
 else:
 
-    value_col = "vol_kg_vtw_comp"
+    value_col = "vol_kg_vtw"
 
     value_title = "Trade Weight (tonnes)"
     unit = "t"
@@ -180,15 +177,16 @@ df = df.dropna(
     subset=[value_col]
 )
 
-# Convert kilograms to tonnes
+# Convert values to the appropriate units
 if trade_measure == "Weight, t":
 
+    # Convert kilograms to tonnes
     df["Plot_Value"] = df[value_col] / 1000
 
 else:
 
-    df["Plot_Value"] = df[value_col]
-
+    # Convert USD to million USD
+    df["Plot_Value"] = df[value_col] / 1e6
 
 # ---------------------------------------------------------
 # 9. Function to aggregate top 25 categories
@@ -283,7 +281,7 @@ def create_trade_bar_chart(
 
     if trade_measure == "Value, $":
 
-        hover_format = "$%{y:,.2f}"
+        hover_format = "$%{y:,.2f} million"
 
     else:
 
@@ -367,17 +365,11 @@ def create_trade_bar_chart(
 
     if trade_measure == "Value, $":
 
-        fig.update_yaxes(
-            tickformat=",.2s",
-            tickprefix="$"
-        )
+        hover_format = "$%{y:,.2f} million"
 
     else:
 
-        fig.update_yaxes(
-            tickformat=",.2s",
-            ticksuffix=" t"
-        )
+        hover_format = "%{y:,.2f} t"
 
     return fig
 
