@@ -78,8 +78,8 @@ else:
 # ---------------------------------------------------------
 
 base_url = (
-    "https://raw.githubusercontent.com/"
-    "UCL-ShippingGroup/Impact-Tracker/main/impact/"
+    "https://github.com/"
+    "UCL-ShippingGroup/Impact-Tracker/raw/refs/heads/main/impact/"
 )
 
 
@@ -118,9 +118,7 @@ except Exception as e:
 
     st.stop()
 
-st.write("Dataset:", selected_file)
-st.write("Available columns:", df.columns.tolist())
-st.dataframe(df.head())
+
 # ---------------------------------------------------------
 # 7. Determine column and units
 # ---------------------------------------------------------
