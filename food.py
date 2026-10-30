@@ -181,20 +181,13 @@ fig = px.line(
 )
 
 fig.update_traces(
-    mode="lines+markers",
     marker=dict(size=9),
-    line=dict(width=2.5),
-    hovertemplate=(
-        "Year: %{x}<br>"
-        "Value: %{y:,.2f}"
-        "<extra>%{fullData.name}</extra>"
-    )
+    line=dict(width=2.5)
 )
 
 fig.update_layout(
     xaxis_title="Year",
     yaxis_title=y_axis_title,
-    hovermode="x unified",
     legend=dict(
         title="Scenario",
         orientation="h",
