@@ -67,7 +67,7 @@ dataset_map = {
             "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
 
         "CIF/FOB price of Imports/Exports":
-            "impact_im_costs_to_bau_pct_fob_v0.64_combined.csv",
+            "impact_ex_costs_to_bau_pct_fob_v0.64_combined.csv",
 
         "MTC as % of GDP":
             "impact_ex_costs_to_bau_pct_gdp_v0.64_combined.csv"
@@ -158,8 +158,10 @@ if plot_df.duplicated(["alpha-3", "Year"]).any():
 
 #Set fixed colour scale across all years
 
-min_value = min(0, plot_df["Value"].min())
-max_value = plot_df["Value"].max()
+all_values = df_long["Value"].dropna()
+
+min_value = min(0, all_values.min())
+max_value = max(0, all_values.max())
 
 if max_value <= min_value:
     max_value = min_value + 1
@@ -206,9 +208,10 @@ fig = px.choropleth(
 
 
 fig.update_geos(
-    fitbounds="locations",
+    #fitbounds="locations",
     visible=False,
     showcountries=True,
+    center=dict(lat=0,lon=0),
     countrycolor="white",
     showcoastlines=True,
     coastlinecolor="lightgrey",
@@ -378,7 +381,7 @@ dataset_map = {
             "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
 
         "CIF/FOB price of Imports/Exports":
-            "impact_im_costs_to_bau_pct_fob_v0.64_combined.csv",
+            "impact_ex_costs_to_bau_pct_fob_v0.64_combined.csv",
 
         "MTC as % of GDP":
             "impact_ex_costs_to_bau_pct_gdp_v0.64_combined.csv"

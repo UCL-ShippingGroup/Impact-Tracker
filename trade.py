@@ -6,8 +6,7 @@ import plotly.express as px
 from urllib.parse import quote
 
 st.set_page_config(layout='wide')
-st.title('Seabourne Trade Portfolios')
-st.divider()
+
 # ---------------------------------------------------------
 # 1. Get selected country from home page
 # ---------------------------------------------------------
