@@ -52,7 +52,7 @@ df_1 = pd.read_csv("https://raw.githubusercontent.com//UCL-ShippingGroup/Impact-
 
 filtered_df1 = df_1[df_1['year'].isin([2030,2040,2050,2060,2070,2080,2090,2100])]
 
-df_world = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/tree/main/datasets/world_gdp_change.csv")
+df_world = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/world_gdp_change.csv")
 
 st.subheader("Country and Global GDP per Capita Losses", divider='grey')
 #st.markdown("##### Country and Global GDP per Capita Losses")
@@ -129,7 +129,7 @@ st.subheader("Country Comparison", divider = 'grey')
 #st.markdown("##### Country Comparison")
 st.caption("Select countries you wish to compare. To zoom into specific time scales, create a box over the desired area and the graph will automatically zoom in") 
 
-df_2 = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/tree/main/datasets/country_gdp.csv")
+df_2 = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/country_gdp.csv")
 ssp_1 = df_2[df_2['Scenario'] == 'SSP1-2.6']
 ssp_2 = df_2[df_2['Scenario'] == 'SSP2-4.5']  
 ssp_3 = df_2[df_2['Scenario'] == 'SSP3-7.0']  
