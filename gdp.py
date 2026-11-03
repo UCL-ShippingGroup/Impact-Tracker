@@ -47,7 +47,7 @@ st.markdown(
 
 df_profile = 'gdp_change'
 
-df_1 = pd.read_csv("https://raw.githubusercontent.com//UCL-ShippingGroup/Impact-Tracker/tree/main/gdp/{0}/{1}.csv".format(st.session_state.iso_code, df_profile))
+df_1 = pd.read_csv("https://raw.githubusercontent.com//UCL-ShippingGroup/Impact-Tracker/tree/main/gdp/{0}/{1}.csv".format(st.session_state.iso_country, df_profile))
 
 
 filtered_df1 = df_1[df_1['year'].isin([2030,2040,2050,2060,2070,2080,2090,2100])]
