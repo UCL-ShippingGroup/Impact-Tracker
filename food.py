@@ -427,3 +427,154 @@ st.plotly_chart(
     use_container_width=True
 )
 
+
+# ---------------------------------------------------------
+# 16. Food Import Composition
+# ---------------------------------------------------------
+
+st.subheader("Food Import Composition")
+
+
+# ---------------------------------------------------------
+# 17. Load selected country's dataset
+# ---------------------------------------------------------
+
+@st.cache_data
+def load_food_composition_data(country):
+
+    country_path = base_url + country + "/"
+
+    df_composition = pd.read_csv(
+        country_path + "food_total_usd_tot_v0.03.csv"
+    )
+
+    return df_composition
+
+
+try:
+    df_composition = load_food_composition_data(
+        country_url
+    )
+
+except Exception as e:
+    st.error(
+        f"Unable to load food composition data for {selected_country}."
+    )
+    st.exception(e)
+    st.stop()
+
+
+# ---------------------------------------------------------
+# 18. Prepare data
+# ---------------------------------------------------------
+
+# Exclude total row if present
+df_composition = df_composition[
+    df_composition["food_group"].astype(str).str.strip().str.lower()
+    != "total"
+].copy()
+
+# Ensure percentage columns are numeric
+df_composition["pct_val_food"] = pd.to_numeric(
+    df_composition["pct_val_food"],
+    errors="coerce"
+)
+
+df_composition["pct_vol_food"] = pd.to_numeric(
+    df_composition["pct_vol_food"],
+    errors="coerce"
+)
+
+
+# ---------------------------------------------------------
+# 19. Create side-by-side pie charts
+# ---------------------------------------------------------
+
+col1, col2 = st.columns(2)
+
+with col1:
+
+    st.markdown("#### Proportion of Food Import Value")
+
+    fig_val = px.pie(
+        df_composition,
+        names="food_group",
+        values="pct_val_food",
+        color="food_group"
+    )
+
+    fig_val.update_traces(
+        textposition="inside",
+        textinfo="percent",
+        hovertemplate=(
+            "%{label}<br>"
+            "Percentage: %{value:.2f}%"
+            "<extra></extra>"
+        )
+    )
+
+    fig_val.update_layout(
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.1,
+            xanchor="center",
+            x=0.5
+        ),
+        margin=dict(
+            l=10,
+            r=10,
+            t=20,
+            b=90
+        )
+    )
+
+    st.plotly_chart(
+        fig_val,
+        use_container_width=True
+    )
+
+
+with col2:
+
+    st.markdown("#### Proportion of Food Import Weight")
+
+    fig_vol = px.pie(
+        df_composition,
+        names="food_group",
+        values="pct_vol_food",
+        color="food_group"
+    )
+
+    fig_vol.update_traces(
+        textposition="inside",
+        textinfo="percent",
+        hovertemplate=(
+            "%{label}<br>"
+            "Percentage: %{value:.2f}%"
+            "<extra></extra>"
+        )
+    )
+
+    fig_vol.update_layout(
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.1,
+            xanchor="center",
+            x=0.5
+        ),
+        margin=dict(
+            l=10,
+            r=10,
+            t=20,
+            b=90
+        )
+    )
+
+    st.plotly_chart(
+        fig_vol,
+        use_container_width=True
+    )
