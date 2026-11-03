@@ -17,6 +17,50 @@ st.sidebar.markdown(
     "Costs of Climate Change data sourced from Kahn et al. (2021) and Mohaddes and Raissi (2024)."
 )
 
+
+
+# ---------------------------------------------------------
+# 1. Load data
+# ---------------------------------------------------------
+
+base_url = (
+    "https://raw.githubusercontent.com/"
+    "UCL-ShippingGroup/Impact-Tracker/main/impact/"
+)
+
+selected_country = st.session_state.iso_country
+
+country_url = quote(selected_country, safe="")
+
+@st.cache_data
+def load_impact_data(country):
+
+    country_path = base_url + country + "/"
+
+    df_im = pd.read_csv(
+        country_path + "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+    )
+
+    df_ex = pd.read_csv(
+        country_path + "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+    )
+
+    return df_im, df_ex
+
+
+try:
+    df_im, df_ex = load_impact_data(country_url)
+
+except Exception as e:
+    st.error(f"Unable to load impact data for {selected_country}.")
+    st.exception(e)
+    st.stop()
+
+
+# ---------------------------------------------------------
+# 2. Section heading and segmented control
+# ---------------------------------------------------------
+
 st.subheader(
     "Impact of Maritime Transport Costs on GDP",
     divider="grey"
@@ -27,29 +71,22 @@ st.caption(
     "relative to the Business as Usual (BAU) scenario."
 )
 
-# Import / Export segmented control
 trade_choice = st.segmented_control(
     "Trade Flow",
     options=["Import", "Export"],
     default="Import"
 )
 
-# Select dataset
+# Select dataframe
 if trade_choice == "Import":
-    filename = "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+    df_mtc = df_im.copy()
 else:
-    filename = "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+    df_mtc = df_ex.copy()
 
-# Load selected country's dataset
-country = st.session_state.iso_country
 
-url = (
-    "https://raw.githubusercontent.com/"
-    "UCL-ShippingGroup/Impact-Tracker/main/"
-    f"impact/{quote(country, safe='')}/{filename}"
-)
-
-df_mtc = pd.read_csv(url)
+# ---------------------------------------------------------
+# 3. Prepare data
+# ---------------------------------------------------------
 
 # Rename As-is scenario
 df_mtc["Scenario"] = df_mtc["Scenario"].replace(
@@ -70,7 +107,7 @@ df_mtc_long = df_mtc.melt(
     value_name="MTC"
 )
 
-# Convert columns to numeric
+# Convert to numeric
 df_mtc_long["year"] = df_mtc_long["year"].astype(int)
 
 df_mtc_long["MTC"] = pd.to_numeric(
@@ -83,7 +120,11 @@ df_mtc_long = df_mtc_long.dropna(subset=["MTC"])
 # Sort by year
 df_mtc_long = df_mtc_long.sort_values("year")
 
-# Create line chart
+
+# ---------------------------------------------------------
+# 4. Create line chart
+# ---------------------------------------------------------
+
 fig_mtc = px.line(
     df_mtc_long,
     x="year",
@@ -126,6 +167,10 @@ fig_mtc.update_yaxes(
     showgrid=True,
     ticksuffix="%"
 )
+
+# ---------------------------------------------------------
+# 5. Display chart
+# ---------------------------------------------------------
 
 st.plotly_chart(
     fig_mtc,
