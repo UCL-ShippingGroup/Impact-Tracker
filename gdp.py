@@ -35,7 +35,7 @@ country_url = quote(selected_country, safe="")
 @st.cache_data
 def load_impact_data(country):
 
-    country_path = base_url + country + "/"
+    country_path = base_url + country + "/results/"
 
     df_im = pd.read_csv(
         country_path + "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
