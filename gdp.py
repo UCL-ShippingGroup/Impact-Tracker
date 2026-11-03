@@ -139,19 +139,17 @@ fig_mtc = px.line(
 )
 
 fig_mtc.update_traces(
-    hovertemplate=None,
-    hoverinfo="x+y+name"
+    hovertemplate=(
+        "Year: %{x}<br>"
+        "Change: %{y:.4f}%"
+        "<extra>%{fullData.name}</extra>"
+    )
 )
-
-fig_mtc.update_layout(
-    hovermode="closest"
-)
-
 # Chart layout
 fig_mtc.update_layout(
     xaxis_title="Year",
     yaxis_title="Change in Maritime Transport Costs (% of GDP)",
-    hovermode="x unified",
+    hovermode="closest",
     legend_title="Scenario",
     height=500,
     margin=dict(l=20, r=20, t=30, b=20)
