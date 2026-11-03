@@ -213,3 +213,217 @@ st.plotly_chart(
     fig,
     use_container_width=True
 )
+
+
+
+# ---------------------------------------------------------
+# 8. Food Import Impact by Food Group
+# ---------------------------------------------------------
+
+st.subheader("Food Import Impact by Food Group")
+
+
+# ---------------------------------------------------------
+# 9. Select measure and scenario
+# ---------------------------------------------------------
+
+measure_food = st.segmented_control(
+    "What measure of cost are you Interested in?",
+    options=[
+        "MTC",
+        "CIF Price of Imports Relative to BAU"
+    ],
+    default="MTC",
+    key="food_group_measure"
+)
+
+scenario_options = {
+    "BAU": "bau",
+    "Levy": "levy",
+    "NZF as-is": "asis",
+    "Brazil": "brazil",
+    "LISCR": "liscr",
+    "Direct": "direct"
+}
+
+scenario_food = st.segmented_control(
+    "Which Scenario are you interested in?",
+    options=list(scenario_options.keys()),
+    default="BAU",
+    key="food_group_scenario"
+)
+
+selected_scenario = scenario_options[scenario_food]
+
+
+# ---------------------------------------------------------
+# 10. Load selected country's datasets
+# ---------------------------------------------------------
+
+@st.cache_data
+def load_food_group_data(country):
+
+    country_path = base_url + country + "/"
+
+    df_mtc_food = pd.read_csv(
+        country_path + "food_total_costs_usd_v0.03.csv"
+    )
+
+    df_cif_food = pd.read_csv(
+        country_path + "food_total_costs_pct_cif_v0.03.csv"
+    )
+
+    return df_mtc_food, df_cif_food
+
+
+try:
+    df_mtc_food, df_cif_food = load_food_group_data(
+        country_url
+    )
+
+except Exception as e:
+    st.error(
+        f"Unable to load food group data for {selected_country}."
+    )
+    st.exception(e)
+    st.stop()
+
+
+# ---------------------------------------------------------
+# 11. Select dataset and chart labels
+# ---------------------------------------------------------
+
+if measure_food == "MTC":
+
+    df_food = df_mtc_food.copy()
+    y_axis_title_food = "MTC (US$)"
+    chart_title_food = "Food Import MTC by Food Group"
+
+else:
+
+    df_food = df_cif_food.copy()
+    y_axis_title_food = "CIF Price of Imports Relative to BAU (%)"
+    chart_title_food = "Food Import CIF Price Change by Food Group"
+
+
+# ---------------------------------------------------------
+# 12. Exclude total row
+# ---------------------------------------------------------
+
+df_food = df_food[
+    df_food["food_group"].astype(str).str.strip().str.lower()
+    != "total"
+].copy()
+
+
+# ---------------------------------------------------------
+# 13. Reshape data from wide to long
+# ---------------------------------------------------------
+
+scenario_cols_food = df_food.columns[
+    df_food.columns.str.match(r"^[A-Za-z0-9]+_\d{2,4}$")
+].tolist()
+
+df_food_long = df_food.melt(
+    id_vars=["food_group"],
+    value_vars=scenario_cols_food,
+    var_name="Scenario_Year",
+    value_name="Value"
+)
+
+# Extract scenario and year
+df_food_long[["Scenario", "year"]] = (
+    df_food_long["Scenario_Year"].str.rsplit(
+        "_", n=1, expand=True
+    )
+)
+
+# Convert year codes to full years
+df_food_long["year"] = df_food_long["year"].astype(int)
+
+df_food_long["year"] = df_food_long["year"].apply(
+    lambda x: x + 2000 if x < 100 else x
+)
+
+# Ensure numeric values
+df_food_long["Value"] = pd.to_numeric(
+    df_food_long["Value"],
+    errors="coerce"
+)
+
+df_food_long = df_food_long.dropna(
+    subset=["Value"]
+)
+
+
+# ---------------------------------------------------------
+# 14. Filter selected scenario
+# ---------------------------------------------------------
+
+df_food_plot = df_food_long[
+    df_food_long["Scenario"].str.lower()
+    == selected_scenario
+].copy()
+
+df_food_plot = df_food_plot.sort_values(
+    ["food_group", "year"]
+)
+
+
+# ---------------------------------------------------------
+# 15. Create Plotly line chart
+# ---------------------------------------------------------
+
+fig_food = px.line(
+    df_food_plot,
+    x="year",
+    y="Value",
+    color="food_group",
+    markers=True,
+    title=chart_title_food,
+    labels={
+        "year": "Year",
+        "Value": y_axis_title_food,
+        "food_group": "Food Group"
+    },
+    hover_data={"Value": ":,.2f"}
+)
+
+fig_food.update_traces(
+    marker=dict(size=9),
+    line=dict(width=2.5)
+)
+
+fig_food.update_layout(
+    xaxis_title="Year",
+    yaxis_title=y_axis_title_food,
+    legend=dict(
+        title="Food Group",
+        orientation="h",
+        yanchor="top",
+        y=-0.2,
+        xanchor="center",
+        x=0.5
+    ),
+    margin=dict(
+        l=20,
+        r=20,
+        t=60,
+        b=110
+    )
+)
+
+fig_food.update_xaxes(
+    tickmode="array",
+    tickvals=sorted(df_food_plot["year"].unique())
+)
+
+fig_food.update_yaxes(
+    tickformat=",.0f"
+)
+
+st.plotly_chart(
+    fig_food,
+    use_container_width=True
+)
+
