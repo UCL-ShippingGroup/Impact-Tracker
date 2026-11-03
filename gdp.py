@@ -4,6 +4,7 @@ import streamlit as st
 import altair as alt
 import plotly.express as px
 import time
+from urllib.parse import quote
 input_dir = "https://raw.githubusercontent.com/james-stewart-808/inventory-tracker/main/datasets/"
 
 def download_as_csv(file, label, filename):
@@ -16,7 +17,120 @@ st.sidebar.markdown(
     "Costs of Climate Change data sourced from Kahn et al. (2021) and Mohaddes and Raissi (2024)."
 )
 
+st.subheader(
+    "Impact of Maritime Transport Costs on GDP",
+    divider="grey"
+)
 
+st.caption(
+    "Change in Maritime Transport Costs as a percentage of GDP "
+    "relative to the Business as Usual (BAU) scenario."
+)
+
+# Import / Export segmented control
+trade_choice = st.segmented_control(
+    "Trade Flow",
+    options=["Import", "Export"],
+    default="Import"
+)
+
+# Select dataset
+if trade_choice == "Import":
+    filename = "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+else:
+    filename = "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+
+# Load selected country's dataset
+country = st.session_state.iso_country
+
+url = (
+    "https://raw.githubusercontent.com/"
+    "UCL-ShippingGroup/Impact-Tracker/main/"
+    f"impact/{quote(country, safe='')}/{filename}"
+)
+
+df_mtc = pd.read_csv(url)
+
+# Rename As-is scenario
+df_mtc["Scenario"] = df_mtc["Scenario"].replace(
+    {"as-is": "NZF as-is"}
+)
+
+# Identify year columns
+year_cols = [
+    col for col in df_mtc.columns
+    if str(col).isdigit()
+]
+
+# Reshape from wide to long
+df_mtc_long = df_mtc.melt(
+    id_vars=["Scenario"],
+    value_vars=year_cols,
+    var_name="year",
+    value_name="MTC"
+)
+
+# Convert columns to numeric
+df_mtc_long["year"] = df_mtc_long["year"].astype(int)
+
+df_mtc_long["MTC"] = pd.to_numeric(
+    df_mtc_long["MTC"],
+    errors="coerce"
+)
+
+df_mtc_long = df_mtc_long.dropna(subset=["MTC"])
+
+# Sort by year
+df_mtc_long = df_mtc_long.sort_values("year")
+
+# Create line chart
+fig_mtc = px.line(
+    df_mtc_long,
+    x="year",
+    y="MTC",
+    color="Scenario",
+    markers=True,
+    labels={
+        "year": "Year",
+        "MTC": "Change in Maritime Transport Costs (% of GDP)",
+        "Scenario": "Scenario"
+    }
+)
+
+# Hover formatting
+fig_mtc.update_traces(
+    hovertemplate=(
+        "Year: %{x}<br>"
+        "Change: %{y:.4f}%"
+        "<extra>%{fullData.name}</extra>"
+    )
+)
+
+# Chart layout
+fig_mtc.update_layout(
+    xaxis_title="Year",
+    yaxis_title="Change in Maritime Transport Costs (% of GDP)",
+    hovermode="x unified",
+    legend_title="Scenario",
+    height=500,
+    margin=dict(l=20, r=20, t=30, b=20)
+)
+
+fig_mtc.update_xaxes(
+    showgrid=True,
+    tickmode="array",
+    tickvals=sorted(df_mtc_long["year"].unique())
+)
+
+fig_mtc.update_yaxes(
+    showgrid=True,
+    ticksuffix="%"
+)
+
+st.plotly_chart(
+    fig_mtc,
+    width="stretch"
+)
 ##### COSTS OF CLIMATE CHANGE ######
 st.set_page_config(layout='wide')
 st.title('National Macroeconomic Effects of Climate Scenarios')
