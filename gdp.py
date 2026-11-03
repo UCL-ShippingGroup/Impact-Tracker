@@ -140,9 +140,10 @@ fig_mtc = px.line(
 
 fig_mtc.update_traces(
     hovertemplate=(
+        "<b>%{fullData.name}</b><br>"
         "Year: %{x}<br>"
         "Change: %{y:.4f}%"
-        "<extra>%{fullData.name}</extra>"
+        "<extra></extra>"
     )
 )
 # Chart layout
