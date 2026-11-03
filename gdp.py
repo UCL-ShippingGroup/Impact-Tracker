@@ -138,13 +138,13 @@ fig_mtc = px.line(
     }
 )
 
-# Hover formatting
 fig_mtc.update_traces(
-    hovertemplate=(
-        "Year: %{x}<br>"
-        "Change: %{y:.4f}%"
-        "<extra>%{fullData.name}</extra>"
-    )
+    hovertemplate=None,
+    hoverinfo="x+y+name"
+)
+
+fig_mtc.update_layout(
+    hovermode="closest"
 )
 
 # Chart layout
