@@ -5,6 +5,13 @@ import streamlit as st
 #st.markdown("##### Contact")
 st.title("Technical Annex")
 
+selected_country_iso = st.session_state.get(
+    "iso_code",
+    None
+)
+
+print("'selected_country_iso': ", selected_country_iso)
+
 st.write(
 """
 Building upon methods developed during the IMO-led Comprehensive Impact Assessment process, 
