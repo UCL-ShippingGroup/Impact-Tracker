@@ -1,0 +1,203 @@
+
+
+FOOD SEC
+
+# 2. Read-in Impact Dataset
+
+
+Aggregate trade portfolio statistics for 'Czechia': 
+
+Number of trade records present in dataset: 31403
+Number of partner countries present in dataset: 175
+Modes of transport present in dataset: ['Sea']
+
+Total value within the dataset: US$24211.3m
+Total weight within the dataset: 1955.0 million kilograms
+
+Input trade record: 
+
+trade_idx                                                               0
+reporterCode                                                          203
+reporterDesc                                                      Czechia
+partnerCode                                                           100
+partnerDesc                                                      Bulgaria
+flowDesc                                                           Import
+motDesc                                                               Sea
+HS6                                                                854239
+HS6_desc                                    854239 | Electronic integrate
+HS4                                                                  8542
+HS4_desc                                      8542 | Electronic integrate
+HS2                                                                    85
+HS2_desc                                        85 | Electrical machinery
+cpc                                                                  4697
+cpc_desc                Parts for the goods of subclasses 46910 and 46...
+eora_desc                                        Electrical and Machinery
+gtap                                                                   41
+gtap_desc                            OME - Machinery and equipment n.e.c.
+cifvalue                                                               67
+fobvalue                                                               67
+primaryValue                                                           67
+qtyUnitAbbr                                                           NaN
+qty                                                                   0.0
+netWgt                                                                1.0
+vol_kg_vtw                                                          0.067
+sea_dist_km                                                        6145.0
+sea_dist_nm                                                   3818.324795
+tnm                                                              0.255828
+fac_vessel_types                                            ['Container']
+fac_vessel_types_str                                        ['Container']
+bau_usd_26                                                       0.000492
+levy_usd_26                                                      0.000491
+asis_usd_26                                                      0.000491
+brazil_usd_26                                                    0.000491
+liscr_usd_26                                                     0.000492
+direct_usd_26                                                    0.000492
+bau_usd_29                                                       0.000516
+levy_usd_29                                                      0.000952
+asis_usd_29                                                      0.000554
+brazil_usd_29                                                    0.000516
+liscr_usd_29                                                     0.000518
+direct_usd_29                                                    0.000543
+bau_usd_32                                                       0.000505
+levy_usd_32                                                      0.000877
+asis_usd_32                                                      0.000588
+brazil_usd_32                                                    0.000547
+liscr_usd_32                                                     0.000537
+direct_usd_32                                                    0.000562
+bau_usd_35                                                       0.000495
+levy_usd_35                                                      0.001015
+asis_usd_35                                                      0.000771
+brazil_usd_35                                                    0.000664
+liscr_usd_35                                                     0.000614
+direct_usd_35                                                    0.000589
+bau_usd_38                                                       0.000485
+levy_usd_38                                                      0.001039
+asis_usd_38                                                      0.000913
+brazil_usd_38                                                     0.00082
+liscr_usd_38                                                     0.000641
+direct_usd_38                                                    0.000634
+bau_usd_41                                                       0.000476
+levy_usd_41                                                      0.001148
+asis_usd_41                                                      0.000957
+brazil_usd_41                                                    0.001047
+liscr_usd_41                                                     0.000752
+direct_usd_41                                                    0.000668
+bau_usd_44                                                       0.000466
+levy_usd_44                                                      0.001051
+asis_usd_44                                                      0.001108
+brazil_usd_44                                                    0.001101
+liscr_usd_44                                                      0.00081
+direct_usd_44                                                    0.000678
+bau_usd_47                                                       0.000456
+levy_usd_47                                                      0.001067
+asis_usd_47                                                      0.001123
+brazil_usd_47                                                    0.001282
+liscr_usd_47                                                     0.000977
+direct_usd_47                                                    0.000686
+bau_usd_50                                                       0.000447
+levy_usd_50                                                      0.000857
+asis_usd_50                                                      0.000894
+brazil_usd_50                                                    0.001081
+liscr_usd_50                                                     0.000796
+direct_usd_50                                                    0.000689
+cpc_cl                                                               4697
+Name: 0, dtype: object
+
+# 3. Evaluate Results
+
+
+## 3.1 Identify Food Security Groups of Interest
+
+
+## 3.2 Inspect Results
+
+
+Proportion of imports identified as food security-relevant:
+
+Value: $24211.3m of $24211.3m (100.0%)
+Volume: 1955.0 of 1955.0 million kilograms (100.0%)
+
+Value-to-Weight: 12.38 from 12.38 US$ per kg (+0.0%)
+Average distance to market (volume-weighted): 7770.7 from 7770.7 nm (+0.0%)
+
+            food_group  N_com     cifvalue    vol_kg_vtw  pct_val  pct_vol
+0                 None  30511  24018705320  1.863954e+09     99.2     95.3
+1    Processed Cereals    380    106252092  3.940774e+07      0.4      2.0
+2               Fruits    143     44366908  1.858927e+07      0.2      1.0
+3      Sugar and Honey     88     15640298  1.006139e+07      0.1      0.5
+4           Vegetables    157      9488993  8.860120e+06      0.0      0.5
+5        Fats and Oils     63      9297518  8.165732e+06      0.0      0.4
+6        Meat and Prep     15      4818662  2.489401e+06      0.0      0.1
+7                Dairy     39      2005306  4.789743e+05      0.0      0.0
+8  Unprocessed Cereals      7       753992  3.001763e+06      0.0      0.2
+
+
+### 3.3.1 Total Costs per Scenario
+
+
+Total FEM costs by scenario (US$)...
+
+            food_group    bau_29   levy_29   asis_29  brazil_29  liscr_29  \
+0                Dairy    1726.8    3181.5    1851.8     1724.6    1731.8   
+1        Fats and Oils   88912.3  151621.0   94583.5    88726.4   89013.6   
+2               Fruits  275984.5  505693.6  295650.3   275649.0  276765.7   
+3        Meat and Prep   24443.1   45044.3   26214.0    24412.5   24513.7   
+4    Processed Cereals  503312.8  884303.4  534941.5   502716.4  504446.6   
+5      Sugar and Honey  115904.9  194606.2  122290.6   115678.9  116028.5   
+6  Unprocessed Cereals   22809.2   40278.5   24312.5    22718.2   22815.3   
+7           Vegetables  106447.4  190957.3  113567.6   106331.5  106726.0   
+
+   direct_29    bau_41    levy_41   asis_41  brazil_41  liscr_41  direct_41  \
+0     1815.8    1590.3     3838.2    3199.0     3499.2    2513.8     2235.1   
+1    92761.7   82937.6   178575.3  158012.5   169266.4  121325.8   110720.3   
+2   289998.2  254447.5   609853.0  510155.4   556955.6  399320.2   356281.6   
+3    25704.3   22510.3    54342.2   45285.4    49540.1   35594.1    31641.2   
+4   525946.2  467718.9  1062871.1  914975.5   983630.6  694926.6   636800.7   
+5   120457.4  108528.9   232171.0  206749.8   218263.2  152444.9   143407.4   
+6    23869.1   21141.0    48073.9   41403.0    44336.8   31857.8    28826.4   
+7   111534.0   98544.0   229968.3  195136.2   211434.7  150392.7   136040.3   
+
+     bau_50   levy_50   asis_50  brazil_50  liscr_50  direct_50  
+0    1495.0    2866.7    2989.7     3612.7    2659.9     2303.4  
+1   78764.0  140313.5  144928.6   171226.2  133039.6   113939.9  
+2  239346.8  456792.2  476014.3   573969.8  424468.5   367352.7  
+3   21161.2   40583.5   42325.5    51149.7   37654.4    32607.1  
+4  441934.8  814531.3  844645.5  1000739.5  765803.2   658877.7  
+5  103037.0  183192.4  189626.8   219873.4  174808.9   148678.9  
+6   19976.5   37147.3   39059.9    45923.2   35126.4    29658.3  
+7   92906.4  174163.7  180949.8   216360.7  162755.2   140542.4  
+
+### 3.3.2 Costs per Scenario relative to BAU
+
+
+Total FEM costs by scenario (% cif)...
+
+            food_group  levy_29  asis_29  brazil_29  liscr_29  direct_29  \
+0                Dairy     0.07     0.01      -0.00       0.0       0.00   
+1        Fats and Oils     0.67     0.06      -0.00       0.0       0.04   
+2               Fruits     0.52     0.04      -0.00       0.0       0.03   
+3        Meat and Prep     0.43     0.04      -0.00       0.0       0.03   
+4    Processed Cereals     0.36     0.03      -0.00       0.0       0.02   
+5      Sugar and Honey     0.50     0.04      -0.00       0.0       0.03   
+6  Unprocessed Cereals     2.32     0.20      -0.01       0.0       0.14   
+7           Vegetables     0.89     0.08      -0.00       0.0       0.05   
+
+   levy_41  asis_41  brazil_41  liscr_41  direct_41  levy_50  asis_50  \
+0     0.11     0.08       0.10      0.05       0.03     0.07     0.07   
+1     1.03     0.81       0.93      0.41       0.30     0.66     0.71   
+2     0.80     0.58       0.68      0.33       0.23     0.49     0.53   
+3     0.66     0.47       0.56      0.27       0.19     0.40     0.44   
+4     0.56     0.42       0.49      0.21       0.16     0.35     0.38   
+5     0.79     0.63       0.70      0.28       0.22     0.51     0.55   
+6     3.57     2.69       3.08      1.42       1.02     2.28     2.53   
+7     1.39     1.02       1.19      0.55       0.40     0.86     0.93   
+
+   brazil_50  liscr_50  direct_50  
+0       0.11      0.06       0.04  
+1       0.99      0.58       0.38  
+2       0.75      0.42       0.29  
+3       0.62      0.34       0.24  
+4       0.53      0.30       0.20  
+5       0.75      0.46       0.29  
+6       3.44      2.01       1.28  
+7       1.30      0.74       0.50  
