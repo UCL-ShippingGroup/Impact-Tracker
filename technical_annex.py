@@ -51,8 +51,17 @@ vessel classes. The following six policy options are modelled:
 
 st.write(
 """
-
-
+Cost intensities representing the policy scenarios described above are then applied to a dataset 
+of international voyages derived during the 4th IMO GHG Study and covering the year 2018. In its 
+initial form, the dataset contains 2.7 million records describing the voyages of 59 thousand unique 
+vessels between 215 countries. Since the dataset covers nearly all types of vessel installed with 
+AIS transponders, it is first filtered for the merchant vessel classes modelled in the FEM, 
+resulting in a final dataset of 1.1 million voyage records (40.3% of the original) and representing 
+544.7 million tonnes of carbon dioxide emissions. Cost intensities are merged onto this filtered 
+voyages dataset, resulting in a final output table of vessel voyages complete with origin-destination 
+labels, start-end timestamps and fields representing distances travelled, energy demand, fuel 
+consumption and GHG emissions associated with each voyage, as well as 63 data fields capturing cost 
+intensities per policy scenario and future year specific to the vessel’s class.
 """
 )
 
@@ -60,8 +69,13 @@ st.subheader("Trade", divider='grey')
 
 st.write(
 """
-
-
+International trade datasets representing the imports and exports of each country are sourced from 
+the UN Comtrade platform for a representative year. The UN Comtrade database represents the most 
+comprehensive source of detailed international trade data available worldwide, offering near-universal 
+access to aggregate trade statistics covering around 92% of the world’s merchandise trade by value. 
+Depending on the availability of trade records on the Comtrade platform for a given country, a range 
+of data processing steps are applied in order to derive consistent seaborne trade portfolios across 
+the countries included. 
 """
 )
 
