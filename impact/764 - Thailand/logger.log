@@ -1,0 +1,1273 @@
+
+
+IMPORTS
+
+# 2.1 Read-in Trade Dataset
+
+Aggregate trade portfolio statistics for 'Thailand': 
+
+Number of trade records present in dataset: 83573
+Number of partner countries present in dataset: 212
+Modes of transport present in dataset: ['Sea']
+
+Total value within the dataset: US$65388.6m
+Total weight within the dataset: 2395.6 million kilograms
+
+Distance to market: 0.0 nm (min) to 14016.3 nm (max), 6746.3 nm (observed mean)
+Average distance to market (volume-weighted): 5666.5 nm
+Average distance to market (value-weighted): 4864.1 nm
+
+Input trade record: 
+
+trade_idx                                                               0
+reporterCode                                                          764
+reporterDesc                                                     Thailand
+partnerCode                                                           757
+partnerDesc                                                   Switzerland
+partner2Code                                                          000
+partner2Desc                                                        World
+flowDesc                                                   Foreign Import
+motDesc                                                               Sea
+HS6_desc                                    854420 | Insulated electric c
+HS6                                                                854420
+qtyUnitAbbr                                                            kg
+qty                                                               741.096
+netWgt                                                            741.096
+cifvalue                                                        184315.32
+fobvalue                                                              NaN
+primaryValue                                                    184315.32
+HS6_bilat_desc                Switzerland | 854420 | Insulated electric c
+HS2                                                                    85
+HS2_desc                                        85 | Electrical machinery
+HS2_bilat_desc                    Switzerland | 85 | Electrical machinery
+HS4                                                                  8544
+HS4_desc                                      8544 | Insulated wire, cabl
+HS4_bilat_desc                  Switzerland | 8544 | Insulated wire, cabl
+hs2                                                                    85
+hs4                                                                  8544
+hs6                                                                854420
+hs6_description         Co-axial cable & other co-axial electric condu...
+eora_desc                                        Electrical and Machinery
+isic                                                                 3130
+isic_desc                         Manufacture of insulated wire and cable
+sitc                                                                77312
+sitc_desc                      Co-axial cable & other co-axial conductors
+gtap                                                                   41
+gtap_desc                            OME - Machinery and equipment n.e.c.
+cpc                                                                  4632
+cpc_desc                Co-axial cable and other co-axial electric con...
+usd_per_kg                                                        12.8435
+kg_per_usd_cepii                                                   0.0779
+_trade_im_vtw_hs4_m                                                  both
+kg_per_usd_netWgt                                                0.004021
+vol_kg_vtw                                                   14358.163428
+vol_kg_vtw_comp                                                   741.096
+fac_vessel_types                                              [Container]
+fac_vessel_types_str                                        ['Container']
+sea_dist_km                                                       12690.0
+sea_dist_nm                                                    7885.19799
+tnm                                                         113216.961403
+Name: 0, dtype: object
+
+# 2.2 Derive Internationally Arriving Voyages
+
+Int. Arrs. and Int. Deps. are 0.818% and 0.82% of full Voyages dataset.
+
+Number of Voyages found: 9047
+Total size of the fleet: 3332 vessels
+8 vessel types contained in the dataset: 
+
+['Refrigerated bulk' 'General cargo' 'Bulk carrier' 'Container' 'Vehicle'
+ 'Chemical tanker' 'Liquefied gas tanker' 'Oil tanker']
+
+Total transport work capacity: 763491.3 million deadweight-tonne nautical miles
+Total cargo transported: 195197054.4 tonnes
+Total transport work: 419840.8 million tonne nautical miles
+Average build year of the fleet: 2007
+
+Total Energy Demands: 63885.5 EJ
+Total CO2 produced: 4888652.1 tonnes
+
+Voyage record: 
+
+voy_idx                                   2891
+imo                                    6908993
+mmsi                                 567451000
+source_iso                               MYLAU
+source_iso_code                            458
+source_iso_3                               MYS
+source_iso_2                                MY
+source_country                        Malaysia
+source_name                        Pulau Indah
+dest_iso                                 THPHK
+dest_iso_code                              764
+dest_iso_3                                 THA
+dest_iso_2                                  TH
+dest_country                          Thailand
+dest_name                 Phuket Customs House
+start_date                 2018-10-11 05:00:00
+end_date                   2018-10-13 05:00:00
+duration_hrs_voy                          48.0
+duration_hrs_stop                        333.0
+duration_hrs                             381.0
+dist_travelled_ais                  459.108357
+foc_hfo_t_voy                         7.828098
+foc_hfo_t_stop                        0.000594
+foc_hfo_t                             7.828692
+foc_mdo_t_voy                          12.1824
+foc_mdo_t_stop                        112.6872
+foc_mdo_t                             124.8696
+foc_lng_t_voy                              0.0
+foc_lng_t_stop                             0.0
+foc_lng_t                                  0.0
+foc_methanol_t_voy                         0.0
+foc_methanol_t_stop                        0.0
+foc_methanol_t                             0.0
+energy_tj_voy                         0.834878
+energy_tj_stop                        4.811767
+co2_t_voy                             63.43347
+co2_t_stop                          361.277014
+co2_t                               424.710485
+source_region_code                         142
+source_region                             Asia
+source_sub_region_code                     035
+source_sub_region           South-eastern Asia
+source_income_wesp              upp_mid_income
+source_ldc                                   0
+source_sids                                  0
+dest_region_code                           142
+dest_region                               Asia
+dest_sub_region_code                       035
+dest_sub_region             South-eastern Asia
+dest_income_wesp                upp_mid_income
+dest_ldc                                     0
+dest_sids                                    0
+energy_tj                             5.646645
+vessel_type                  Refrigerated bulk
+gross_tonnage                           2649.0
+capacity_unit                              dwt
+deadweight                              2435.0
+teu                                        NaN
+gas_cap                                    NaN
+passengers                                 NaN
+cars                                       NaN
+size_id                                      2
+size_range                           2000-5999
+year_of_built                           1969.0
+flag                                  Thailand
+engine_type                                MSD
+me_fuel                                      1
+class_med_aer                             76.1
+class_util                            0.666667
+bau35_usd_dwtnm_26                     0.03155
+bau35_usd_dwtnm_29                    0.032676
+bau35_usd_dwtnm_32                    0.032143
+bau35_usd_dwtnm_35                    0.031676
+bau35_usd_dwtnm_38                    0.031218
+bau35_usd_dwtnm_41                    0.030769
+bau35_usd_dwtnm_44                     0.03031
+bau35_usd_dwtnm_47                    0.029878
+bau35_usd_dwtnm_50                    0.029438
+levy35_usd_dwtnm_26                   0.031576
+levy35_usd_dwtnm_29                   0.052178
+levy35_usd_dwtnm_32                   0.052414
+levy35_usd_dwtnm_35                    0.05804
+levy35_usd_dwtnm_38                   0.060001
+levy35_usd_dwtnm_41                   0.059297
+levy35_usd_dwtnm_44                   0.058435
+levy35_usd_dwtnm_47                   0.058228
+levy35_usd_dwtnm_50                   0.058319
+asis35_usd_dwtnm_26                   0.031568
+asis35_usd_dwtnm_29                   0.034644
+asis35_usd_dwtnm_32                   0.036843
+asis35_usd_dwtnm_35                   0.044726
+asis35_usd_dwtnm_38                   0.049621
+asis35_usd_dwtnm_41                   0.053882
+asis35_usd_dwtnm_44                   0.057797
+asis35_usd_dwtnm_47                   0.059065
+asis35_usd_dwtnm_50                   0.057999
+brazil35_usd_dwtnm_26                 0.031568
+brazil35_usd_dwtnm_29                 0.032727
+brazil35_usd_dwtnm_32                 0.034529
+brazil35_usd_dwtnm_35                 0.040735
+brazil35_usd_dwtnm_38                 0.048178
+brazil35_usd_dwtnm_41                 0.055864
+brazil35_usd_dwtnm_44                 0.057447
+brazil35_usd_dwtnm_47                 0.058672
+brazil35_usd_dwtnm_50                  0.05942
+liscr35_usd_dwtnm_26                  0.031559
+liscr35_usd_dwtnm_29                  0.032699
+liscr35_usd_dwtnm_32                  0.033808
+liscr35_usd_dwtnm_35                  0.037977
+liscr35_usd_dwtnm_38                  0.040129
+liscr35_usd_dwtnm_41                  0.041837
+liscr35_usd_dwtnm_44                  0.043315
+liscr35_usd_dwtnm_47                  0.044697
+liscr35_usd_dwtnm_50                  0.045876
+direct35_usd_dwtnm_26                 0.031559
+direct35_usd_dwtnm_29                 0.033985
+direct35_usd_dwtnm_32                 0.034896
+direct35_usd_dwtnm_35                 0.036131
+direct35_usd_dwtnm_38                 0.038297
+direct35_usd_dwtnm_41                 0.039924
+direct35_usd_dwtnm_44                 0.040606
+direct35_usd_dwtnm_47                 0.041099
+direct35_usd_dwtnm_50                 0.041463
+dwtnm                           1117928.850456
+bau35_usd_26                       35271.03922
+bau35_usd_29                      36528.926853
+bau35_usd_32                      35933.910778
+bau35_usd_35                      35412.052389
+bau35_usd_38                      34899.862276
+bau35_usd_41                      34397.340272
+bau35_usd_44                      33884.745117
+bau35_usd_47                      33401.843858
+bau35_usd_50                      32909.438164
+levy35_usd_26                     35299.294323
+levy35_usd_29                     58331.701145
+levy35_usd_32                     58595.274613
+levy35_usd_35                     64884.059564
+levy35_usd_38                      67077.21005
+levy35_usd_41                     66289.522585
+levy35_usd_44                     65325.761953
+levy35_usd_47                     65095.104121
+levy35_usd_50                     65196.265419
+asis35_usd_26                     35291.271379
+asis35_usd_29                     38729.379635
+asis35_usd_32                     41188.309789
+asis35_usd_35                     50000.052741
+asis35_usd_38                     55473.221252
+asis35_usd_41                     60236.792542
+asis35_usd_44                     64612.985822
+asis35_usd_47                     66030.934685
+asis35_usd_50                     64838.499225
+brazil35_usd_26                   35291.271379
+brazil35_usd_29                   36586.072282
+brazil35_usd_32                   38601.176205
+brazil35_usd_35                    45538.99099
+brazil35_usd_38                   53859.535069
+brazil35_usd_41                   62452.030691
+brazil35_usd_44                   64222.056003
+brazil35_usd_47                   65590.882694
+brazil35_usd_50                   66426.890782
+liscr35_usd_26                    35280.991785
+liscr35_usd_29                    36554.735403
+liscr35_usd_32                    37795.304487
+liscr35_usd_35                     42455.16778
+liscr35_usd_38                      44861.2458
+liscr35_usd_41                    46770.324268
+liscr35_usd_44                    48422.584055
+liscr35_usd_47                     49968.44751
+liscr35_usd_50                    51286.480795
+direct35_usd_26                   35280.991785
+direct35_usd_29                   37993.012111
+direct35_usd_32                   39011.776711
+direct35_usd_35                   40391.376211
+direct35_usd_38                   42812.790802
+direct35_usd_41                   44632.252842
+direct35_usd_44                   45394.401543
+direct35_usd_47                   45945.360111
+direct35_usd_50                   46353.108828
+tonnes                             1623.333334
+tnm                              745285.900677
+Name: 0, dtype: object
+
+# 2.3 Evaluate NZF Costs
+
+Processing game year 2026
+Processing game year 2029
+Processing game year 2032
+Processing game year 2035
+Processing game year 2038
+Processing game year 2041
+Processing game year 2044
+Processing game year 2047
+Processing game year 2050
+
+Inventory voyages table used for the following vessel types: 
+
+[]
+
+Global voyages table used for the following vessel types found: 
+
+['Other liquids tankers' 'Cruise' 'Ro-Ro']
+
+Global voyages table used for the following commodities as no 'facilitating vessel types' were identified: 
+
+['4823 | Paper, paperboard, c' '2009 | Fruit or nut juices '
+ '3926 | Articles of plastics' '5911 | Textile products and'
+ '6217 | Clothing accessories' '7616 | Aluminium; articles '
+ '9405 | Luminaires and light' '8716 | Trailers and semi-tr'
+ '7019 | Glass fibres (includ' '3006 | Pharmaceutical goods'
+ '2106 | Food preparations no' '8487 | Machinery parts; not'
+ '7326 | Iron or steel; artic' '4420 | Wood marquetry and i'
+ '4911 | Printed matter, n.e.' '6406 | Footwear; parts of f'
+ '6704 | Wigs, false beards, ' '3402 | Organic surface-acti'
+ '8215 | Cutlery; spoons, for' '1905 | Bread, pastry, cakes'
+ '4421 | Wooden articles n.e.' '6914 | Ceramic articles; n.'
+ '9114 | Clock or watch parts' '9620 | Monopods, bipods, tr'
+ '3307 | Perfumery, cosmetic ' '0910 | Ginger, saffron, tum'
+ '3002 | Human blood; animal ' '3824 | Prepared binders for'
+ '1806 | Chocolate and other ' '8311 | Wires, rods, tubes, '
+ '3909 | Amino-resins, phenol' '3603 | Safety fuses; detona'
+ '3822 | Reagents; diagnostic' '9209 | Musical instrument p'
+ '5402 | Synthetic filament y' '4602 | Basketwork, wickerwo'
+ '2935 | Sulphonamides' '3507 | Enzymes; prepared en'
+ '2853 | Phosphides, chemical' '2914 | Ketones and quinones'
+ '7104 | Stones; synthetic or' '0403 | Yogurt; buttermilk, '
+ '2309 | Preparations of a ki' '6006 | Fabrics; knitted or '
+ '1509 | Olive oil and its fr' '0306 | Crustaceans; in shel'
+ '3812 | Prepared rubber acce' '4015 | Articles of apparel '
+ '6815 | Stone or other miner' '4419 | Tableware and kitche'
+ '6005 | Fabrics; warp knit (' '3907 | Polyacetals, other p'
+ '8517 | Telephone sets, incl' '5516 | Woven fabrics of art'
+ '5501 | Synthetic filament t' '7419 | Copper; articles the'
+ '3105 | Fertilizers; mineral' '9401 | Seats (not those of '
+ '2939 | Alkaloids; natural o' '0307 | Molluscs; whether in'
+ '3004 | Medicaments; (not go' '6117 | Clothing accessories'
+ '2932 | Heterocyclic compoun' '9403 | Furniture and parts '
+ '0303 | Fish; frozen, exclud' '2621 | Slag and ash n.e.c. '
+ '3215 | Ink; printing, writi' '3204 | Synthetic organic co'
+ '9406 | Buildings; prefabric' '6603 | Trimmings, parts and'
+ '8708 | Motor vehicles; part' '1605 | Crustaceans, mollusc'
+ '0511 | Animal products not ' '4905 | Maps and hydrographi'
+ '2403 | Manufactured tobacco' '0308 | Aquatic invertebrate'
+ '7229 | Wire of other alloy ' '0709 | Vegetables; n.e.c. i'
+ '3901 | Polymers of ethylene' '8109 | Zirconium; articles '
+ "4418 | Builders' joinery an" '1510 | Vegetable oils; oils'
+ '2920 | Esters of other inor' '3705 | Photographic plates '
+ '2530 | Mineral substances n' '1704 | Sugar confectionery '
+ '3707 | Chemical preparation' '8103 | Tantalum; articles t'
+ '9701 | Paintings, drawings ' '6201 | Overcoats, car-coats'
+ "6202 | Coats; women's or gi" '9404 | Mattress supports; a'
+ '8711 | Motorcycles (includi' '8703 | Motor cars and other'
+ '8903 | Yachts and other ves' '8541 | Semiconductor device'
+ '4011 | New pneumatic tyres,' '8539 | Lamps; electric fila'
+ '8514 | Industrial or labora' '9702 | Engravings, prints a'
+ '2202 | Waters, including mi' '5703 | Carpets and other te'
+ '4412 | Plywood, veneered pa' '6907 | Ceramic flags and pa'
+ '9508 | Travelling circuses ' '2931 | Other organo-inorgan'
+ '2903 | Halogenated derivati' '2930 | Organo-sulphur compo'
+ '8424 | Mechanical appliance' '8456 | Machine-tools; for w'
+ '9703 | Sculptures and statu' '8525 | Transmission apparat'
+ '8419 | Machinery, plant (no' '8462 | Machine-tools (inclu'
+ '8421 | Centrifuges, includi' '8528 | Monitors and project'
+ '9027 | Instruments and appa' '8501 | Electric motors and '
+ '8414 | Air or vacuum pumps,' '2844 | Radioactive chemical'
+ '4414 | Wooden frames; for p' '7508 | Nickel; articles the'
+ '2904 | Sulphonated, nitrate' '2811 | Inorganic acids and '
+ '1404 | Vegetable products n' '3808 | Insecticides, rodent'
+ '4402 | Wood charcoal (inclu' '0210 | Meat and edible meat'
+ '0302 | Fish; fresh or chill' '3103 | Fertilizers; mineral'
+ '4504 | Agglomerated cork (w' '5502 | Artificial filament '
+ '2812 | Halides and halide o' '0304 | Fish fillets and oth'
+ '0712 | Vegetables, dried; w' '8106 | Bismuth; articles th'
+ '0714 | Manioc, arrowroot, s' '9705 | Collections and coll'
+ '8701 | Tractors; (other tha' '8428 | Lifting, handling, l'
+ '0106 | Animals; live, n.e.c' '2204 | Wine of fresh grapes'
+ '0604 | Foliage, branches an' '4401 | Fuel wood, in logs, '
+ '0802 | Nuts (excluding coco' '5802 | Fabrics; terry towel'
+ '0410 | Animal products; ins' '1008 | Buckwheat, millet an'
+ '6310 | Rags; used or new, s' '2933 | Heterocyclic compoun'
+ '8704 | Vehicles; for the tr' '5007 | Woven fabrics of sil'
+ '4409 | Wood (including stri' '8460 | Machine-tools; for d'
+ '8479 | Machinery and mechan' '8432 | Agricultural, hortic'
+ '8112 | Beryllium, chromium,' '2921 | Amine-function compo'
+ '3003 | Medicaments; (not go' '2922 | Oxygen-function amin'
+ '3606 | Ferro-cerium and oth' '8465 | Machine-tools; (incl'
+ '1516 | Animal, vegetable or' '4707 | Waste and scrap of p'
+ '9706 | Antiques; of an age ' '8459 | Machine-tools; (incl'
+ '5506 | Synthetic staple fib' '2924 | Carboxyamide-functio'
+ '2923 | Quaternary ammonium ' '1515 | Fixed vegetable or m'
+ '1214 | Swedes, mangolds, fo' '6304 | Furnishing articles;'
+ '4403 | Wood in the rough, w' '0305 | Fish, dried, salted '
+ '0805 | Citrus fruit; fresh ']
+
+
+Number of trade records present in dataset: 83573
+Number of partner countries present in dataset: 212
+
+Total value of trade: US$65388.6m
+Total weight within the dataset: 2395.6 million kilograms
+
+Distance to market: 0.0 nm (min) to 14016.3 nm (max), 6746.3 nm (observed mean)
+Average distance to market (volume-weighted): 5666.5 nm
+Average distance to market (value-weighted): 4864.1 nm
+
+
+Total FEM costs in 2041...
+
+BAU: US$49.3m (0.1% ad-val)
+Levy: US$111.2m (0.2% ad-val)
+'as-is': US$106.1m (0.2% ad-val)
+Brazil: US$107.4m (0.2% ad-val)
+LISCR: US$71.0m (0.1% ad-val)
+Direct: US$67.6m (0.1% ad-val)
+
+Most prominent 'facilitating vessel types'...
+
+             fac_vessel_types_str  vol_kg_vtw_pct  cifvalue_pct
+0                   ['Container']            65.7          68.1
+1                         ['all']            24.7          14.2
+2                ['Bulk carrier']             2.4           0.1
+3  ['Container', 'General cargo']             1.4           2.1
+4                  ['Oil tanker']             1.3           0.0
+
+
+Most prominent 'cost intensity match' types...
+
+                      cost_int_match_desc  vol_kg_vtw_pct  cifvalue_pct
+0     1. Primary Int. Inv. with Vess Type            75.2          85.8
+1  3. Primary Int. Inv. without Vess Type            24.7          14.2
+2       4. Global Inv. without Vess Type.             0.0           0.0
+
+
+Most prominent 'facilitating vessel types' and their 'cost intensity match' types...
+
+             fac_vessel_types_str                     cost_int_match_desc  \
+0                   ['Container']     1. Primary Int. Inv. with Vess Type   
+1                         ['all']  3. Primary Int. Inv. without Vess Type   
+2                ['Bulk carrier']     1. Primary Int. Inv. with Vess Type   
+3  ['Container', 'General cargo']     1. Primary Int. Inv. with Vess Type   
+4                  ['Oil tanker']     1. Primary Int. Inv. with Vess Type   
+
+   vol_kg_vtw_pct  cifvalue_pct  
+0            65.7          68.1  
+1            24.7          14.2  
+2             2.4           0.1  
+3             1.4           2.1  
+4             1.3           0.0  
+
+
+Rows with NA: $0.0 (0.0%)
+
+
+Output trade record: 
+
+trade_idx                                                               0
+reporterCode                                                          764
+reporterDesc                                                     Thailand
+partnerCode                                                           757
+partnerDesc                                                   Switzerland
+partner2Code                                                          000
+partner2Desc                                                        World
+flowDesc                                                   Foreign Import
+motDesc                                                               Sea
+HS6_desc                                    854420 | Insulated electric c
+HS6                                                                854420
+qtyUnitAbbr                                                            kg
+qty                                                               741.096
+netWgt                                                            741.096
+cifvalue                                                        184315.32
+fobvalue                                                              NaN
+primaryValue                                                    184315.32
+HS6_bilat_desc                Switzerland | 854420 | Insulated electric c
+HS2                                                                    85
+HS2_desc                                        85 | Electrical machinery
+HS2_bilat_desc                    Switzerland | 85 | Electrical machinery
+HS4                                                                  8544
+HS4_desc                                      8544 | Insulated wire, cabl
+HS4_bilat_desc                  Switzerland | 8544 | Insulated wire, cabl
+hs2                                                                    85
+hs4                                                                  8544
+hs6                                                                854420
+hs6_description         Co-axial cable & other co-axial electric condu...
+eora_desc                                        Electrical and Machinery
+isic                                                                 3130
+isic_desc                         Manufacture of insulated wire and cable
+sitc                                                                77312
+sitc_desc                      Co-axial cable & other co-axial conductors
+gtap                                                                   41
+gtap_desc                            OME - Machinery and equipment n.e.c.
+cpc                                                                  4632
+cpc_desc                Co-axial cable and other co-axial electric con...
+usd_per_kg                                                        12.8435
+kg_per_usd_cepii                                                   0.0779
+_trade_im_vtw_hs4_m                                                  both
+kg_per_usd_netWgt                                                0.004021
+vol_kg_vtw                                                   14358.163428
+vol_kg_vtw_comp                                                   741.096
+fac_vessel_types                                              [Container]
+fac_vessel_types_str                                        ['Container']
+sea_dist_km                                                       12690.0
+sea_dist_nm                                                    7885.19799
+tnm                                                         113216.961403
+cost_int_match_desc                   1. Primary Int. Inv. with Vess Type
+bau_usd_26                                                     428.859856
+levy_usd_26                                                    427.790898
+asis_usd_26                                                    427.891743
+brazil_usd_26                                                  427.891743
+liscr_usd_26                                                   428.441844
+direct_usd_26                                                  428.441844
+bau_usd_29                                                     450.122597
+levy_usd_29                                                    821.327069
+asis_usd_29                                                     494.25268
+brazil_usd_29                                                  459.552456
+liscr_usd_29                                                   461.097162
+direct_usd_29                                                  473.028225
+bau_usd_32                                                     440.138328
+levy_usd_32                                                    799.087711
+asis_usd_32                                                    521.192049
+brazil_usd_32                                                  477.365563
+liscr_usd_32                                                   465.622301
+direct_usd_32                                                   488.63235
+bau_usd_35                                                     431.374314
+levy_usd_35                                                    877.626055
+asis_usd_35                                                    644.903498
+brazil_usd_35                                                   566.83078
+liscr_usd_35                                                   522.965076
+direct_usd_35                                                  510.204167
+bau_usd_38                                                     422.769746
+levy_usd_38                                                    926.880943
+asis_usd_38                                                    754.791243
+brazil_usd_38                                                  701.848315
+liscr_usd_38                                                   565.455102
+direct_usd_38                                                  548.423493
+bau_usd_41                                                     414.332857
+levy_usd_41                                                    957.921816
+asis_usd_41                                                    915.557598
+brazil_usd_41                                                  922.536134
+liscr_usd_41                                                   603.783341
+direct_usd_41                                                  576.908034
+bau_usd_44                                                      405.73036
+levy_usd_44                                                    933.029286
+asis_usd_44                                                    900.797799
+brazil_usd_44                                                  972.960487
+liscr_usd_44                                                   741.256625
+direct_usd_44                                                  587.746353
+bau_usd_47                                                     397.300842
+levy_usd_47                                                     822.09056
+asis_usd_47                                                    854.274155
+brazil_usd_47                                                  918.274092
+liscr_usd_47                                                   684.610221
+direct_usd_47                                                  594.767468
+bau_usd_50                                                     389.053671
+levy_usd_50                                                    744.039499
+asis_usd_50                                                    760.196246
+brazil_usd_50                                                  916.853356
+liscr_usd_50                                                   749.030662
+direct_usd_50                                                  599.127265
+Name: 0, dtype: object
+
+# 2.4 Create Results Tables
+
+
+## 2.4.1 Total Costs per Scenario
+
+
+Total FEM costs by scenario (US$)...
+
+  Scenario         2029         2032          2035          2038  \
+0      BAU  53370048.87  52244667.74  5.125603e+07  5.028565e+07   
+1     Levy  95194960.23  92585766.87  1.016944e+08  1.080501e+08   
+2  'as-is'  58204639.69  61226601.63  7.527245e+07  8.781776e+07   
+3   Brazil  54289754.48  56412185.45  6.666717e+07  8.192285e+07   
+4    LISCR  54465230.73  55110312.99  6.175633e+07  6.637358e+07   
+5   Direct  55936328.75  57685653.30  6.011310e+07  6.442249e+07   
+
+           2041          2044          2047          2050  
+0  4.933318e+07  4.836173e+07  4.741519e+07  4.648313e+07  
+1  1.112380e+08  1.077785e+08  9.569956e+07  8.702350e+07  
+2  1.060561e+08  1.040963e+08  9.921898e+07  8.889241e+07  
+3  1.073926e+08  1.120548e+08  1.069064e+08  1.062768e+08  
+4  7.100580e+07  8.605630e+07  8.056565e+07  8.710091e+07  
+5  6.763404e+07  6.884754e+07  6.963996e+07  7.016873e+07  
+
+Total FEM costs by scenario (% cif)...
+
+  Scenario  2029  2032  2035  2038  2041  2044  2047  2050
+0      BAU  0.08  0.08  0.08  0.08  0.08  0.07  0.07  0.07
+1     Levy  0.15  0.14  0.16  0.17  0.17  0.16  0.15  0.13
+2  'as-is'  0.09  0.09  0.12  0.13  0.16  0.16  0.15  0.14
+3   Brazil  0.08  0.09  0.10  0.13  0.16  0.17  0.16  0.16
+4    LISCR  0.08  0.08  0.09  0.10  0.11  0.13  0.12  0.13
+5   Direct  0.09  0.09  0.09  0.10  0.10  0.11  0.11  0.11
+
+Total FEM costs by scenario (% gdp)...
+
+  Scenario   2029   2032   2035   2038   2041   2044   2047   2050
+0      BAU  0.009  0.009  0.009  0.009  0.009  0.008  0.008  0.008
+1     Levy  0.016  0.016  0.018  0.019  0.019  0.019  0.017  0.015
+2  'as-is'  0.010  0.011  0.013  0.015  0.018  0.018  0.017  0.015
+3   Brazil  0.009  0.010  0.012  0.014  0.019  0.019  0.019  0.018
+4    LISCR  0.009  0.010  0.011  0.012  0.012  0.015  0.014  0.015
+5   Direct  0.010  0.010  0.010  0.011  0.012  0.012  0.012  0.012
+
+# 2.4.2 Costs per Scenario relative to BAU
+
+
+Total FEM costs by scenario (US$m)...
+
+  Scenario         2029         2032         2035         2038         2041  \
+0     Levy  41824911.36  40341099.13  50438344.83  57764469.78  61904778.23   
+1  'as-is'   4834590.82   8981933.89  24016420.09  37532105.65  56722883.55   
+2   Brazil    919705.61   4167517.71  15411144.13  31637196.76  58059451.49   
+3    LISCR   1095181.87   2865645.25  10500302.39  16087928.78  21672623.22   
+4   Direct   2566279.88   5440985.57   8857068.49  14136832.53  18300861.13   
+
+          2044         2047         2050  
+0  59416733.68  48284369.48  40540367.80  
+1  55734587.60  51803786.30  42409285.27  
+2  63693062.48  59491260.06  59793668.70  
+3  37694576.27  33150464.29  40617777.19  
+4  20485814.72  22224772.18  23685603.95  
+
+Total change in FEM costs by scenario (% bau)...
+
+  Scenario   2029   2032   2035    2038    2041    2044    2047    2050
+0     Levy  78.37  77.22  98.40  114.87  125.48  122.86  101.83   87.22
+1  'as-is'   9.06  17.19  46.86   74.64  114.98  115.25  109.26   91.24
+2   Brazil   1.72   7.98  30.07   62.91  117.69  131.70  125.47  128.64
+3    LISCR   2.05   5.49  20.49   31.99   43.93   77.94   69.92   87.38
+4   Direct   4.81  10.41  17.28   28.11   37.10   42.36   46.87   50.96
+
+Total FEM costs by scenario (% cif)...
+
+  Scenario  2029  2032  2035  2038  2041  2044  2047  2050
+0     Levy  0.06  0.06  0.08  0.09  0.09  0.09  0.07  0.06
+1  'as-is'  0.01  0.01  0.04  0.06  0.09  0.09  0.08  0.06
+2   Brazil  0.00  0.01  0.02  0.05  0.09  0.10  0.09  0.09
+3    LISCR  0.00  0.00  0.02  0.02  0.03  0.06  0.05  0.06
+4   Direct  0.00  0.01  0.01  0.02  0.03  0.03  0.03  0.04
+
+Total FEM costs by scenario (% gdp)...
+
+  Scenario   2029   2032   2035   2038   2041   2044   2047   2050
+0     Levy  0.007  0.007  0.009  0.010  0.011  0.010  0.008  0.007
+1  'as-is'  0.001  0.002  0.004  0.007  0.010  0.010  0.009  0.007
+2   Brazil  0.000  0.001  0.003  0.005  0.010  0.011  0.010  0.010
+3    LISCR  0.000  0.000  0.002  0.003  0.004  0.007  0.006  0.007
+4   Direct  0.000  0.001  0.002  0.002  0.003  0.004  0.004  0.004
+
+
+EXPORTS
+
+# 3.1 Read-in Trade dataset
+
+Aggregate trade portfolio statistics for 'Thailand': 
+
+Number of trade records present in dataset: 73895
+Number of partner countries present in dataset: 204
+Modes of transport present in dataset: ['Sea']
+
+Total value within the dataset: US$65783.3m
+Total weight within the dataset: 1444.0 million kilograms
+
+Distance to market: 0.0 nm (min) to 14015.0 nm (max), 6151.6 nm (observed mean)
+Average distance to market (volume-weighted): 5363.7 nm
+Average distance to market (value-weighted): 6096.9 nm
+
+Input trade record: 
+
+trade_idx                                                      0
+reporterCode                                                 764
+reporterDesc                                            Thailand
+partnerCode                                                  458
+partnerDesc                                             Malaysia
+partner2Code                                                 000
+partner2Desc                                               World
+flowDesc                                         Domestic Export
+motDesc                                                      Sea
+HS6_desc                           010121 | Horses; live, pure-b
+HS6                                                        10121
+qtyUnitAbbr                                                    u
+qty                                                          1.0
+netWgt                                                       1.0
+cifvalue                                                     NaN
+fobvalue                                                 358.005
+primaryValue                                             358.005
+HS6_bilat_desc          Malaysia | 010121 | Horses; live, pure-b
+HS2                                                           01
+HS2_desc                                      01 | Animals; live
+HS2_bilat_desc                     Malaysia | 01 | Animals; live
+HS4                                                         0101
+HS4_desc                             0101 | Horses, asses, mules
+HS4_bilat_desc            Malaysia | 0101 | Horses, asses, mules
+hs2                                                          NaN
+hs4                                                          NaN
+hs6                                                          NaN
+hs6_description                                              NaN
+eora_desc                                                    NaN
+isic                                                         NaN
+isic_desc                                                    NaN
+sitc                                                         NaN
+sitc_desc                                                    NaN
+gtap                                                         NaN
+gtap_desc                                                    NaN
+cpc                                                          NaN
+cpc_desc                                                     NaN
+usd_per_kg                                               14.6732
+kg_per_usd_cepii                                          0.0682
+_trade_ex_vtw_hs4_m                                         both
+kg_per_usd_netWgt                                       0.002793
+vol_kg_vtw                                             24.415941
+vol_kg_vtw_comp                                              1.0
+fac_vessel_types                                     [Container]
+fac_vessel_types_str                               ['Container']
+sea_dist_km                                               2022.0
+sea_dist_nm                                          1256.412162
+tnm                                                    30.676485
+Name: 0, dtype: object
+
+# 3.2 Derive Internationally Departing Voyages
+
+Int. Arrs. and Int. Deps. are 0.818% and 0.82% of full Voyages dataset.
+
+Number of Voyages found: 9065
+Total size of the fleet: 3358 vessels
+8 vessel types contained in the dataset: 
+
+['Refrigerated bulk' 'General cargo' 'Bulk carrier' 'Container' 'Vehicle'
+ 'Chemical tanker' 'Liquefied gas tanker' 'Oil tanker']
+
+Total transport work capacity: 552952.2 million deadweight-tonne nautical miles
+Total cargo transported: 196099249.2 tonnes
+Total transport work: 310026.3 million tonne nautical miles
+Average build year of the fleet: 2007
+
+Total Energy Demands: 50875.6 EJ
+Total CO2 produced: 3899194.2 tonnes
+
+Voyage record: 
+
+voy_idx                                 10147
+imo                                   7713230
+mmsi                                567391000
+source_iso                              THBKK
+source_iso_code                           764
+source_iso_3                              THA
+source_iso_2                               TH
+source_country                       Thailand
+source_name                           Bangkok
+dest_iso                                IDNIP
+dest_iso_code                             360
+dest_iso_3                                IDN
+dest_iso_2                                 ID
+dest_country                        Indonesia
+dest_name                               Nipah
+start_date                2018-01-06 05:00:00
+end_date                  2018-01-09 15:00:00
+duration_hrs_voy                         82.0
+duration_hrs_stop                        11.0
+duration_hrs                             93.0
+dist_travelled_ais                 961.707494
+foc_hfo_t_voy                       19.392791
+foc_hfo_t_stop                        2.35257
+foc_hfo_t                           21.745362
+foc_mdo_t_voy                         20.7504
+foc_mdo_t_stop                          2.772
+foc_mdo_t                             23.5224
+foc_lng_t_voy                             0.0
+foc_lng_t_stop                            0.0
+foc_lng_t                                 0.0
+foc_methanol_t_voy                        0.0
+foc_methanol_t_stop                       0.0
+foc_methanol_t                            0.0
+energy_tj_voy                        1.665632
+energy_tj_stop                       0.212938
+co2_t_voy                          126.914935
+co2_t_stop                          16.212936
+co2_t                              143.127871
+source_region_code                        142
+source_region                            Asia
+source_sub_region_code                    035
+source_sub_region          South-eastern Asia
+source_income_wesp             upp_mid_income
+source_ldc                                  0
+source_sids                                 0
+dest_region_code                          142
+dest_region                              Asia
+dest_sub_region_code                      035
+dest_sub_region            South-eastern Asia
+dest_income_wesp               upp_mid_income
+dest_ldc                                    0
+dest_sids                                   0
+energy_tj                             1.87857
+vessel_type                 Refrigerated bulk
+gross_tonnage                          2413.0
+capacity_unit                             dwt
+deadweight                             2703.0
+teu                                       NaN
+gas_cap                                   NaN
+passengers                                NaN
+cars                                      NaN
+size_id                                     2
+size_range                          2000-5999
+year_of_built                          1979.0
+flag                                 Thailand
+engine_type                               MSD
+me_fuel                                     1
+class_med_aer                            76.1
+class_util                           0.666667
+bau35_usd_dwtnm_26                    0.03155
+bau35_usd_dwtnm_29                   0.032676
+bau35_usd_dwtnm_32                   0.032143
+bau35_usd_dwtnm_35                   0.031676
+bau35_usd_dwtnm_38                   0.031218
+bau35_usd_dwtnm_41                   0.030769
+bau35_usd_dwtnm_44                    0.03031
+bau35_usd_dwtnm_47                   0.029878
+bau35_usd_dwtnm_50                   0.029438
+levy35_usd_dwtnm_26                  0.031576
+levy35_usd_dwtnm_29                  0.052178
+levy35_usd_dwtnm_32                  0.052414
+levy35_usd_dwtnm_35                   0.05804
+levy35_usd_dwtnm_38                  0.060001
+levy35_usd_dwtnm_41                  0.059297
+levy35_usd_dwtnm_44                  0.058435
+levy35_usd_dwtnm_47                  0.058228
+levy35_usd_dwtnm_50                  0.058319
+asis35_usd_dwtnm_26                  0.031568
+asis35_usd_dwtnm_29                  0.034644
+asis35_usd_dwtnm_32                  0.036843
+asis35_usd_dwtnm_35                  0.044726
+asis35_usd_dwtnm_38                  0.049621
+asis35_usd_dwtnm_41                  0.053882
+asis35_usd_dwtnm_44                  0.057797
+asis35_usd_dwtnm_47                  0.059065
+asis35_usd_dwtnm_50                  0.057999
+brazil35_usd_dwtnm_26                0.031568
+brazil35_usd_dwtnm_29                0.032727
+brazil35_usd_dwtnm_32                0.034529
+brazil35_usd_dwtnm_35                0.040735
+brazil35_usd_dwtnm_38                0.048178
+brazil35_usd_dwtnm_41                0.055864
+brazil35_usd_dwtnm_44                0.057447
+brazil35_usd_dwtnm_47                0.058672
+brazil35_usd_dwtnm_50                 0.05942
+liscr35_usd_dwtnm_26                 0.031559
+liscr35_usd_dwtnm_29                 0.032699
+liscr35_usd_dwtnm_32                 0.033808
+liscr35_usd_dwtnm_35                 0.037977
+liscr35_usd_dwtnm_38                 0.040129
+liscr35_usd_dwtnm_41                 0.041837
+liscr35_usd_dwtnm_44                 0.043315
+liscr35_usd_dwtnm_47                 0.044697
+liscr35_usd_dwtnm_50                 0.045876
+direct35_usd_dwtnm_26                0.031559
+direct35_usd_dwtnm_29                0.033985
+direct35_usd_dwtnm_32                0.034896
+direct35_usd_dwtnm_35                0.036131
+direct35_usd_dwtnm_38                0.038297
+direct35_usd_dwtnm_41                0.039924
+direct35_usd_dwtnm_44                0.040606
+direct35_usd_dwtnm_47                0.041099
+direct35_usd_dwtnm_50                0.041463
+dwtnm                          2599495.357233
+bau35_usd_26                     82014.971401
+bau35_usd_29                     84939.909834
+bau35_usd_32                     83556.332049
+bau35_usd_35                     82342.866218
+bau35_usd_38                     81151.881819
+bau35_usd_41                      79983.37846
+bau35_usd_44                     78791.452225
+bau35_usd_47                     77668.572553
+bau35_usd_50                     76523.592428
+levy35_usd_26                    82080.672369
+levy35_usd_29                   135637.421151
+levy35_usd_32                   136250.302736
+levy35_usd_35                   150873.476006
+levy35_usd_38                   155973.160573
+levy35_usd_41                   154141.568242
+levy35_usd_44                   151900.556852
+levy35_usd_47                   151364.213269
+levy35_usd_50                   151599.441411
+asis35_usd_26                    82062.016794
+asis35_usd_29                    90056.574269
+asis35_usd_32                    95774.270452
+asis35_usd_35                   116264.022446
+asis35_usd_38                   128990.660752
+asis35_usd_41                   140067.288257
+asis35_usd_44                   150243.154198
+asis35_usd_47                   153540.279489
+asis35_usd_50                   150767.535552
+brazil35_usd_26                  82062.016794
+brazil35_usd_29                  85072.788844
+brazil35_usd_32                  89758.465656
+brazil35_usd_35                 105890.813716
+brazil35_usd_38                  125238.39178
+brazil35_usd_41                 145218.332781
+brazil35_usd_44                 149334.133692
+brazil35_usd_47                 152517.036277
+brazil35_usd_50                 154460.987488
+liscr35_usd_26                   82038.113879
+liscr35_usd_29                   84999.921889
+liscr35_usd_32                   87884.589881
+liscr35_usd_35                   98720.067462
+liscr35_usd_38                   104314.86774
+liscr35_usd_41                  108754.005894
+liscr35_usd_44                   112595.96922
+liscr35_usd_47                  116190.531497
+liscr35_usd_50                  119255.325294
+direct35_usd_26                  82038.113879
+direct35_usd_29                   88344.31507
+direct35_usd_32                  90713.225976
+direct35_usd_35                  93921.178339
+direct35_usd_38                  99551.640405
+direct35_usd_41                 103782.395453
+direct35_usd_44                 105554.603056
+direct35_usd_47                 106835.734892
+direct35_usd_50                 107783.864011
+tonnes                            1802.000001
+tnm                            1732996.905689
+Name: 0, dtype: object
+
+# 3.3 Evaluate NZF Costs
+
+Processing game year 2026
+Processing game year 2029
+Processing game year 2032
+Processing game year 2035
+Processing game year 2038
+Processing game year 2041
+Processing game year 2044
+Processing game year 2047
+Processing game year 2050
+
+Inventory voyages table used for the following vessel types: 
+
+[]
+
+Global voyages table used for the following vessel types found: 
+
+['Other liquids tankers' 'Cruise' 'Ro-Ro']
+
+Global voyages table used for the following commodities as no 'facilitating vessel types' were identified: 
+
+['0106 | Animals; live, n.e.c' '0210 | Meat and edible meat'
+ '0302 | Fish; fresh or chill' '0303 | Fish; frozen, exclud'
+ '0305 | Fish, dried, salted ' '0306 | Crustaceans; in shel'
+ '0307 | Molluscs; whether in' '0308 | Aquatic invertebrate'
+ '0403 | Yogurt; buttermilk, ' '0410 | Animal products; ins'
+ '0511 | Animal products not ' '0604 | Foliage, branches an'
+ '0709 | Vegetables; n.e.c. i' '0712 | Vegetables, dried; w'
+ '0714 | Manioc, arrowroot, s' '0802 | Nuts (excluding coco'
+ '1214 | Swedes, mangolds, fo' '1008 | Buckwheat, millet an'
+ '1404 | Vegetable products n' '1509 | Olive oil and its fr'
+ '1510 | Vegetable oils; oils' '1516 | Animal, vegetable or'
+ '1604 | Prepared or preserve' '1605 | Crustaceans, mollusc'
+ '0805 | Citrus fruit; fresh ' '1806 | Chocolate and other '
+ '0910 | Ginger, saffron, tum' '2009 | Fruit or nut juices '
+ '1905 | Bread, pastry, cakes' '2106 | Food preparations no'
+ '1704 | Sugar confectionery ' '2403 | Manufactured tobacco'
+ '2202 | Waters, including mi' '2530 | Mineral substances n'
+ '2621 | Slag and ash n.e.c. ' '3006 | Pharmaceutical goods'
+ '3105 | Fertilizers; mineral' '2904 | Sulphonated, nitrate'
+ '2844 | Radioactive chemical' '2853 | Phosphides, chemical'
+ '2930 | Organo-sulphur compo' '2931 | Other organo-inorgan'
+ '2932 | Heterocyclic compoun' '2918 | Acids; carboxylic ac'
+ '2920 | Esters of other inor' '2914 | Ketones and quinones'
+ '3307 | Perfumery, cosmetic ' '3002 | Human blood; animal '
+ '3402 | Organic surface-acti' '3003 | Medicaments; (not go'
+ '3808 | Insecticides, rodent' '3812 | Prepared rubber acce'
+ '3822 | Reagents; diagnostic' '2935 | Sulphonamides'
+ '3909 | Amino-resins, phenol' '3004 | Medicaments; (not go'
+ '3824 | Prepared binders for' '3507 | Enzymes; prepared en'
+ '3603 | Safety fuses; detona' '3606 | Ferro-cerium and oth'
+ '3705 | Photographic plates ' '3707 | Chemical preparation'
+ '3926 | Articles of plastics' '3901 | Polymers of ethylene'
+ '4015 | Articles of apparel ' '3907 | Polyacetals, other p'
+ "4418 | Builders' joinery an" '4401 | Fuel wood, in logs, '
+ '4402 | Wood charcoal (inclu' '4419 | Tableware and kitche'
+ '4403 | Wood in the rough, w' '4407 | Wood sawn or chipped'
+ '4409 | Wood (including stri' '4412 | Plywood, veneered pa'
+ '4414 | Wooden frames; for p' '4420 | Wood marquetry and i'
+ '4602 | Basketwork, wickerwo' '4823 | Paper, paperboard, c'
+ '4011 | New pneumatic tyres,' '4707 | Waste and scrap of p'
+ '4911 | Printed matter, n.e.' '4421 | Wooden articles n.e.'
+ '4504 | Agglomerated cork (w' '5007 | Woven fabrics of sil'
+ '5802 | Fabrics; terry towel' '5703 | Carpets and other te'
+ '4905 | Maps and hydrographi' '5911 | Textile products and'
+ '5501 | Synthetic filament t' '5502 | Artificial filament '
+ '5516 | Woven fabrics of art' '6005 | Fabrics; warp knit ('
+ '6201 | Overcoats, car-coats' '6006 | Fabrics; knitted or '
+ '6304 | Furnishing articles;' "6202 | Coats; women's or gi"
+ '6117 | Clothing accessories' '2309 | Preparations of a ki'
+ '6815 | Stone or other miner' '6603 | Trimmings, parts and'
+ '6907 | Ceramic flags and pa' '6704 | Wigs, false beards, '
+ '6217 | Clothing accessories' '6310 | Rags; used or new, s'
+ '6914 | Ceramic articles; n.' '7019 | Glass fibres (includ'
+ '6406 | Footwear; parts of f' '7229 | Wire of other alloy '
+ '8109 | Zirconium; articles ' '8112 | Beryllium, chromium,'
+ '7326 | Iron or steel; artic' '7419 | Copper; articles the'
+ '8215 | Cutlery; spoons, for' '8103 | Tantalum; articles t'
+ '7508 | Nickel; articles the' '8106 | Bismuth; articles th'
+ '7616 | Aluminium; articles ' '8414 | Air or vacuum pumps,'
+ '8311 | Wires, rods, tubes, ' '8419 | Machinery, plant (no'
+ '8428 | Lifting, handling, l' '3215 | Ink; printing, writi'
+ '7104 | Stones; synthetic or' '8456 | Machine-tools; for w'
+ '8459 | Machine-tools; (incl' '8460 | Machine-tools; for d'
+ '8462 | Machine-tools (inclu' '8432 | Agricultural, hortic'
+ '8479 | Machinery and mechan' '8487 | Machinery parts; not'
+ '8514 | Industrial or labora' '8528 | Monitors and project'
+ '8525 | Transmission apparat' '8421 | Centrifuges, includi'
+ '8517 | Telephone sets, incl' '8501 | Electric motors and '
+ '8539 | Lamps; electric fila' '8711 | Motorcycles (includi'
+ '8701 | Tractors; (other tha' '8702 | Vehicles; public tra'
+ '8703 | Motor cars and other' '8903 | Yachts and other ves'
+ '8704 | Vehicles; for the tr' '8541 | Semiconductor device'
+ '8708 | Motor vehicles; part' '8716 | Trailers and semi-tr'
+ '9027 | Instruments and appa' '8424 | Mechanical appliance'
+ '9403 | Furniture and parts ' '9114 | Clock or watch parts'
+ '9209 | Musical instrument p' '9401 | Seats (not those of '
+ '9405 | Luminaires and light' '9404 | Mattress supports; a'
+ '9406 | Buildings; prefabric' '9508 | Travelling circuses '
+ '9620 | Monopods, bipods, tr' '9701 | Paintings, drawings '
+ '9702 | Engravings, prints a' '9703 | Sculptures and statu'
+ '9705 | Collections and coll' '9706 | Antiques; of an age ']
+
+
+Number of trade records present in dataset: 73895
+Number of partner countries present in dataset: 204
+
+Total value of trade: US$65783.3m
+Total weight within the dataset: 1444.0 million kilograms
+
+Distance to market: 0.0 nm (min) to 14015.0 nm (max), 6151.6 nm (observed mean)
+Average distance to market (volume-weighted): 5363.7 nm
+Average distance to market (value-weighted): 6096.9 nm
+
+
+Total FEM costs in 2041...
+
+BAU: US$28.4m (0.0% ad-val)
+Levy: US$64.6m (0.1% ad-val)
+'as-is': US$61.7m (0.1% ad-val)
+Brazil: US$62.4m (0.1% ad-val)
+LISCR: US$41.1m (0.1% ad-val)
+Direct: US$39.2m (0.1% ad-val)
+
+Most prominent 'facilitating vessel types'...
+
+             fac_vessel_types_str  vol_kg_vtw_pct  fobvalue_pct
+0                   ['Container']            79.5          75.4
+1                         ['all']            14.0          11.9
+2  ['Container', 'General cargo']             2.7           2.9
+3                ['Bulk carrier']             1.0           0.1
+4   ['Container', 'Bulk carrier']             0.7           0.1
+
+
+Most prominent 'cost intensity match' types...
+
+                      cost_int_match_desc  vol_kg_vtw_pct  fobvalue_pct
+0     1. Primary Int. Inv. with Vess Type            86.0          88.1
+1  3. Primary Int. Inv. without Vess Type            14.0          11.9
+2       4. Global Inv. without Vess Type.             0.0           0.0
+
+
+Most prominent 'facilitating vessel types' and their 'cost intensity match' types...
+
+             fac_vessel_types_str                     cost_int_match_desc  \
+0                   ['Container']     1. Primary Int. Inv. with Vess Type   
+1                         ['all']  3. Primary Int. Inv. without Vess Type   
+2  ['Container', 'General cargo']     1. Primary Int. Inv. with Vess Type   
+3                ['Bulk carrier']     1. Primary Int. Inv. with Vess Type   
+4   ['Container', 'Bulk carrier']     1. Primary Int. Inv. with Vess Type   
+
+   vol_kg_vtw_pct  fobvalue_pct  
+0            79.5          75.4  
+1            14.0          11.9  
+2             2.7           2.9  
+3             1.0           0.1  
+4             0.7           0.1  
+
+
+Rows with NA: $0.0 (0.0%)
+
+
+Output trade record: 
+
+trade_idx                                                      0
+reporterCode                                                 764
+reporterDesc                                            Thailand
+partnerCode                                                  458
+partnerDesc                                             Malaysia
+partner2Code                                                 000
+partner2Desc                                               World
+flowDesc                                         Domestic Export
+motDesc                                                      Sea
+HS6_desc                           010121 | Horses; live, pure-b
+HS6                                                        10121
+qtyUnitAbbr                                                    u
+qty                                                          1.0
+netWgt                                                       1.0
+cifvalue                                                     NaN
+fobvalue                                                 358.005
+primaryValue                                             358.005
+HS6_bilat_desc          Malaysia | 010121 | Horses; live, pure-b
+HS2                                                           01
+HS2_desc                                      01 | Animals; live
+HS2_bilat_desc                     Malaysia | 01 | Animals; live
+HS4                                                         0101
+HS4_desc                             0101 | Horses, asses, mules
+HS4_bilat_desc            Malaysia | 0101 | Horses, asses, mules
+hs2                                                          NaN
+hs4                                                          NaN
+hs6                                                          NaN
+hs6_description                                              NaN
+eora_desc                                                    NaN
+isic                                                         NaN
+isic_desc                                                    NaN
+sitc                                                         NaN
+sitc_desc                                                    NaN
+gtap                                                         NaN
+gtap_desc                                                    NaN
+cpc                                                          NaN
+cpc_desc                                                     NaN
+usd_per_kg                                               14.6732
+kg_per_usd_cepii                                          0.0682
+_trade_ex_vtw_hs4_m                                         both
+kg_per_usd_netWgt                                       0.002793
+vol_kg_vtw                                             24.415941
+vol_kg_vtw_comp                                              1.0
+fac_vessel_types                                     [Container]
+fac_vessel_types_str                               ['Container']
+sea_dist_km                                               2022.0
+sea_dist_nm                                          1256.412162
+tnm                                                    30.676485
+cost_int_match_desc          1. Primary Int. Inv. with Vess Type
+bau_usd_26                                              0.116407
+levy_usd_26                                             0.116118
+asis_usd_26                                             0.116145
+brazil_usd_26                                           0.116145
+liscr_usd_26                                            0.116294
+direct_usd_26                                           0.116294
+bau_usd_29                                              0.122176
+levy_usd_29                                             0.222899
+asis_usd_29                                             0.134155
+brazil_usd_29                                           0.124739
+liscr_usd_29                                            0.125158
+direct_usd_29                                           0.128395
+bau_usd_32                                              0.119467
+levy_usd_32                                              0.21686
+asis_usd_32                                             0.141465
+brazil_usd_32                                           0.129573
+liscr_usd_32                                            0.126387
+direct_usd_32                                           0.132629
+bau_usd_35                                              0.117089
+levy_usd_35                                             0.238167
+asis_usd_35                                             0.175055
+brazil_usd_35                                           0.153853
+liscr_usd_35                                            0.141949
+direct_usd_35                                           0.138483
+bau_usd_38                                              0.114755
+levy_usd_38                                             0.251547
+asis_usd_38                                             0.204858
+brazil_usd_38                                           0.190494
+liscr_usd_38                                            0.153469
+direct_usd_38                                           0.148853
+bau_usd_41                                              0.112465
+levy_usd_41                                             0.259943
+asis_usd_41                                             0.248436
+brazil_usd_41                                           0.250351
+liscr_usd_41                                            0.163884
+direct_usd_41                                           0.156583
+bau_usd_44                                              0.110131
+levy_usd_44                                             0.253193
+asis_usd_44                                             0.244426
+brazil_usd_44                                           0.264014
+liscr_usd_44                                            0.201115
+direct_usd_44                                           0.159524
+bau_usd_47                                              0.107845
+levy_usd_47                                              0.22311
+asis_usd_47                                             0.231836
+brazil_usd_47                                           0.249141
+liscr_usd_47                                            0.185733
+direct_usd_47                                            0.16143
+bau_usd_50                                              0.105607
+levy_usd_50                                             0.201948
+asis_usd_50                                             0.206325
+brazil_usd_50                                           0.248848
+liscr_usd_50                                            0.203329
+direct_usd_50                                           0.162613
+Name: 0, dtype: object
+
+# 3.4 Create Results Tables
+
+
+## 3.4.1 Total Costs per Scenario
+
+
+Total FEM costs by scenario (US$)...
+
+  Scenario         2029         2032         2035         2038         2041  \
+0      BAU  30772820.13  30110928.85  29530106.66  28959917.74  28400595.06   
+1     Levy  55367678.52  53842353.68  59131254.26  62687816.27  64626326.66   
+2  'as-is'  33647103.27  35418791.14  43665573.48  50984781.32  61676951.97   
+3   Brazil  31348603.92  32567636.30  38553481.74  47508705.63  62350079.23   
+4    LISCR  31450754.06  31796893.21  35660071.29  38411350.72  41065256.97   
+5   Direct  32285336.69  33315137.44  34742882.80  37275435.95  39162300.86   
+
+          2044         2047         2050  
+0  27830156.28  27273161.33  26725963.24  
+1  62744111.18  55550470.99  50443533.87  
+2  60574446.68  57654228.83  51524921.69  
+3  65316970.00  62034960.09  61809725.65  
+4  49997351.73  46555933.70  50585116.61  
+5  39877243.61  40342778.96  40647041.31  
+
+Total FEM costs by scenario (% fob)...
+
+  Scenario  2029  2032  2035  2038  2041  2044  2047  2050
+0      BAU  0.05  0.05  0.04  0.04  0.04  0.04  0.04  0.04
+1     Levy  0.08  0.08  0.09  0.10  0.10  0.10  0.08  0.08
+2  'as-is'  0.05  0.05  0.07  0.08  0.09  0.09  0.09  0.08
+3   Brazil  0.05  0.05  0.06  0.07  0.09  0.10  0.09  0.09
+4    LISCR  0.05  0.05  0.05  0.06  0.06  0.08  0.07  0.08
+5   Direct  0.05  0.05  0.05  0.06  0.06  0.06  0.06  0.06
+
+Total FEM costs by scenario (% gdp)...
+
+  Scenario   2029   2032   2035   2038   2041   2044   2047   2050
+0      BAU  0.005  0.005  0.005  0.005  0.005  0.005  0.005  0.005
+1     Levy  0.010  0.009  0.010  0.011  0.011  0.011  0.010  0.009
+2  'as-is'  0.006  0.006  0.008  0.009  0.011  0.010  0.010  0.009
+3   Brazil  0.005  0.006  0.007  0.008  0.011  0.011  0.011  0.011
+4    LISCR  0.005  0.006  0.006  0.007  0.007  0.009  0.008  0.009
+5   Direct  0.006  0.006  0.006  0.006  0.007  0.007  0.007  0.007
+
+## 3.4.2 Costs per Scenario relative to BAU
+
+
+Total FEM costs by scenario (US$)...
+
+  Scenario         2029         2032         2035         2038         2041  \
+0     Levy  24594858.39  23731424.83  29601147.60  33727898.53  36225731.60   
+1  'as-is'   2874283.14   5307862.28  14135466.82  22024863.59  33276356.91   
+2   Brazil    575783.78   2456707.45   9023375.09  18548787.89  33949484.17   
+3    LISCR    677933.93   1685964.36   6129964.63   9451432.99  12664661.91   
+4   Direct   1512516.55   3204208.58   5212776.14   8315518.21  10761705.80   
+
+          2044         2047         2050  
+0  34913954.90  28277309.67  23717570.63  
+1  32744290.39  30381067.50  24798958.45  
+2  37486813.71  34761798.76  35083762.41  
+3  22167195.44  19282772.38  23859153.37  
+4  12047087.32  13069617.64  13921078.07  
+
+Total change in FEM costs by scenario (% bau)...
+
+  Scenario   2029   2032    2035    2038    2041    2044    2047    2050
+0     Levy  79.92  78.81  100.24  116.46  127.55  125.45  103.68   88.74
+1  'as-is'   9.34  17.63   47.87   76.05  117.17  117.66  111.40   92.79
+2   Brazil   1.87   8.16   30.56   64.05  119.54  134.70  127.46  131.27
+3    LISCR   2.20   5.60   20.76   32.64   44.59   79.65   70.70   89.27
+4   Direct   4.92  10.64   17.65   28.71   37.89   43.29   47.92   52.09
+
+Total FEM costs by scenario (% fob)...
+
+  Scenario  2029  2032  2035  2038  2041  2044  2047  2050
+0     Levy  0.04  0.04  0.04  0.05  0.06  0.05  0.04  0.04
+1  'as-is'  0.00  0.01  0.02  0.03  0.05  0.05  0.05  0.04
+2   Brazil  0.00  0.00  0.01  0.03  0.05  0.06  0.05  0.05
+3    LISCR  0.00  0.00  0.01  0.01  0.02  0.03  0.03  0.04
+4   Direct  0.00  0.00  0.01  0.01  0.02  0.02  0.02  0.02
+
+Total FEM costs by scenario (% gdp)...
+
+  Scenario   2029   2032   2035   2038   2041   2044   2047   2050
+0     Levy  0.004  0.004  0.005  0.006  0.006  0.006  0.005  0.004
+1  'as-is'  0.000  0.001  0.002  0.004  0.006  0.006  0.005  0.004
+2   Brazil  0.000  0.000  0.002  0.003  0.006  0.006  0.006  0.006
+3    LISCR  0.000  0.000  0.001  0.002  0.002  0.004  0.003  0.004
+4   Direct  0.000  0.001  0.001  0.001  0.002  0.002  0.002  0.002
