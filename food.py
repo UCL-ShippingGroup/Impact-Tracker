@@ -7,7 +7,7 @@ from urllib.parse import quote
 # 1. Page title and selected country
 # ---------------------------------------------------------
 
-st.title("Food Import Impact")
+st.title("Food Security")
 
 selected_country = st.session_state.get("iso_country", None)
 
@@ -15,7 +15,7 @@ if selected_country is None:
     st.warning("Please select a country on the Home page.")
     st.stop()
 
-st.subheader(f"Food Import Impact: {selected_country}")
+st.subheader(f"Food Security Impact: {selected_country}")
 
 
 # ---------------------------------------------------------
