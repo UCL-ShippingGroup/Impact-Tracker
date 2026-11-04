@@ -38,6 +38,12 @@ capacity for one tonne of goods to be moved across one nautical mile. The result
 re-formatted in terms of expected future transport costs across nine future years and 30 unique 
 vessel classes. The following six policy options are modelled:
 
+1. Business as Usual, where no IMO policy is adopted.
+2. NZF ‘as levy’
+3. NZF 'as is'
+4. Brazil’s softer start, intense finish proposal
+5. LISCR concept
+6. NZF with Direct Contribution
 
 """
 )
