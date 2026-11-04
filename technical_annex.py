@@ -23,6 +23,23 @@ st.write(meta_stats.head(2))
 meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
 st.write(meta_stats_country)
 
+st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".format(
+    meta_stats_country.iso_code.values[0],
+    meta_stats_country.iso_country.values[0],
+    meta_stats_country.year.values[0],
+    meta_stats_country.import_portfolio.values[0],
+    meta_stats_country.export_portfolio.values[0],
+    meta_stats_country.gdp.values[0],
+    meta_stats_country.comtrade_im_usd.values[0],
+    meta_stats_country.im_val_usd.values[0],
+    meta_stats_country.im_WtV_kg_per_usd.values[0],
+    meta_stats_country.im_dist_to_market_nm.values[0],
+    meta_stats_country.comtrade_ex_usd.values[0],
+    meta_stats_country.ex_val_usd.values[0],
+    meta_stats_country.ex_WtV_kg_per_usd.values[0],
+    meta_stats_country.ex_dist_to_market_nm.values[0]
+))
+
 #for idx, row in meta_stats_country.iterrows():
 #    pass
 #st.write(row.iso_code)
