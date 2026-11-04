@@ -14,7 +14,10 @@ st.write("'selected_country_iso': ", selected_country_iso)
 
 #base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/"
 meta_stats_d = {"iso_code": "str", "iso_country": "str"}
-meta_stats = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv")
+meta_stats = pd.read_csv(
+    "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
+    dtype=meta_stats_d
+)
 st.write(meta_stats.head(2))
 
 meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
