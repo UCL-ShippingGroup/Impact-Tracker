@@ -51,8 +51,8 @@ st.write(
         meta_stats_country.iso_country.values[0],
         meta_stats_country.year.values[0],
         mot_inferred,
-        round(meta_stats_country.im_val_usd.values[0] / 1e6, 1),
-        round(meta_stats_country.comtrade_im_usd.values[0] / 1e6, 1)
+        type(meta_stats_country.im_val_usd.values[0]),
+        type(meta_stats_country.comtrade_im_usd.values[0])
 ))
 
 st.write(
