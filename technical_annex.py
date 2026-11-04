@@ -156,8 +156,18 @@ st.subheader("References", divider='grey')
 
 st.write(
 """
-
-
+Bertoli et al. (2016). The CERDI-seadistance database. Centre d’Etudes et de Reserches sur le Developpement 
+International. Available at: https://shs.hal.science/halshs-01288748v1.
+Faber et al. (2020). Fourth IMO GHG Study. London, UK.
+Forengie et al. (2025). Assessing the Potential Impact of the IMO Mid-Term GHG Mitigation Measures on Food Security 
+in Caribbean Nations. 
+Fricaudet et al. (upcoming). Beyond cost-optimal transitions: behavioural decision-making and policy feedbacks in 
+shipping decarbonisation. 
+Schim van der Loeff et al. (2018). A spatially explicit data-driven approach to calculating commodity-specific 
+shipping emissions per vessel. Available at: https://doi.org/10.1016/j.jclepro.2018.09.053.
+Starcrest. (2024). Report of the comprehensive impact assessment of the basket of candidate GHG reduction mid-term 
+measures full report on Task 4 - Final Draft. MEPC 82/INF.8/Add.3.
+UNCTAD. (2025). Trade-and-Transport Dataset - Documentation.
 """
 )
 
