@@ -33,7 +33,7 @@ costs_of_climate_change = st.Page("gdp.py", title="Costs of Climate Change", ico
 contact = st.Page("contact.py", title="Contact", icon="📒")
 
 # Set up navigation
-pg = st.navigation([main, globa, trade, impact, costs_of_climate_change, food])
+pg = st.navigation([main, globa, trade, impact, costs_of_climate_change, food, contact])
 
 # Run the selected page
 pg.run()
