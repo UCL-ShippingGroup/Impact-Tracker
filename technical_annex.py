@@ -31,9 +31,9 @@ mot_inferred = "with Mode of Transport observed in the data rather than estimate
 
 st.write(
     "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}. \
-    The total value of imports modelled in the exercise is US${3}, out of a total of US${4} \
+    The total value of imports modelled in the exercise is USD{3}, out of a total of USD{4} \
     observed in the original Comtrade portfolio. An average of {5} kgs were associated with \
-    each US$ of imported goods, and each kilogram travelled an average of {6} nautical miles \
+    each USD of imported goods, and each kilogram travelled an average of {6} nautical miles \
     .".format(
         meta_stats_country.iso_country.values[0],
         meta_stats_country.year.values[0],
