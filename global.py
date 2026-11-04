@@ -267,6 +267,7 @@ st.plotly_chart(
 )
 
 
+
 # ---------------------------------------------------------
 # Global cumulative GHG emissions
 # ---------------------------------------------------------
@@ -292,76 +293,48 @@ def load_cumulative_emissions():
 df_emissions = load_cumulative_emissions()
 
 
-# Select scenarios and rename for display
+# Define scenario columns and display names
 
 scenario_columns = {
     "Brazil NZF softer start, harder finish_biofuel_ramp_up_2035": "Brazil",
     "LISCR concept_biofuel_ramp_up_2035": "LISCR",
-    "NZF 'as is'_biofuel_ramp_up_2035": "NZF 'as-is'",
-    "No IMO policy_biofuel_ramp_up_2035": "BAU",
-    "Tuvalu levy_biofuel_ramp_up_2035": "Levy"
+    "NZF 'as is'_biofuel_ramp_up_2035": "NZF",
+    "No IMO policy_biofuel_ramp_up_2035": "No IMO Policy",
+    "Tuvalu levy_biofuel_ramp_up_2035": "Tuvalu Levy"
 }
 
 
-# Melt dataset from wide to long
+# Convert year column to numeric
 
-df_emissions_long = df_emissions.melt(
-    id_vars=["estimation_year"],
-    value_vars=list(scenario_columns.keys()),
-    var_name="Scenario",
-    value_name="Value"
-)
-
-# Rename scenarios
-
-df_emissions_long["Scenario"] = (
-    df_emissions_long["Scenario"].replace(scenario_columns)
-)
-
-# Convert types
-
-df_emissions_long["Year"] = pd.to_numeric(
-    df_emissions_long["estimation_year"],
+df_emissions["estimation_year"] = pd.to_numeric(
+    df_emissions["estimation_year"],
     errors="coerce"
 )
 
-df_emissions_long["Value"] = pd.to_numeric(
-    df_emissions_long["Value"],
-    errors="coerce"
-)
-
-df_emissions_long = df_emissions_long.dropna(
-    subset=["Year", "Value"]
-)
+df_emissions = df_emissions.sort_values("estimation_year")
 
 
 # Create line chart
 
 fig_emissions = go.Figure()
 
-for scenario in scenario_columns.values():
-
-    subset = df_emissions_long[
-        df_emissions_long["Scenario"] == scenario
-    ].sort_values("Year")
+for column, scenario in scenario_columns.items():
 
     fig_emissions.add_trace(
         go.Scatter(
-            x=subset["Value"],
-            y=subset["Year"],
+            x=df_emissions["estimation_year"],
+            y=df_emissions[column],
 
             mode="lines+markers",
-
             name=scenario,
 
             line=dict(width=2.5),
-
             marker=dict(size=5),
 
             hovertemplate=(
                 "<b>" + scenario + "</b><br>"
-                "Year: %{y:.0f}<br>"
-                "Cumulative: %{x:,.2f} million tonne CO2e"
+                "Year: %{x:.0f}<br>"
+                "Cumulative: %{y:,.2f} million tonne CO2e"
                 "<extra></extra>"
             )
         )
@@ -373,20 +346,19 @@ for scenario in scenario_columns.values():
 fig_emissions.update_layout(
 
     height=600,
-
     template="plotly_white",
 
     hovermode="closest",
 
     xaxis=dict(
-        title="Cumulative (million tonne CO2e)",
-        tickformat=",.0f"
-    ),
-
-    yaxis=dict(
         title="Year",
         tickformat="d",
         dtick=2
+    ),
+
+    yaxis=dict(
+        title="Cumulative (million tonne CO2e)",
+        tickformat=",.0f"
     ),
 
     legend=dict(
@@ -416,6 +388,7 @@ st.plotly_chart(
     width="stretch",
     config={"displayModeBar": True}
 )
+
 
 
 # fig = px.choropleth(
