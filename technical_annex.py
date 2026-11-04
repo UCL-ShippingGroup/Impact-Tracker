@@ -19,9 +19,23 @@ meta_stats = pd.read_csv(
     dtype=meta_stats_d
 )
 meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
-
-#st.write(meta_stats.head(2))
 st.write(meta_stats_country)
+
+# print message regarding origin of trade data
+mot_inferred = "with Mode of Transport observed in the data rather than estimated." \
+    if "*" in meta_stats_country.import_portfolio.values[0] \
+    else "with Mode of Transport estimated from the data rather than observed."
+
+st.write(
+    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}. \
+    The total value of imports modelled in the exercise is US${3}m, out of a total of US${4}m \
+    observed in the original Comtrade portfolio. The average ".format(
+        meta_stats_country.iso_country.values[0],
+        meta_stats_country.year.values[0],
+        mot_inferred,
+        type(meta_stats_country.im_val_usd.values[0]),
+        type(meta_stats_country.comtrade_im_usd.values[0])
+))
 
 st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".format(
     meta_stats_country.iso_code.values[0],
@@ -40,20 +54,6 @@ st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".
     meta_stats_country.ex_dist_to_market_nm.values[0]
 ))
 
-mot_inferred = "with Mode of Transport observed in the data rather than estimated." \
-    if "*" in meta_stats_country.import_portfolio.values[0] \
-    else "with Mode of Transport estimated from the data rather than observed."
-
-st.write(
-    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}. \
-    The total value of imports modelled in the exercise is US${3}m, out of a total of US${4}m \
-    observed in the original Comtrade portfolio. The average ".format(
-        meta_stats_country.iso_country.values[0],
-        meta_stats_country.year.values[0],
-        mot_inferred,
-        type(meta_stats_country.im_val_usd.values[0]),
-        type(meta_stats_country.comtrade_im_usd.values[0])
-))
 
 st.write(
 """
