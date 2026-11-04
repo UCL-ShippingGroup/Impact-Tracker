@@ -46,3 +46,21 @@ for alternative food groups may be derived.
 
 """
 )
+
+
+st.subheader("Maritime Transport", divider='grey')
+
+
+
+st.subheader("Trade", divider='grey')
+
+
+
+st.subheader("Impact Assessment", divider='grey')
+
+
+
+st.subheader("References", divider='grey')
+
+
+
