@@ -544,10 +544,11 @@ base_url = (
 
 
 @st.cache_data
-def load_bar_data(country, filename):
-
+def load_bar_data(country, iso_code, filename):
+    iso_code = str(iso_code).zfill(3)
+    folder_name = f"{iso_code} - {str(country).strip()}"
     country_folder = quote(
-        str(country).strip(),
+        folder_name,
         safe=""
     )
 
