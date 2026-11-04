@@ -560,7 +560,16 @@ def load_bar_data(country, iso_code, filename):
     )
 
     return pd.read_csv(url)
+try:
+    df = load_bar_data(
+        selected_country,
+        st.session_state.iso_code,
+        selected_file
+    )
 
+except (FileNotFoundError, HTTPError) as e:
+    st.error(str(e))
+    st.stop()
 
 # ---------------------------------------------------------
 # 5. Load, melt and combine the four datasets
