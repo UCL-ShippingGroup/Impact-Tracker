@@ -81,44 +81,76 @@ the countries included.
 
 st.write(
 """
+Although often not submitted to the Comtrade platform, disaggregation of trade volumes by transport 
+mode is essential for accurate isolation of the seaborne component of trade. When selecting an 
+appropriate year from which to source trade statistics, a recent year where transport mode information 
+has been provided is selected. Where transport mode information isn’t available, trade statistics 
+across all transport modes for a recent year are first downloaded, and a mode split model is applied 
+to isolate the seaborne component based on observations from the UNCTAD Trade-and-Transport database 
+(UNCTAD, 2025). 
+"""
+)
 
-
+st.write(
+"""
+Once the seaborne trade portfolio for a country has been downloaded and any necessary processing steps 
+completed, it is read into a python-based Jupyter notebook for analysis. The first step is to format 
+the dataset, performing actions such as ensuring country ISO codes and Harmonised System commodity 
+codes are formatted correctly, as well as deriving new fields for concisely categorising individual 
+bilateral trade records. Given inconsistencies in the way weight is recorded within Comtrade, a new 
+weight field is established based on the average value-to-weight ratio observed per HS 4-digit commodity 
+heading across publications of the CEPII BACI dataset covering the years 2017-23. Another additional step 
+introduces one or more vessel types identified as likely to facilitate transportation of each specific 
+commodity type. To achieve this, a dataset of consignment-level Bills of Lading data from the Global 
+Shipping Watch project (Schim van der Loeff et al, 2018) is introduced to understand which vessel types 
+are most prevalent in facilitating the transportation of goods under alternative commodity headings. 
 """
 )
 
 st.write(
 """
 
-
+The final step of the trade process is to derive an assumed distance associated with each bilateral trade 
+record based on its specific origin-destination country pairing. The estimation of distance between bilateral 
+country pairs is sourced from the CERDI ‘Sea-distances’ table, further information for which can be found in 
+(Bertoli et al, 2016). With the assumed sea distance per bilateral trade record now established as a new data 
+field to the seaborne trade portfolio dataset, the assumption is taken that the cargo mass travels this 
+distance as it transits from origin to destination country. This assumption represents a lower-bound on the 
+total distance a trade is likely to travel as it doesn’t consider multiple stop or transshipment practises, 
+and therefore represents a limitation in the study. Nevertheless, derivation of an assumed distance in this 
+way does enable for the calculation of ‘transport work’ associated with each bilateral trade record to be 
+undertaken, denoting the product of cargo volume and distance travelled. The trade portfolio generation step 
+is performed on both the importer and exporter side for each country.
 """
 )
-
-st.write(
-"""
-
-
-"""
-)
-
-
 
 
 st.subheader("Impact Assessment", divider='grey')
 
 st.write(
 """
-
-
+The final process seeks to combine the seaborne trade portfolios with voyage-level cost intensities to estimate 
+the specific costs associated with each bilateral trade record. Using these subsets of the voyages table, the 
+importer- and exporter-side seaborne trade datasets are iterated through and, for each trade record, an 
+appropriate sample of voyages is sought that is deemed most likely to facilitate the specific trade. A single 
+uniform method isn’t possible to apply in all cases, and so a staggered algorithmic approach is instead used to 
+derive the most appropriate subset of observed voyages for each bilateral commodity trade. Although convoluted, 
+the intention of this process is to generate bespoke cost intensity values for each trade record based on unique 
+trends of the country’s shipping activity, as these may differ greatly from global averages. 
 """
 )
 
 st.write(
 """
-
-
+The final transport costs associated with each bilateral trade record can now be evaluated by combining each 
+voyage’s transport work with the averaged cost intensities observed from representative shipping activity. These 
+transport costs are evaluated in US dollars in accordance with the six alternative policy options and nine future 
+target years. In terms of food security, a final step isolates results for commodity codes associated with key 
+individual food groups as applied in (Forengie et al, 2025). The aggregate cost impact is evaluated and expressed 
+in relation to the CIF price to represent the overall price impact per food group and country for each policy 
+scenario across future years to 2050.
 """
 )
-
 
 st.subheader("References", divider='grey')
 
