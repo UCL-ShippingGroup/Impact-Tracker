@@ -268,6 +268,7 @@ st.plotly_chart(
 
 
 
+
 # ---------------------------------------------------------
 # Global cumulative GHG emissions
 # ---------------------------------------------------------
@@ -275,6 +276,20 @@ st.plotly_chart(
 import plotly.graph_objects as go
 
 st.subheader("Global Cumulative GHG Emissions", divider="grey")
+
+
+# Segmented control
+
+emissions_measure = st.segmented_control(
+    "Which GHG emissions measure are you interested in?",
+    options=[
+        "Absolute GHG Emissions",
+        "GHG Emissions Reduction Relative to BAU"
+    ],
+    default="Absolute GHG Emissions",
+    key="global_emissions_measure"
+)
+
 
 # Load dataset
 
@@ -298,20 +313,31 @@ df_emissions = load_cumulative_emissions()
 scenario_columns = {
     "Brazil NZF softer start, harder finish_biofuel_ramp_up_2035": "Brazil",
     "LISCR concept_biofuel_ramp_up_2035": "LISCR",
-    "NZF 'as is'_biofuel_ramp_up_2035": "NZF 'as-is'",
+    "NZF 'as is'_biofuel_ramp_up_2035": "NZF 'as is'",
     "No IMO policy_biofuel_ramp_up_2035": "BAU",
     "Tuvalu levy_biofuel_ramp_up_2035": "Levy"
 }
 
 
-# Convert year column to numeric
+# Convert columns to numeric
 
 df_emissions["estimation_year"] = pd.to_numeric(
     df_emissions["estimation_year"],
     errors="coerce"
 )
 
+for column in scenario_columns:
+    df_emissions[column] = pd.to_numeric(
+        df_emissions[column],
+        errors="coerce"
+    )
+
 df_emissions = df_emissions.sort_values("estimation_year")
+
+
+# Define BAU column
+
+bau_column = "No IMO policy_biofuel_ramp_up_2035"
 
 
 # Create line chart
@@ -320,10 +346,29 @@ fig_emissions = go.Figure()
 
 for column, scenario in scenario_columns.items():
 
+    # For reduction chart, exclude BAU
+    if (
+        emissions_measure == "GHG Emissions Reduction Relative to BAU"
+        and column == bau_column
+    ):
+        continue
+
+    # Select values depending on measure
+    if emissions_measure == "Absolute GHG Emissions":
+
+        values = df_emissions[column]
+
+    else:
+
+        values = (
+            df_emissions[bau_column]
+            - df_emissions[column]
+        )
+
     fig_emissions.add_trace(
         go.Scatter(
             x=df_emissions["estimation_year"],
-            y=df_emissions[column],
+            y=values,
 
             mode="lines+markers",
             name=scenario,
@@ -334,10 +379,28 @@ for column, scenario in scenario_columns.items():
             hovertemplate=(
                 "<b>" + scenario + "</b><br>"
                 "Year: %{x:.0f}<br>"
-                "Cumulative: %{y:,.2f} million tonne CO2e"
-                "<extra></extra>"
+                + (
+                    "Cumulative: %{y:,.2f} million tonne CO2e"
+                    if emissions_measure == "Absolute GHG Emissions"
+                    else "Reduction: %{y:,.2f} million tonne CO2e"
+                )
+                + "<extra></extra>"
             )
         )
+    )
+
+
+# Set Y-axis title
+
+if emissions_measure == "Absolute GHG Emissions":
+
+    yaxis_title = "Cumulative (million tonne CO2e)"
+
+else:
+
+    yaxis_title = (
+        "Cumulative Reduction Relative to BAU "
+        "(million tonne CO2e)"
     )
 
 
@@ -357,8 +420,10 @@ fig_emissions.update_layout(
     ),
 
     yaxis=dict(
-        title="Cumulative (million tonne CO2e)",
-        tickformat=",.0f"
+        title=yaxis_title,
+        tickformat=",.0f",
+        zeroline=True,
+        zerolinecolor="lightgrey"
     ),
 
     legend=dict(
@@ -371,7 +436,7 @@ fig_emissions.update_layout(
     ),
 
     margin=dict(
-        l=70,
+        l=90,
         r=30,
         t=30,
         b=110
@@ -388,6 +453,7 @@ st.plotly_chart(
     width="stretch",
     config={"displayModeBar": True}
 )
+
 
 
 
