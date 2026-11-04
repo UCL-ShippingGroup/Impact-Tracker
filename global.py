@@ -361,8 +361,8 @@ for column, scenario in scenario_columns.items():
     else:
 
         values = (
-            df_emissions[bau_column]
-            - df_emissions[column]
+            df_emissions[column]
+            - df_emissions[bau_column]
         )
 
     fig_emissions.add_trace(
