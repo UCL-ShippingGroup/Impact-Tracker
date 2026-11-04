@@ -25,19 +25,23 @@ meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
 st.write(meta_stats_country)
 
 # print message regarding origin of trade data
-mot_inferred = "with Mode of Transport observed in the data rather than estimated." \
+mot_inferred = "with Mode of Transport observed in the data rather than estimated" \
     if "*" in meta_stats_country.import_portfolio.values[0] \
-    else "with Mode of Transport estimated from the data rather than observed."
+    else "with Mode of Transport estimated from the data rather than observed"
 
 st.write(
-    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}. \
-    The total value of imports modelled in the exercise is USD{3}, out of a total of USD{4} \
-    observed in the original Comtrade portfolio. An average of {5} kgs were associated with \
-    each USD of imported goods, and each kilogram travelled an average of {6} nautical miles \
+    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}
     .".format(
         meta_stats_country.iso_country.values[0],
         meta_stats_country.year.values[0],
-        mot_inferred,
+        mot_inferred.
+))
+
+st.write(
+    "The total value of imports modelled in the exercise is USD{0}, out of a total of USD{1} \
+    observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
+    each USD of imported goods, and each kilogram travelled an average of {3} nautical miles \
+    .".format(
         meta_stats_country.im_val_usd.values[0],
         meta_stats_country.comtrade_im_usd.values[0],
         meta_stats_country.im_WtV_kg_per_usd.values[0],
