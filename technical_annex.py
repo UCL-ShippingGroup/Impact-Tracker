@@ -12,8 +12,8 @@ selected_country_iso = st.session_state.get(
 
 st.write("'selected_country_iso': ", selected_country_iso)
 
-#base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/datasets/"
-meta_stats = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/datasets/meta-stats.csv")
+#base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/"
+meta_stats = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv")
 st.write(meta_stats.head(2))
 
 st.write(
