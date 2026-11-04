@@ -15,7 +15,7 @@ st.write("'selected_country_iso': ", selected_country_iso)
 #base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/"
 meta_stats_d = {
     "iso_code": "str", "iso_country": "str", "gdp": "str", 
-    "comtrade_im_usd": "float", "im_val_usd": "float", "comtrade_ex_usd": "float", "comtrade_ex_usd": "float", 
+    #"comtrade_im_usd": "float", "im_val_usd": "float", "comtrade_ex_usd": "float", "comtrade_ex_usd": "float", 
 }
 meta_stats = pd.read_csv(
     "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
@@ -47,7 +47,7 @@ st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".
     meta_stats_country.import_portfolio.values[0],
     meta_stats_country.export_portfolio.values[0],
     meta_stats_country.gdp.values[0],
-    meta_stats_country.comtrade_im_usd.values[0],
+    float(meta_stats_country.comtrade_im_usd.values[0]),
     meta_stats_country.im_val_usd.values[0],
     meta_stats_country.im_WtV_kg_per_usd.values[0],
     meta_stats_country.im_dist_to_market_nm.values[0],
