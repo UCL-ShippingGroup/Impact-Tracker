@@ -28,6 +28,15 @@ st.subheader("Maritime Transport", divider='grey')
 
 st.write(
 """
+First, techno-economic modelling outputs are sourced from UCL’s Fleet Evolution Model (Fricaudet 
+et al, 2026). This type of modelling is concerned approximating investment decisions on whether 
+to scrap or continue operating a vessel, as well as whether to invest in energy efficiency or 
+deep transitional technologies such as engine conversions or retrofits, depending on prevailing 
+economic conditions such as the existence of decarbonisation regulations. Results taken from the 
+model are provided in terms of the transport costs associated with the provision of transport 
+capacity for one tonne of goods to be moved across one nautical mile. The results are 
+re-formatted in terms of expected future transport costs across nine future years and 30 unique 
+vessel classes. The following six policy options are modelled:
 
 
 """
