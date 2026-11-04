@@ -10,9 +10,6 @@ selected_country_iso = st.session_state.get(
     None
 )
 
-st.write("'selected_country_iso': ", selected_country_iso)
-
-#base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/"
 meta_stats_d = {
     "iso_code": "str", "iso_country": "str", "gdp": "str", 
     #"comtrade_im_usd": "float", "im_val_usd": "float", "comtrade_ex_usd": "float", "comtrade_ex_usd": "float", 
@@ -22,7 +19,7 @@ meta_stats = pd.read_csv(
     dtype=meta_stats_d
 )
 meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
-st.write(meta_stats_country)
+#st.write(meta_stats_country)
 
 # print message regarding origin of trade data
 mot_inferred = "with Mode of Transport observed in the data rather than estimated" \
@@ -54,24 +51,6 @@ st.write(
         meta_stats_country.comtrade_ex_usd.values[0],
         meta_stats_country.ex_WtV_kg_per_usd.values[0],
         meta_stats_country.ex_dist_to_market_nm.values[0]
-))
-
-
-st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".format(
-    meta_stats_country.iso_code.values[0],
-    meta_stats_country.iso_country.values[0],
-    meta_stats_country.year.values[0],
-    meta_stats_country.import_portfolio.values[0],
-    meta_stats_country.export_portfolio.values[0],
-    meta_stats_country.gdp.values[0],
-    float(meta_stats_country.comtrade_im_usd.values[0]),
-    meta_stats_country.im_val_usd.values[0],
-    meta_stats_country.im_WtV_kg_per_usd.values[0],
-    meta_stats_country.im_dist_to_market_nm.values[0],
-    meta_stats_country.comtrade_ex_usd.values[0],
-    meta_stats_country.ex_val_usd.values[0],
-    meta_stats_country.ex_WtV_kg_per_usd.values[0],
-    meta_stats_country.ex_dist_to_market_nm.values[0]
 ))
 
 
