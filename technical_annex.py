@@ -18,9 +18,9 @@ meta_stats = pd.read_csv(
     "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
     dtype=meta_stats_d
 )
-st.write(meta_stats.head(2))
-
 meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
+
+#st.write(meta_stats.head(2))
 st.write(meta_stats_country)
 
 st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".format(
@@ -43,14 +43,17 @@ st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".
 mot_inferred = "with Mode of Transport observed in the data rather than estimated." \
     if "*" in meta_stats_country.import_portfolio.values[0] \
     else "with Mode of Transport estimated from the data rather than observed."
-st.write(mot_inferred)
 
-st.write("Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}.".format(
-    meta_stats_country.iso_country.values[0],
-    meta_stats_country.year.values[0],
-    mot_inferred
-    )
-)
+st.write(
+    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}. \
+    The total value of imports modelled in the exercise is US${3}m, out of a total of US${4}m \
+    observed in the original Comtrade portfolio. The average ".format(
+        meta_stats_country.iso_country.values[0],
+        meta_stats_country.year.values[0],
+        round(meta_stats_country.im_val_usd.values[0] / 1e6, 1),
+        round(meta_stats_country.comtrade_im_usd.values[0] / 1e6, 1),
+        mot_inferred
+))
 
 st.write(
 """
