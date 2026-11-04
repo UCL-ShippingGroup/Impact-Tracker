@@ -10,7 +10,7 @@ selected_country_iso = st.session_state.get(
     None
 )
 
-print("'selected_country_iso': ", selected_country_iso)
+st.write("'selected_country_iso': ", selected_country_iso)
 
 st.write(
 """
