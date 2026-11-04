@@ -21,7 +21,7 @@ meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
 for idx, row in meta_stats_country.iterrows():
     pass
 
-st.write(row)
+st.write(row.iso_code)
 
 st.write(
 """
