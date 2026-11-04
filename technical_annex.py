@@ -40,7 +40,8 @@ st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".
     meta_stats_country.ex_dist_to_market_nm.values[0]
 ))
 
-st.write("*" in meta_stats_country.import_portfolio.values[0])
+mot_inferred = True if "*" in meta_stats_country.import_portfolio.values[0] else False
+st.write(mot_inferred)
 
 st.write("Trade data for {0} was sourced for the year {1} from the UN Comtrade platform.".format(
     meta_stats_country.iso_country.values[0],
