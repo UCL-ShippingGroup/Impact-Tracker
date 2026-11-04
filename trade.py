@@ -128,7 +128,53 @@ def load_trade_data(country, filename):
     df = pd.read_csv(file_path)
 
     return df
+from pathlib import Path
 
+base_dir = Path(__file__).resolve().parent
+
+st.write("### Data Loading Diagnostics")
+
+st.write("Current script:", __file__)
+st.write("Base directory:", str(base_dir))
+st.write("Selected country:", repr(selected_country))
+st.write("Selected file:", repr(selected_file))
+
+file_path = (
+    base_dir
+    / "impact"
+    / selected_country
+    / selected_file
+)
+
+st.write("Expected file path:", str(file_path))
+st.write("File exists:", file_path.is_file())
+
+if file_path.is_file():
+
+    st.write(
+        "File size:",
+        f"{file_path.stat().st_size / 1e6:,.2f} MB"
+    )
+
+    with open(file_path, "rb") as f:
+        first_line = f.readline()
+
+    st.write(
+        "Git LFS pointer:",
+        first_line.startswith(
+            b"version https://git-lfs.github.com/spec/v1"
+        )
+    )
+
+else:
+
+    st.write("Parent folder exists:", file_path.parent.is_dir())
+
+    if file_path.parent.is_dir():
+        st.write(
+            "Files available:",
+            [p.name for p in file_path.parent.iterdir()]
+        )
 
 try:
 
