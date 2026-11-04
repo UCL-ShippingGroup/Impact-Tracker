@@ -35,10 +35,8 @@ selected_country_iso = st.session_state.get(
 
 st.title("Seaborne Trade Portfolios")
 
-st.subheader(
-    f"Trade Portfolios for {selected_country}",
-    divider="grey"
-)
+
+
 
 meta_stats_d = {
     "iso_code": "str", "iso_country": "str", "gdp": "str", 
@@ -83,6 +81,11 @@ st.write(
         meta_stats_country.ex_dist_to_market_nm.values[0]
 ))
 
+
+st.subheader(
+    f"Trade Portfolios for {selected_country}",
+    divider="grey"
+)
 
 
 # ---------------------------------------------------------
