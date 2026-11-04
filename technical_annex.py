@@ -40,13 +40,23 @@ st.write(
 st.write(
     "The total value of imports modelled in the exercise is USD{0}, out of a total of USD{1} \
     observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
-    each USD of imported goods, and each kilogram travelled an average of {3} nautical miles \
-    .".format(
+    each USD of imported goods, with each kilogram travelled an average of {3} nautical miles.".format(
         meta_stats_country.im_val_usd.values[0],
         meta_stats_country.comtrade_im_usd.values[0],
         meta_stats_country.im_WtV_kg_per_usd.values[0],
         meta_stats_country.im_dist_to_market_nm.values[0]
 ))
+
+st.write(
+    "The total value of exports modelled in the exercise is USD{0}, out of a total of USD{1} \
+    observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
+    each USD of exported goods, with each kilogram travelled an average of {3} nautical miles.".format(
+        meta_stats_country.ex_val_usd.values[0],
+        meta_stats_country.comtrade_ex_usd.values[0],
+        meta_stats_country.ex_WtV_kg_per_usd.values[0],
+        meta_stats_country.ex_dist_to_market_nm.values[0]
+))
+
 
 st.write("{0} {1} {2} \n {3} {4} {5} \n {6} {7} {8} {9} \n {10} {11} {12} {13}".format(
     meta_stats_country.iso_code.values[0],
