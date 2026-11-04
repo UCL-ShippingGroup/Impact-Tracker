@@ -77,6 +77,54 @@ dataset_map = {
 
 selected_file = dataset_map[trade_flow][metric]
 
+# # ---------------------------------------------------------
+# # 4. Load country data from results folder
+# # ---------------------------------------------------------
+
+# base_url = (
+#     "https://raw.githubusercontent.com/"
+#     "UCL-ShippingGroup/Impact-Tracker/main/impact/"
+# )
+
+# @st.cache_data
+# def load_country_data(country, filename):
+
+#     # Country folders use the full country name
+#     country_folder = quote(
+#         str(country).strip(),
+#         safe=""
+#     )
+
+#     url = (
+#         base_url
+#         + country_folder
+#         + "/results/"
+#         + filename
+#     )
+
+#     try:
+#         df = pd.read_csv(url)
+
+#     except HTTPError as e:
+#         if e.code == 404:
+#             raise FileNotFoundError(
+#                 f"CSV not found at: {url}"
+#             ) from e
+#         raise
+
+#     return df
+
+
+# try:
+#     df = load_country_data(
+#         selected_country,
+#         selected_file
+#     )
+
+# except (FileNotFoundError, HTTPError) as e:
+#     st.error(str(e))
+#     st.stop()
+
 # ---------------------------------------------------------
 # 4. Load country data from results folder
 # ---------------------------------------------------------
@@ -87,11 +135,17 @@ base_url = (
 )
 
 @st.cache_data
-def load_country_data(country, filename):
+def load_country_data(country, iso_code, filename):
 
-    # Country folders use the full country name
+    # Ensure ISO code is three digits
+    iso_code = str(iso_code).zfill(3)
+
+    # Construct folder name: 008 - Albania
+    folder_name = f"{iso_code} - {str(country).strip()}"
+
+    # URL encode folder name
     country_folder = quote(
-        str(country).strip(),
+        folder_name,
         safe=""
     )
 
@@ -118,6 +172,7 @@ def load_country_data(country, filename):
 try:
     df = load_country_data(
         selected_country,
+        st.session_state.iso_code,
         selected_file
     )
 
