@@ -5,55 +5,6 @@ import streamlit as st
 #st.markdown("##### Contact")
 st.title("Technical Annex")
 
-selected_country_iso = st.session_state.get(
-    "iso_code",
-    None
-)
-
-meta_stats_d = {
-    "iso_code": "str", "iso_country": "str", "gdp": "str", 
-    #"comtrade_im_usd": "float", "im_val_usd": "float", "comtrade_ex_usd": "float", "comtrade_ex_usd": "float", 
-}
-meta_stats = pd.read_csv(
-    "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
-    dtype=meta_stats_d
-)
-meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
-#st.write(meta_stats_country)
-
-# print message regarding origin of trade data
-mot_inferred = "with Mode of Transport observed in the data rather than estimated" \
-    if "*" in meta_stats_country.import_portfolio.values[0] \
-    else "with Mode of Transport estimated from the data rather than observed"
-
-st.write(
-    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}.".format(
-        meta_stats_country.iso_country.values[0],
-        meta_stats_country.year.values[0],
-        mot_inferred
-))
-
-st.write(
-    "The total value of imports modelled in the exercise is USD{0}, out of a total of USD{1} \
-    observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
-    each USD of imported goods, with each kilogram travelling an average of {3} nautical miles.".format(
-        meta_stats_country.im_val_usd.values[0],
-        meta_stats_country.comtrade_im_usd.values[0],
-        meta_stats_country.im_WtV_kg_per_usd.values[0],
-        meta_stats_country.im_dist_to_market_nm.values[0]
-))
-
-st.write(
-    "The total value of exports modelled in the exercise is USD{0}, out of a total of USD{1} \
-    observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
-    each USD of exported goods, with each kilogram travelling an average of {3} nautical miles.".format(
-        meta_stats_country.ex_val_usd.values[0],
-        meta_stats_country.comtrade_ex_usd.values[0],
-        meta_stats_country.ex_WtV_kg_per_usd.values[0],
-        meta_stats_country.ex_dist_to_market_nm.values[0]
-))
-
-
 st.write(
     """
     Building upon methods developed during the IMO-led Comprehensive Impact Assessment process, 
