@@ -812,9 +812,9 @@ for group in food_groups:
             ].to_numpy(),
             hovertemplate=(
                 "Food Group: %{fullData.name}<br>"
-                "Contribution: %{y:,.2f} pp<br>"
+                "Contribution to Overall CIF Change: %{y:,.2f} pp<br>"
                 "Import Value Share: %{customdata[0]:.1%}<br>"
-                "CIF Change: %{customdata[1]:,.2f}%"
+                "%{fullData.name} CIF Change: %{customdata[1]:,.2f}%"
                 "<extra></extra>"
             )
         )
