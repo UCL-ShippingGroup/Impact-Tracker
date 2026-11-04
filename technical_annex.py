@@ -12,6 +12,9 @@ selected_country_iso = st.session_state.get(
 
 st.write("'selected_country_iso': ", selected_country_iso)
 
+#base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/impact/"
+#meta_stats = pd.read_csv(base_url + "impact_im_costs_to_bau_pct_gdp_v0.64.csv")
+
 st.write(
 """
 Building upon methods developed during the IMO-led Comprehensive Impact Assessment process, 
