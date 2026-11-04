@@ -27,7 +27,7 @@ if not selected_country:
 # 2. Page title
 # ---------------------------------------------------------
 
-st.title("Seabourne Trade Portfolios")
+st.title("Seaborne Trade Portfolios")
 
 st.subheader(
     f"Trade Portfolios for {selected_country}",
