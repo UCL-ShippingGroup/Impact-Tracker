@@ -3,7 +3,7 @@ import requests
 from io import StringIO
 import streamlit as st
 #st.markdown("##### Contact")
-st.subheader("Technical Annex", divider='grey')
+st.title("Technical Annex")
 
 st.write(
 """
