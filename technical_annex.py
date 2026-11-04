@@ -26,17 +26,77 @@ for alternative food groups may be derived.
 
 st.subheader("Maritime Transport", divider='grey')
 
+st.write(
+"""
 
+
+"""
+)
+
+
+st.write(
+"""
+
+
+"""
+)
 
 st.subheader("Trade", divider='grey')
+
+st.write(
+"""
+
+
+"""
+)
+
+st.write(
+"""
+
+
+"""
+)
+
+st.write(
+"""
+
+
+"""
+)
+
+st.write(
+"""
+
+
+"""
+)
+
 
 
 
 st.subheader("Impact Assessment", divider='grey')
 
+st.write(
+"""
+
+
+"""
+)
+
+st.write(
+"""
+
+
+"""
+)
 
 
 st.subheader("References", divider='grey')
 
+st.write(
+"""
 
+
+"""
+)
 
