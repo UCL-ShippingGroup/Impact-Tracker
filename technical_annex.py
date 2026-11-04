@@ -13,7 +13,10 @@ selected_country_iso = st.session_state.get(
 st.write("'selected_country_iso': ", selected_country_iso)
 
 #base_url = "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/"
-meta_stats_d = {"iso_code": "str", "iso_country": "str"}
+meta_stats_d = {
+    "iso_code": "str", "iso_country": "str", "gdp": "str", 
+    "comtrade_im_usd": "str", "im_val_usd": "str", "comtrade_ex_usd": "str", "comtrade_ex_usd": "str", 
+}
 meta_stats = pd.read_csv(
     "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
     dtype=meta_stats_d
