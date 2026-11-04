@@ -30,7 +30,7 @@ trade = st.Page("trade.py", title="Seaborne Trade Portfolios", icon="📦")
 impact = st.Page("impact.py", title="NZF Economic Impacts", icon="💵")
 food = st.Page("food.py", title="Food Import Impact", icon="🗺️")
 costs_of_climate_change = st.Page("gdp.py", title="Costs of Climate Change", icon="💰")
-#contact = st.Page("contact.py", title="Contact", icon="📒")
+contact = st.Page("contact.py", title="Contact", icon="📒")
 
 # Set up navigation
 pg = st.navigation([main, globa, trade, impact, costs_of_climate_change, food])
