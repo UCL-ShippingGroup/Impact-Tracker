@@ -298,9 +298,9 @@ df_emissions = load_cumulative_emissions()
 scenario_columns = {
     "Brazil NZF softer start, harder finish_biofuel_ramp_up_2035": "Brazil",
     "LISCR concept_biofuel_ramp_up_2035": "LISCR",
-    "NZF 'as is'_biofuel_ramp_up_2035": "NZF",
-    "No IMO policy_biofuel_ramp_up_2035": "No IMO Policy",
-    "Tuvalu levy_biofuel_ramp_up_2035": "Tuvalu Levy"
+    "NZF 'as is'_biofuel_ramp_up_2035": "NZF 'as-is'",
+    "No IMO policy_biofuel_ramp_up_2035": "BAU",
+    "Tuvalu levy_biofuel_ramp_up_2035": "Levy"
 }
 
 
