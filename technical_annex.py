@@ -21,6 +21,7 @@ meta_stats = pd.read_csv(
 st.write(meta_stats.head(2))
 
 meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
+st.write(meta_stats_country)
 
 #for idx, row in meta_stats_country.iterrows():
 #    pass
