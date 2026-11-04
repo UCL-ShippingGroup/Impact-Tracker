@@ -7,9 +7,7 @@ st.subheader("Technical Annex", divider='grey')
 
 st.markdown("""
 <style>
-.big-font {
-    font-size:6px !important;
-}
+    .big-font {font-size:6px !important;}
 </style>
 """, unsafe_allow_html=True)
 
