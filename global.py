@@ -36,7 +36,7 @@ scenario = st.segmented_control(
         "LISCR",
         "Direct"
     ],
-    default="NZF",
+    default="NZF as-is",
     key="scenario"
 )
 
