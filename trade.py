@@ -80,7 +80,168 @@ st.write(
         meta_stats_country.ex_WtV_kg_per_usd.values[0],
         meta_stats_country.ex_dist_to_market_nm.values[0]
 ))
+# ---------------------------------------------------------
+# Load country metadata
+# ---------------------------------------------------------
 
+meta_stats_d = {
+    "iso_code": "str",
+    "iso_country": "str",
+    "gdp": "str"
+}
+
+@st.cache_data
+def load_meta_stats():
+    return pd.read_csv(
+        "https://raw.githubusercontent.com/"
+        "UCL-ShippingGroup/Impact-Tracker/main/"
+        "datasets/meta-stats.csv",
+        dtype=meta_stats_d
+    )
+
+meta_stats = load_meta_stats()
+
+# Ensure ISO code is consistently three digits
+meta_stats["iso_code"] = (
+    meta_stats["iso_code"].str.zfill(3)
+)
+
+selected_iso = str(selected_country_iso).zfill(3)
+
+meta_stats_country = meta_stats[
+    meta_stats["iso_code"] == selected_iso
+]
+
+if meta_stats_country.empty:
+    st.warning(
+        f"No trade metadata available for {selected_country}."
+    )
+    st.stop()
+
+# Select the country's data
+stats = meta_stats_country.iloc[0]
+
+
+# ---------------------------------------------------------
+# Format numerical values
+# ---------------------------------------------------------
+
+def format_currency(value):
+
+    value = pd.to_numeric(value, errors="coerce")
+
+    if pd.isna(value):
+        return "N/A"
+
+    if abs(value) >= 1e9:
+        return f"${value / 1e9:,.2f}bn"
+
+    elif abs(value) >= 1e6:
+        return f"${value / 1e6:,.2f}m"
+
+    else:
+        return f"${value:,.2f}"
+
+
+def format_number(value, decimals=2):
+
+    value = pd.to_numeric(value, errors="coerce")
+
+    if pd.isna(value):
+        return "N/A"
+
+    return f"{value:,.{decimals}f}"
+
+
+# ---------------------------------------------------------
+# Trade data source information
+# ---------------------------------------------------------
+
+mot_inferred = (
+    "Mode of Transport observed in the data"
+    if "*" in str(stats["import_portfolio"])
+    else "Mode of Transport estimated from the data"
+)
+
+st.info(
+    f"Trade data for **{stats['iso_country']}** "
+    f"was sourced from UN Comtrade for **{stats['year']}**, "
+    f"with {mot_inferred}."
+)
+
+
+# ---------------------------------------------------------
+# Imports metrics
+# ---------------------------------------------------------
+
+st.subheader("Imports", divider="grey")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        label="Modelled Import Value",
+        value=format_currency(stats["im_val_usd"]),
+        border=True
+    )
+
+with col2:
+    st.metric(
+        label="Original Comtrade Value",
+        value=format_currency(stats["comtrade_im_usd"]),
+        border=True
+    )
+
+with col3:
+    st.metric(
+        label="Average Weight per USD",
+        value=f"{format_number(stats['im_WtV_kg_per_usd'])} kg",
+        border=True
+    )
+
+with col4:
+    st.metric(
+        label="Average Distance to Market",
+        value=f"{format_number(stats['im_dist_to_market_nm'], 0)} nm",
+        border=True
+    )
+
+
+# ---------------------------------------------------------
+# Exports metrics
+# ---------------------------------------------------------
+
+st.subheader("Exports", divider="grey")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        label="Modelled Export Value",
+        value=format_currency(stats["ex_val_usd"]),
+        border=True
+    )
+
+with col2:
+    st.metric(
+        label="Original Comtrade Value",
+        value=format_currency(stats["comtrade_ex_usd"]),
+        border=True
+    )
+
+with col3:
+    st.metric(
+        label="Average Weight per USD",
+        value=f"{format_number(stats['ex_WtV_kg_per_usd'])} kg",
+        border=True
+    )
+
+with col4:
+    st.metric(
+        label="Average Distance to Market",
+        value=f"{format_number(stats['ex_dist_to_market_nm'], 0)} nm",
+        border=True
+    )
 
 st.subheader(
     f"Trade Portfolios for {selected_country}",
