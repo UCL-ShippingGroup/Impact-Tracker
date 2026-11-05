@@ -164,7 +164,6 @@ def load_trade_data(country, iso_code, filename):
         base_dir
         / "impact"
         / country_folder
-        / "results"
         / filename
     )
 
