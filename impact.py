@@ -974,7 +974,7 @@ trade_flow_bar1 = st.segmented_control(
 metric_bar = st.segmented_control(
     "What measure of cost relative to a BAU scenario are you interested in?",
     options=[
-        "CIF/FOB price of Imports/Exportst",
+        "CIF/FOB price of Imports/Exports",
         # "Maritime Logistics Cost",
         "Maritime Transport Cost"
         # "MTC as % of GDP"
