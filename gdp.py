@@ -20,7 +20,7 @@ st.sidebar.markdown(
 
 
 # ---------------------------------------------------------
-# 1. Load data
+# Load country data
 # ---------------------------------------------------------
 
 base_url = (
@@ -29,8 +29,17 @@ base_url = (
 )
 
 selected_country = st.session_state.iso_country
+selected_iso_code = st.session_state.iso_code
 
-country_url = quote(selected_country, safe="")
+# Ensure ISO code is three digits
+selected_iso_code = str(selected_iso_code).zfill(3)
+
+# Construct folder name: 008 - Albania
+folder_name = f"{selected_iso_code} - {selected_country}"
+
+# URL encode folder name
+country_url = quote(folder_name, safe="")
+
 
 @st.cache_data
 def load_impact_data(country):
@@ -55,7 +64,6 @@ except Exception as e:
     st.error(f"Unable to load impact data for {selected_country}.")
     st.exception(e)
     st.stop()
-
 
 # ---------------------------------------------------------
 # 2. Section heading and segmented control
