@@ -976,7 +976,7 @@ metric_bar = st.segmented_control(
     options=[
         "CIF/FOB price of Imports/Exportst",
         # "Maritime Logistics Cost",
-        "Maritime Transport Cost",
+        "Maritime Transport Cost"
         # "MTC as % of GDP"
     ],
     default="CIF/FOB price of Imports/Exports",
