@@ -278,20 +278,21 @@ def load_trade_data(country, iso_code, filename):
 #             [p.name for p in file_path.parent.iterdir()]
 #         )
 
-# try:
+try:
 
-#     df = load_trade_data(
-#         selected_country,
-#         selected_file
-#     )
+    df = load_trade_data(
+        selected_country,
+        selected_country_iso,
+        selected_file
+    )
 
-# except (FileNotFoundError, RuntimeError, OSError) as e:
+except (FileNotFoundError, RuntimeError, OSError) as e:
 
-#     st.error(
-#         f"Could not load trade data for {selected_country}: {e}"
-#     )
+    st.error(
+        f"Could not load trade data for {selected_country}: {e}"
+    )
 
-#     st.stop()
+    st.stop()
 
 
 # ---------------------------------------------------------
