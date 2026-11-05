@@ -123,12 +123,37 @@ stats = meta_stats_country.iloc[0]
 
 
 # ---------------------------------------------------------
-# Format numerical values
+# Clean numerical values
+# ---------------------------------------------------------
+
+def clean_number(value):
+
+    if pd.isna(value):
+        return None
+
+    value = str(value).strip()
+
+    # Remove common formatting characters
+    value = (
+        value
+        .replace(",", "")
+        .replace("$", "")
+        .replace("USD", "")
+        .replace("kg", "")
+        .replace("nm", "")
+        .strip()
+    )
+
+    return pd.to_numeric(value, errors="coerce")
+
+
+# ---------------------------------------------------------
+# Format currency
 # ---------------------------------------------------------
 
 def format_currency(value):
 
-    value = pd.to_numeric(value, errors="coerce")
+    value = clean_number(value)
 
     if pd.isna(value):
         return "N/A"
@@ -143,9 +168,13 @@ def format_currency(value):
         return f"${value:,.2f}"
 
 
+# ---------------------------------------------------------
+# Format other numbers
+# ---------------------------------------------------------
+
 def format_number(value, decimals=2):
 
-    value = pd.to_numeric(value, errors="coerce")
+    value = clean_number(value)
 
     if pd.isna(value):
         return "N/A"
