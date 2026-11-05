@@ -264,9 +264,13 @@ with col1:
     st.metric(
         label="Modelled Export Value",
         value=format_currency(stats["ex_val_usd"]),
+        delta=modelled_percentage(
+            stats["ex_val_usd"],
+            stats["comtrade_ex_usd"]
+        ),
+        delta_color="off",
         border=True
     )
-
 with col2:
     st.metric(
         label="Original Comtrade Value",
