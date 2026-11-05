@@ -128,7 +128,7 @@ df_long["Scenario"] = (
 )
 
 df_long["Scenario"] = df_long["Scenario"].replace({
-    "as-is": "NZF"
+    "as-is": "NZF as-is"
 })
 
 #Filter selected scenario
