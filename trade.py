@@ -181,6 +181,17 @@ def format_number(value, decimals=2):
 
     return f"{value:,.{decimals}f}"
 
+def modelled_percentage(modelled, original):
+
+    modelled = clean_number(modelled)
+    original = clean_number(original)
+
+    if pd.isna(modelled) or pd.isna(original) or original == 0:
+        return None
+
+    percentage = modelled / original * 100
+
+    return f"{percentage:.1f}% of original"
 
 # ---------------------------------------------------------
 # Trade data source information
@@ -211,6 +222,11 @@ with col1:
     st.metric(
         label="Modelled Import Value",
         value=format_currency(stats["im_val_usd"]),
+        delta=modelled_percentage(
+            stats["im_val_usd"],
+            stats["comtrade_im_usd"]
+        ),
+        delta_color="off",
         border=True
     )
 
