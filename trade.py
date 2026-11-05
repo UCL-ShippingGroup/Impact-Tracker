@@ -141,6 +141,9 @@ else:
 # ---------------------------------------------------------
 # 6. Load selected country's data (Local Git LFS)
 # ---------------------------------------------------------
+# ---------------------------------------------------------
+# 6. Load selected country's data (Local Git LFS)
+# ---------------------------------------------------------
 
 from pathlib import Path
 
@@ -148,13 +151,20 @@ from pathlib import Path
 base_dir = Path(__file__).resolve().parent
 
 @st.cache_data
-def load_trade_data(country, filename):
+def load_trade_data(country, iso_code, filename):
+
+    # Ensure ISO code is three digits
+    iso_code = str(iso_code).zfill(3)
+
+    # Construct folder name: 008 - Albania
+    country_folder = f"{iso_code} - {str(country).strip()}"
 
     # Construct the local file path
     file_path = (
         base_dir
         / "impact"
-        / country
+        / country_folder
+        / "results"
         / filename
     )
 
@@ -181,6 +191,46 @@ def load_trade_data(country, filename):
     df = pd.read_csv(file_path)
 
     return df
+
+# from pathlib import Path
+
+# # Get the directory where your Streamlit app is located
+# base_dir = Path(__file__).resolve().parent
+
+# @st.cache_data
+# def load_trade_data(country, filename):
+
+#     # Construct the local file path
+#     file_path = (
+#         base_dir
+#         / "impact"
+#         / country
+#         / filename
+#     )
+
+#     # Check whether the file exists
+#     if not file_path.is_file():
+#         raise FileNotFoundError(
+#             f"File not found: {file_path}"
+#         )
+
+#     # Check whether Git LFS has downloaded
+#     # the actual CSV rather than just a pointer
+#     with open(file_path, "rb") as f:
+#         first_line = f.readline()
+
+#     if first_line.startswith(
+#         b"version https://git-lfs.github.com/spec/v1"
+#     ):
+#         raise RuntimeError(
+#             f"{filename} is still a Git LFS pointer. "
+#             "The actual CSV has not been downloaded."
+#         )
+
+#     # Read the actual CSV
+#     df = pd.read_csv(file_path)
+
+#     return df
 from pathlib import Path
 
 base_dir = Path(__file__).resolve().parent
