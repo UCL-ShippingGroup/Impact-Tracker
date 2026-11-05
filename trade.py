@@ -200,7 +200,7 @@ def modelled_percentage(modelled, original):
 mot_inferred = (
     "Mode of Transport observed in the data"
     if "*" in str(stats["import_portfolio"])
-    else "Mode of Transport estimated from the data"
+    else "Mode of Transport estimated from the data rather than observed."
 )
 
 st.info(
