@@ -39,12 +39,12 @@ trade_flow = st.segmented_control(
 metric = st.segmented_control(
     "What measure of cost are you interested in?",
     options=[
-        "Maritime Transport Cost",
-        "Maritime Logistics Cost",
         "CIF/FOB price of Imports/Exports",
-        "MTC as % of GDP"
+        # "Maritime Logistics Cost",
+        "Maritime Transport Cost"
+        # "MTC as % of GDP"
     ],
-    default="Maritime Transport Cost",
+    default="CIF/FOB price of Imports/Exports",
     key="economic_metric"
 )
 
@@ -56,22 +56,22 @@ dataset_map = {
     "Import": {
         "Maritime Transport Cost":
             "impact_im_total_costs_usd_v0.64.csv",
-        "Maritime Logistics Cost":
-            "impact_im_total_costs_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_im_total_costs_pct_ciffob_v0.64.csv",
         "CIF/FOB price of Imports/Exports":
             "impact_im_total_costs_pct_cif_v0.64.csv",
-        "MTC as % of GDP":
-            "impact_im_total_costs_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_im_total_costs_pct_gdp_v0.64.csv"
     },
     "Export": {
         "Maritime Transport Cost":
             "impact_ex_total_costs_usd_v0.64.csv",
-        "Maritime Logistics Cost":
-            "impact_ex_total_costs_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_ex_total_costs_pct_ciffob_v0.64.csv",
         "CIF/FOB price of Imports/Exports":
             "impact_ex_total_costs_pct_fob_v0.64.csv",
-        "MTC as % of GDP":
-            "impact_ex_total_costs_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_ex_total_costs_pct_gdp_v0.64.csv"
     }
 }
 
@@ -974,12 +974,12 @@ trade_flow_bar1 = st.segmented_control(
 metric_bar = st.segmented_control(
     "What measure of cost relative to a BAU scenario are you interested in?",
     options=[
+        "CIF/FOB price of Imports/Exportst",
+        # "Maritime Logistics Cost",
         "Maritime Transport Cost",
-        "Maritime Logistics Cost",
-        "CIF/FOB price of Imports/Exports",
-        "MTC as % of GDP"
+        # "MTC as % of GDP"
     ],
-    default="Maritime Transport Cost",
+    default="CIF/FOB price of Imports/Exports",
     key="economic_bar_metric"
 )
 
@@ -995,14 +995,14 @@ dataset_map_bar = {
         "Maritime Transport Cost":
             "impact_im_costs_to_bau_pct_bau_v0.64.csv",
 
-        "Maritime Logistics Cost":
-            "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
 
         "CIF/FOB price of Imports/Exports":
             "impact_im_costs_to_bau_pct_cif_v0.64.csv",
 
-        "MTC as % of GDP":
-            "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
     },
 
     "Export": {
@@ -1010,14 +1010,14 @@ dataset_map_bar = {
         "Maritime Transport Cost":
             "impact_ex_costs_to_bau_pct_bau_v0.64.csv",
 
-        "Maritime Logistics Cost":
-            "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
 
         "CIF/FOB price of Imports/Exports":
             "impact_ex_costs_to_bau_pct_fob_v0.64.csv",
 
-        "MTC as % of GDP":
-            "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
     }
 }
 
