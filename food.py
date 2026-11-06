@@ -24,10 +24,10 @@ st.subheader(f"Food Security Impact: {selected_country}")
 measure = st.segmented_control(
     "What measure of cost are you Interested in?",
     options=[
-        "MTC",
-        "CIF Price of Imports Relative to BAU"
+        "CIF Price of Imports Relative to BAU",
+        "MTC"
     ],
-    default="MTC",
+    default="CIF Price of Imports Relative to BAU",
     key="food_impact_measure"
 )
 
@@ -244,10 +244,10 @@ st.subheader("Food Import Impact by Food Group")
 measure_food = st.segmented_control(
     "What measure of cost are you Interested in?",
     options=[
-        "MTC",
-        "CIF Price of Imports Relative to BAU"
+        "CIF Price of Imports Relative to BAU",
+        "MTC"
     ],
-    default="MTC",
+    default="CIF Price of Imports Relative to BAU",
     key="food_group_measure"
 )
 
