@@ -738,7 +738,18 @@ df_contribution["Contribution"] = (
     df_contribution["Share"]
     * df_contribution["CIF_Change"]
 )
+# Calculate total net contribution for each scenario and year
+df_contribution["Total_Contribution"] = (
+    df_contribution.groupby(["Scenario", "year"])["Contribution"]
+    .transform("sum")
+)
 
+# Calculate each food group's percentage contribution
+df_contribution["Pct_Contribution"] = (
+    df_contribution["Contribution"]
+    / df_contribution["Total_Contribution"].replace(0, float("nan"))
+    * 100
+)
 
 # ---------------------------------------------------------
 # 26. Prepare plotting data
@@ -793,13 +804,15 @@ for group in food_groups:
             name=group,
             marker_color=food_colors[group],
             customdata=group_df[
-                ["Share", "CIF_Change"]
+                ["Pct_Contribution", "Share", "CIF_Change"]
             ].to_numpy(),
+            
             hovertemplate=(
-                "Food Group: %{fullData.name}<br>"
+                "<b>%{fullData.name}</b><br>"
                 "Contribution to Overall CIF Change: %{y:,.2f} pp<br>"
-                "Import Value Share: %{customdata[0]:.1%}<br>"
-                "%{fullData.name} CIF Change: %{customdata[1]:,.2f}%"
+                "% Contribution: %{customdata[0]:,.2f}%<br>"
+                "Food Import Value Share: %{customdata[1]:.1%}<br>"
+                "Food Group CIF Change: %{customdata[2]:,.2f}%"
                 "<extra></extra>"
             )
         )
