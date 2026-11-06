@@ -238,7 +238,7 @@ st.subheader("Food Import Impact by Food Group")
 
 
 # ---------------------------------------------------------
-# 9. Select measure and scenario
+# 9. Select measure
 # ---------------------------------------------------------
 
 measure_food = st.segmented_control(
@@ -250,24 +250,6 @@ measure_food = st.segmented_control(
     default="MTC",
     key="food_group_measure"
 )
-
-scenario_options = {
-    "BAU": "bau",
-    "Levy": "levy",
-    "NZF as-is": "asis",
-    "Brazil": "brazil",
-    "LISCR": "liscr",
-    "Direct": "direct"
-}
-
-scenario_food = st.segmented_control(
-    "Which Scenario are you interested in?",
-    options=list(scenario_options.keys()),
-    default="BAU",
-    key="food_group_scenario"
-)
-
-selected_scenario = scenario_options[scenario_food]
 
 
 # ---------------------------------------------------------
@@ -311,13 +293,13 @@ if measure_food == "MTC":
 
     df_food = df_mtc_food.copy()
     y_axis_title_food = "MTC (US$)"
-    chart_title_food = "Food Import MTC by Food Group"
+    chart_title_food = "Food Import MTC by Scenario"
 
 else:
 
     df_food = df_cif_food.copy()
     y_axis_title_food = "CIF Price of Imports Relative to BAU (%)"
-    chart_title_food = "Food Import CIF Price Change by Food Group"
+    chart_title_food = "Food Import CIF Price Change by Scenario"
 
 
 # ---------------------------------------------------------
@@ -329,15 +311,51 @@ df_food = df_food[
     != "total"
 ].copy()
 
+df_food["food_group"] = (
+    df_food["food_group"]
+    .astype(str)
+    .str.strip()
+)
+
 
 # ---------------------------------------------------------
-# 13. Reshape data from wide to long
+# 13. Select food group
 # ---------------------------------------------------------
 
+food_group_options = sorted(
+    df_food["food_group"].dropna().unique().tolist()
+)
+
+if not food_group_options:
+    st.warning("No food groups available.")
+    st.stop()
+
+selected_food_group = st.segmented_control(
+    "Which Food Group are you interested in?",
+    options=food_group_options,
+    default=food_group_options[0],
+    key="food_group_selection"
+)
+
+
+# ---------------------------------------------------------
+# 14. Filter selected food group and reshape data
+# ---------------------------------------------------------
+
+df_food = df_food[
+    df_food["food_group"] == selected_food_group
+].copy()
+
+# Identify scenario/year columns
 scenario_cols_food = df_food.columns[
     df_food.columns.str.match(r"^[A-Za-z0-9]+_\d{2,4}$")
 ].tolist()
 
+if not scenario_cols_food:
+    st.warning("No scenario/year columns found.")
+    st.stop()
+
+# Reshape from wide to long
 df_food_long = df_food.melt(
     id_vars=["food_group"],
     value_vars=scenario_cols_food,
@@ -359,6 +377,22 @@ df_food_long["year"] = df_food_long["year"].apply(
     lambda x: x + 2000 if x < 100 else x
 )
 
+# Scenario names
+scenario_names = {
+    "bau": "BAU",
+    "levy": "Levy",
+    "asis": "NZF as-is",
+    "brazil": "Brazil",
+    "liscr": "LISCR",
+    "direct": "Direct"
+}
+
+df_food_long["Scenario"] = (
+    df_food_long["Scenario"]
+    .str.lower()
+    .map(scenario_names)
+)
+
 # Ensure numeric values
 df_food_long["Value"] = pd.to_numeric(
     df_food_long["Value"],
@@ -366,21 +400,21 @@ df_food_long["Value"] = pd.to_numeric(
 )
 
 df_food_long = df_food_long.dropna(
-    subset=["Value"]
+    subset=["Scenario", "Value"]
 )
 
+# Set scenario order
+scenario_order = [
+    "BAU",
+    "NZF as-is",
+    "Levy",
+    "Brazil",
+    "LISCR",
+    "Direct"
+]
 
-# ---------------------------------------------------------
-# 14. Filter selected scenario
-# ---------------------------------------------------------
-
-df_food_plot = df_food_long[
-    df_food_long["Scenario"].str.lower()
-    == selected_scenario
-].copy()
-
-df_food_plot = df_food_plot.sort_values(
-    ["food_group", "year"]
+df_food_long = df_food_long.sort_values(
+    ["Scenario", "year"]
 )
 
 
@@ -389,30 +423,40 @@ df_food_plot = df_food_plot.sort_values(
 # ---------------------------------------------------------
 
 fig_food = px.line(
-    df_food_plot,
+    df_food_long,
     x="year",
     y="Value",
-    color="food_group",
+    color="Scenario",
     markers=True,
-    title=chart_title_food,
+    title=f"{chart_title_food}: {selected_food_group}",
+    category_orders={
+        "Scenario": scenario_order
+    },
     labels={
         "year": "Year",
         "Value": y_axis_title_food,
-        "food_group": "Food Group"
-    },
-    hover_data={"Value": ":,.2f"}
+        "Scenario": "Scenario"
+    }
 )
 
+# Format hover
 fig_food.update_traces(
     marker=dict(size=9),
-    line=dict(width=2.5)
+    line=dict(width=2.5),
+    hovertemplate=(
+        "<b>%{fullData.name}</b><br>"
+        "Year: %{x}<br>"
+        + y_axis_title_food + ": %{y:,.2f}"
+        + "<extra></extra>"
+    )
 )
 
 fig_food.update_layout(
     xaxis_title="Year",
     yaxis_title=y_axis_title_food,
+    hovermode="closest",
     legend=dict(
-        title="Food Group",
+        title="Scenario",
         orientation="h",
         yanchor="top",
         y=-0.2,
@@ -429,19 +473,17 @@ fig_food.update_layout(
 
 fig_food.update_xaxes(
     tickmode="array",
-    tickvals=sorted(df_food_plot["year"].unique())
+    tickvals=sorted(df_food_long["year"].unique())
 )
 
 fig_food.update_yaxes(
-    tickformat=",.0f"
+    tickformat=",.2f"
 )
 
 st.plotly_chart(
     fig_food,
     use_container_width=True
 )
-
-
 # ---------------------------------------------------------
 # 16. Food Import Composition
 # ---------------------------------------------------------
