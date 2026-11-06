@@ -291,88 +291,88 @@ fig.update_xaxes(showgrid=True)
 st.plotly_chart(fig, width='stretch')      
 #width='content'
 
-st.subheader("Country Comparison", divider = 'grey')
-#st.markdown("##### Country Comparison")
-st.caption("Select countries you wish to compare. To zoom into specific time scales, create a box over the desired area and the graph will automatically zoom in") 
+# st.subheader("Country Comparison", divider = 'grey')
+# #st.markdown("##### Country Comparison")
+# st.caption("Select countries you wish to compare. To zoom into specific time scales, create a box over the desired area and the graph will automatically zoom in") 
 
-df_2 = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/country_gdp.csv")
-ssp_1 = df_2[df_2['Scenario'] == 'SSP1-2.6']
-ssp_2 = df_2[df_2['Scenario'] == 'SSP2-4.5']  
-ssp_3 = df_2[df_2['Scenario'] == 'SSP3-7.0']  
-ssp_5 = df_2[df_2['Scenario'] == 'SSP5-8.5']  
+# df_2 = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/country_gdp.csv")
+# ssp_1 = df_2[df_2['Scenario'] == 'SSP1-2.6']
+# ssp_2 = df_2[df_2['Scenario'] == 'SSP2-4.5']  
+# ssp_3 = df_2[df_2['Scenario'] == 'SSP3-7.0']  
+# ssp_5 = df_2[df_2['Scenario'] == 'SSP5-8.5']  
 
-comparison_countries = st.multiselect(
-    "Select Countries",
-    options=sorted(df_2['country'].unique()),
-    default=[st.session_state.iso_country]
-)
-selected_data = df_2[
-    df_2['country'].isin(comparison_countries)
-]
+# comparison_countries = st.multiselect(
+#     "Select Countries",
+#     options=sorted(df_2['country'].unique()),
+#     default=[st.session_state.iso_country]
+# )
+# selected_data = df_2[
+#     df_2['country'].isin(comparison_countries)
+# ]
 
-max_abs = max(
-    abs(selected_data['gdp_per_c'].min()),
-    abs(selected_data['gdp_per_c'].max())
-)
+# max_abs = max(
+#     abs(selected_data['gdp_per_c'].min()),
+#     abs(selected_data['gdp_per_c'].max())
+# )
 
-def make_scenario_chart(data, scenario):
+# def make_scenario_chart(data, scenario):
 
-    filtered = data[
-        (data['country'].isin(comparison_countries)) &
-        (data['Scenario'] == scenario)
-    ]
+#     filtered = data[
+#         (data['country'].isin(comparison_countries)) &
+#         (data['Scenario'] == scenario)
+#     ]
 
-    fig = px.line(
-        filtered,
-        x='year',
-        y='gdp_per_c',
-        color='country',
-        #markers=True,
-        title=scenario
-    )
+#     fig = px.line(
+#         filtered,
+#         x='year',
+#         y='gdp_per_c',
+#         color='country',
+#         #markers=True,
+#         title=scenario
+#     )
 
-    fig.update_layout(
-        height=350,
-        margin=dict(l=20, r=20, t=50, b=20),
-        legend_title='Country'
-    )
+#     fig.update_layout(
+#         height=350,
+#         margin=dict(l=20, r=20, t=50, b=20),
+#         legend_title='Country'
+#     )
 
-    fig.update_yaxes(
-        title='% GDP change',
-        ticksuffix='%',
-        dtick=2,
-        range=[-max_abs, max_abs]
-    )
+#     fig.update_yaxes(
+#         title='% GDP change',
+#         ticksuffix='%',
+#         dtick=2,
+#         range=[-max_abs, max_abs]
+#     )
 
-    return fig
+#     return fig
 
-col1, col2 = st.columns(2)
+# col1, col2 = st.columns(2)
 
-with col1:
-    st.plotly_chart(
-        make_scenario_chart(df_2, 'SSP1-2.6'),
-        width='stretch'
-    )
+# with col1:
+#     st.plotly_chart(
+#         make_scenario_chart(df_2, 'SSP1-2.6'),
+#         width='stretch'
+#     )
 
-with col2:
-    st.plotly_chart(
-        make_scenario_chart(df_2, 'SSP2-4.5'),
-        width='stretch'
-    )
+# with col2:
+#     st.plotly_chart(
+#         make_scenario_chart(df_2, 'SSP2-4.5'),
+#         width='stretch'
+#     )
 
-col3, col4 = st.columns(2)
+# col3, col4 = st.columns(2)
 
-with col3:
-    st.plotly_chart(
-        make_scenario_chart(df_2, 'SSP3-7.0'),
-        width='stretch'
-    )
+# with col3:
+#     st.plotly_chart(
+#         make_scenario_chart(df_2, 'SSP3-7.0'),
+#         width='stretch'
+#     )
 
-with col4:
-    st.plotly_chart(
-        make_scenario_chart(df_2, 'SSP5-8.5'),
-        width='stretch'
-    )
+# with col4:
+#     st.plotly_chart(
+#         make_scenario_chart(df_2, 'SSP5-8.5'),
+#         width='stretch'
+#     )
 
 st.subheader("Global GDP Losses for Each Scenario",divider = 'grey')
 #st.markdown("##### "Global GDP Losses for Each Scenario")
