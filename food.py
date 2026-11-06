@@ -32,27 +32,31 @@ measure = st.segmented_control(
     key="food_impact_measure"
 )
 
+#Load Data
 
-# ---------------------------------------------------------
-# 3. Load selected country's datasets
-# ---------------------------------------------------------
+@st.cache_data
+def load_food_data(country):
 
-base_url = (
-    "https://raw.githubusercontent.com/"
-    "UCL-ShippingGroup/Impact-Tracker/main/food/"
-)
+    country_path = base_url + country + "/"
 
-# Get selected country's ISO code
-selected_iso_code = st.session_state.iso_code
+    df_mtc = pd.read_csv(
+        country_path + "food_total_costs_usd_tot_v0.03.csv"
+    )
 
-# Ensure ISO code is three digits
-selected_iso_code = str(selected_iso_code).zfill(3)
+    df_cif = pd.read_csv(
+        country_path + "food_total_costs_pct_cif_tot_v0.03.csv"
+    )
 
-# Construct country folder name
-folder_name = f"{selected_iso_code} - {selected_country.strip()}"
+    return df_mtc, df_cif
 
-# URL encode folder name
-country_url = quote(folder_name, safe="")
+
+try:
+    df_mtc, df_cif = load_food_data(country_url)
+
+except Exception as e:
+    st.error(f"Unable to load food data for {selected_country}.")
+    st.exception(e)
+    st.stop()
 
 # ---------------------------------------------------------
 # 4. Select dataset and axis labels
