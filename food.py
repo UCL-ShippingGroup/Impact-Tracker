@@ -17,7 +17,6 @@ if selected_country is None:
 
 st.subheader(f"Food Security Impact: {selected_country}")
 
-
 # ---------------------------------------------------------
 # 2. Select measure
 # ---------------------------------------------------------
@@ -32,17 +31,40 @@ measure = st.segmented_control(
     key="food_impact_measure"
 )
 
-#Load Data
+
+# ---------------------------------------------------------
+# 3. Load selected country's datasets
+# ---------------------------------------------------------
+
+base_url = (
+    "https://raw.githubusercontent.com/"
+    "UCL-ShippingGroup/Impact-Tracker/main/food/"
+)
+
+# Get selected country's ISO code
+selected_iso_code = st.session_state.iso_code
+
+# Ensure ISO code is three digits
+selected_iso_code = str(selected_iso_code).zfill(3)
+
+# Construct folder name: 008 - Albania
+folder_name = f"{selected_iso_code} - {selected_country.strip()}"
+
+# URL encode folder name
+country_url = quote(folder_name, safe="")
+
 
 @st.cache_data
 def load_food_data(country):
 
     country_path = base_url + country + "/"
 
+    # Load MTC dataset
     df_mtc = pd.read_csv(
         country_path + "food_total_costs_usd_tot_v0.03.csv"
     )
 
+    # Load CIF dataset
     df_cif = pd.read_csv(
         country_path + "food_total_costs_pct_cif_tot_v0.03.csv"
     )
@@ -50,11 +72,14 @@ def load_food_data(country):
     return df_mtc, df_cif
 
 
+# Load datasets for selected country
 try:
     df_mtc, df_cif = load_food_data(country_url)
 
 except Exception as e:
-    st.error(f"Unable to load food data for {selected_country}.")
+    st.error(
+        f"Unable to load food data for {selected_country}."
+    )
     st.exception(e)
     st.stop()
 
