@@ -223,7 +223,7 @@ with col1:
         label="Modelled Import Value",
         value=format_currency(stats["im_val_usd"]),
         delta=modelled_percentage(
-            stats["im_val_usd"] - stats["comtrade_im_usd"],
+            stats["im_val_usd"],
             stats["comtrade_im_usd"]
         ),
         delta_color="off",
@@ -265,7 +265,7 @@ with col1:
         label="Modelled Export Value",
         value=format_currency(stats["ex_val_usd"]),
         delta=modelled_percentage(
-            stats["ex_val_usd"] - stats["comtrade_ex_usd"],
+            stats["ex_val_usd"],
             stats["comtrade_ex_usd"]
         ),
         delta_color="off",
