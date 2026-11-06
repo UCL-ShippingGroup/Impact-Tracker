@@ -1101,3 +1101,202 @@ else:
     )
 
 
+# ---------------------------------------------------------
+# 15. HS2 Trade Composition - Value and Net Weight
+# ---------------------------------------------------------
+
+st.subheader(
+    "HS2 Trade Composition",
+    divider="grey"
+)
+
+# ---------------------------------------------------------
+# 15.1 Prepare data
+# ---------------------------------------------------------
+
+pie_df = df_characteristics.copy()
+
+# Convert numerical columns
+for col in [trade_value_col, "pct_val", "pct_net_wgt"]:
+
+    pie_df[col] = pd.to_numeric(
+        pie_df[col],
+        errors="coerce"
+    )
+
+# Remove missing HS2 categories
+pie_df = pie_df.dropna(subset=["HS2_desc"])
+
+# Aggregate by HS2 category
+pie_df = (
+    pie_df
+    .groupby("HS2_desc", as_index=False)
+    .agg({
+        trade_value_col: "sum",
+        "pct_val": "sum",
+        "pct_net_wgt": "sum"
+    })
+)
+
+# Sort by CIF/FOB value
+pie_df = pie_df.sort_values(
+    trade_value_col,
+    ascending=False
+)
+
+# Identify top 25 HS2 categories
+top25_categories = (
+    pie_df.head(25)["HS2_desc"].tolist()
+)
+
+# Assign all remaining categories to Other
+pie_df["Commodity"] = pie_df["HS2_desc"].where(
+    pie_df["HS2_desc"].isin(top25_categories),
+    "Other HS2 Commodities"
+)
+
+# Group remaining categories together
+pie_df = (
+    pie_df
+    .groupby("Commodity", as_index=False)
+    .agg({
+        "pct_val": "sum",
+        "pct_net_wgt": "sum"
+    })
+)
+
+# Keep the top 25 in trade value order
+category_order = top25_categories.copy()
+
+if "Other HS2 Commodities" in pie_df["Commodity"].values:
+    category_order.append("Other HS2 Commodities")
+
+pie_df["Commodity"] = pd.Categorical(
+    pie_df["Commodity"],
+    categories=category_order,
+    ordered=True
+)
+
+pie_df = pie_df.sort_values("Commodity")
+
+
+# ---------------------------------------------------------
+# 15.2 Function to create pie charts
+# ---------------------------------------------------------
+
+def create_hs2_pie_chart(data, value_col, chart_title):
+
+    chart_df = data[
+        ["Commodity", value_col]
+    ].copy()
+
+    chart_df = chart_df.dropna(subset=[value_col])
+
+    chart_df = chart_df[
+        chart_df[value_col] > 0
+    ]
+
+    if chart_df.empty:
+        return None
+
+    fig = px.pie(
+        chart_df,
+        names="Commodity",
+        values=value_col,
+        hole=0,
+        color_discrete_sequence=px.colors.qualitative.Alphabet
+    )
+
+    fig.update_traces(
+
+        textinfo="percent",
+
+        textposition="inside",
+
+        hovertemplate=(
+            "<b>%{label}</b><br>"
+            "Share: %{value:.2f}%"
+            "<extra></extra>"
+        ),
+
+        sort=False
+    )
+
+    fig.update_layout(
+
+        title=dict(
+            text=chart_title,
+            x=0.5,
+            xanchor="center"
+        ),
+
+        height=650,
+
+        template="plotly_white",
+
+        margin=dict(
+            l=20,
+            r=20,
+            t=70,
+            b=20
+        ),
+
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.1,
+            xanchor="center",
+            x=0.5
+        )
+    )
+
+    return fig
+
+
+# ---------------------------------------------------------
+# 15.3 Create two pie charts side by side
+# ---------------------------------------------------------
+
+col1, col2 = st.columns(2)
+
+with col1:
+
+    fig_value = create_hs2_pie_chart(
+        pie_df,
+        "pct_val",
+        f"{characteristic_flow} - Share of Trade Value"
+    )
+
+    if fig_value is not None:
+
+        st.plotly_chart(
+            fig_value,
+            use_container_width=True,
+            key="hs2_value_pie"
+        )
+
+    else:
+
+        st.info("No trade value data available.")
+
+
+with col2:
+
+    fig_weight = create_hs2_pie_chart(
+        pie_df,
+        "pct_net_wgt",
+        f"{characteristic_flow} - Share of Net Weight"
+    )
+
+    if fig_weight is not None:
+
+        st.plotly_chart(
+            fig_weight,
+            use_container_width=True,
+            key="hs2_weight_pie"
+        )
+
+    else:
+
+        st.info("No net weight data available.")
+
