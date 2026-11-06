@@ -768,6 +768,36 @@ else:
     st.info("No trade flow data available.")
 
 
+
+
+
+# ---------------------------------------------------------
+# 13. Chart 3 - Top partner countries
+# ---------------------------------------------------------
+
+st.markdown(
+    f"### Top {trade_flow} Partner Countries"
+)
+
+fig_partners = create_trade_bar_chart(
+    df,
+    "partnerDesc",
+    f"Top 25 {trade_flow} Partner Countries"
+)
+
+if fig_partners is not None:
+
+    st.plotly_chart(
+        fig_partners,
+        use_container_width=True,
+        key="trade_portfolio_partners"
+    )
+
+else:
+
+    st.info("No partner country data available.")
+
+
 # ---------------------------------------------------------
 # 12. Chart 2 - Top HS2 commodity flows
 # ---------------------------------------------------------
@@ -796,27 +826,278 @@ else:
 
 
 # ---------------------------------------------------------
-# 13. Chart 3 - Top partner countries
+# 14. Average Weight per USD / Distance to Market
 # ---------------------------------------------------------
 
-st.markdown(
-    f"### Top {trade_flow} Partner Countries"
+st.subheader(
+    "Trade Characteristics by HS2 Commodity",
+    divider="grey"
 )
 
-fig_partners = create_trade_bar_chart(
-    df,
-    "partnerDesc",
-    f"Top 25 {trade_flow} Partner Countries"
+# ---------------------------------------------------------
+# 14.1 Segment controls
+# ---------------------------------------------------------
+
+characteristic_flow = st.segmented_control(
+    "Would you like to visualise Imports or Exports?",
+    options=["Imports", "Exports"],
+    default="Imports",
+    key="characteristic_flow"
 )
 
-if fig_partners is not None:
+characteristic_measure = st.segmented_control(
+    "Which measure are you interested in?",
+    options=[
+        "Average Weight per USD",
+        "Average Distance to Market"
+    ],
+    default="Average Weight per USD",
+    key="characteristic_measure"
+)
+
+# ---------------------------------------------------------
+# 14.2 Select dataset and trade value column
+# ---------------------------------------------------------
+
+if characteristic_flow == "Imports":
+
+    characteristic_file = "hs2_total_usd_im_v0.64.csv"
+    trade_value_col = "cifvalue"
+    trade_value_label = "CIF Value"
+
+else:
+
+    characteristic_file = "hs2_total_usd_ex_v0.64.csv"
+    trade_value_col = "fobvalue"
+    trade_value_label = "FOB Value"
+
+
+# ---------------------------------------------------------
+# 14.3 Load selected country's data
+# ---------------------------------------------------------
+
+@st.cache_data
+def load_hs2_characteristics(country, iso_code, filename):
+
+    iso_code = str(iso_code).zfill(3)
+
+    country_folder = f"{iso_code} - {str(country).strip()}"
+
+    file_path = (
+        base_dir
+        / "impact"
+        / country_folder
+        / "results"
+        / filename
+    )
+
+    if not file_path.is_file():
+        raise FileNotFoundError(
+            f"File not found: {file_path}"
+        )
+
+    return pd.read_csv(file_path)
+
+
+try:
+
+    df_characteristics = load_hs2_characteristics(
+        selected_country,
+        selected_country_iso,
+        characteristic_file
+    )
+
+except (FileNotFoundError, OSError) as e:
+
+    st.error(
+        f"Could not load HS2 data for {selected_country}: {e}"
+    )
+
+    st.stop()
+
+
+# ---------------------------------------------------------
+# 14.4 Select measure
+# ---------------------------------------------------------
+
+if characteristic_measure == "Average Weight per USD":
+
+    measure_col = "kg_per_usd_netWgt"
+    measure_label = "Average Weight per USD (kg/USD)"
+    measure_unit = "kg/USD"
+
+else:
+
+    measure_col = "sea_dist_nm"
+    measure_label = "Average Distance to Market (nm)"
+    measure_unit = "nm"
+
+
+# ---------------------------------------------------------
+# 14.5 Prepare data
+# ---------------------------------------------------------
+
+plot_df = df_characteristics.copy()
+
+# Convert columns to numeric
+for col in [trade_value_col, measure_col]:
+
+    plot_df[col] = pd.to_numeric(
+        plot_df[col],
+        errors="coerce"
+    )
+
+# Remove rows with missing values
+plot_df = plot_df.dropna(
+    subset=[
+        "HS2_desc",
+        trade_value_col,
+        measure_col
+    ]
+)
+
+# Sort by CIF/FOB value and select top 25
+plot_df = (
+    plot_df
+    .sort_values(
+        trade_value_col,
+        ascending=False
+    )
+    .head(25)
+    .copy()
+)
+
+# Convert trade value to millions for hover
+plot_df["Trade_Value_Million"] = (
+    plot_df[trade_value_col] / 1e6
+)
+
+# Preserve trade value ranking on x-axis
+category_order = plot_df["HS2_desc"].tolist()
+
+
+# ---------------------------------------------------------
+# 14.6 Create bar chart
+# ---------------------------------------------------------
+
+fig = px.bar(
+
+    plot_df,
+
+    x="HS2_desc",
+    y=measure_col,
+
+    color=trade_value_col,
+
+    color_continuous_scale="Blues",
+
+    category_orders={
+        "HS2_desc": category_order
+    },
+
+    custom_data=[
+        "Trade_Value_Million"
+    ],
+
+    labels={
+        "HS2_desc": "",
+        measure_col: measure_label
+    }
+
+)
+
+
+# ---------------------------------------------------------
+# 14.7 Hover formatting
+# ---------------------------------------------------------
+
+fig.update_traces(
+
+    hovertemplate=(
+        "<b>%{x}</b><br>"
+        + measure_label
+        + ": %{y:,.2f} "
+        + measure_unit
+        + "<br>"
+        + trade_value_label
+        + ": $%{customdata[0]:,.2f} million"
+        + "<extra></extra>"
+    ),
+
+    marker_line_width=0
+)
+
+
+# ---------------------------------------------------------
+# 14.8 Chart layout
+# ---------------------------------------------------------
+
+fig.update_layout(
+
+    height=600,
+
+    template="plotly_white",
+
+    title=dict(
+        text=(
+            f"Top 25 {characteristic_flow} HS2 Commodities"
+            f" - {characteristic_measure}"
+        ),
+        x=0.5,
+        xanchor="center"
+    ),
+
+    margin=dict(
+        l=80,
+        r=30,
+        t=70,
+        b=160
+    ),
+
+    showlegend=False,
+
+    coloraxis_showscale=False,
+
+    hovermode="closest",
+
+    xaxis=dict(
+        title=None,
+        tickangle=-45,
+        categoryorder="array",
+        categoryarray=category_order,
+        showgrid=False,
+        tickfont=dict(size=11),
+        automargin=True
+    ),
+
+    yaxis=dict(
+        title=measure_label,
+        showgrid=True,
+        gridcolor="rgba(200,200,200,0.3)",
+        zeroline=True,
+        zerolinecolor="lightgrey",
+        rangemode="tozero"
+    )
+
+)
+
+
+# ---------------------------------------------------------
+# 14.9 Display chart
+# ---------------------------------------------------------
+
+if not plot_df.empty:
 
     st.plotly_chart(
-        fig_partners,
+        fig,
         use_container_width=True,
-        key="trade_portfolio_partners"
+        key="hs2_trade_characteristics"
     )
 
 else:
 
-    st.info("No partner country data available.")
+    st.info(
+        "No HS2 trade characteristics data available."
+    )
+
+
