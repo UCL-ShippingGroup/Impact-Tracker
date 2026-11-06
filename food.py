@@ -42,32 +42,17 @@ base_url = (
     "UCL-ShippingGroup/Impact-Tracker/main/food/"
 )
 
-country_url = quote(selected_country, safe="")
+# Get selected country's ISO code
+selected_iso_code = st.session_state.iso_code
 
-@st.cache_data
-def load_food_data(country):
+# Ensure ISO code is three digits
+selected_iso_code = str(selected_iso_code).zfill(3)
 
-    country_path = base_url + country + "/"
+# Construct country folder name
+folder_name = f"{selected_iso_code} - {selected_country.strip()}"
 
-    df_mtc = pd.read_csv(
-        country_path + "food_total_costs_usd_tot_v0.03.csv"
-    )
-
-    df_cif = pd.read_csv(
-        country_path + "food_total_costs_pct_cif_tot_v0.03.csv"
-    )
-
-    return df_mtc, df_cif
-
-
-try:
-    df_mtc, df_cif = load_food_data(country_url)
-
-except Exception as e:
-    st.error(f"Unable to load food data for {selected_country}.")
-    st.exception(e)
-    st.stop()
-
+# URL encode folder name
+country_url = quote(folder_name, safe="")
 
 # ---------------------------------------------------------
 # 4. Select dataset and axis labels
