@@ -4,7 +4,9 @@ import pandas as pd
 import plotly.express as px
 
 from urllib.parse import quote
+from country_selector import country_selector
 
+country_selector()
 st.set_page_config(layout='wide')
 
 # ---------------------------------------------------------
