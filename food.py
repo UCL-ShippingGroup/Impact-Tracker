@@ -3,6 +3,10 @@ import pandas as pd
 import plotly.express as px
 from urllib.parse import quote
 
+from country_selector import country_selector
+
+country_selector()
+
 # ---------------------------------------------------------
 # 1. Page title and selected country
 # ---------------------------------------------------------
