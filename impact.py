@@ -1537,7 +1537,18 @@ df_hs2_plot["CIF_FOB_Change"] = (
     df_hs2_plot["Contribution"]
     / df_hs2_plot["Share"].replace(0, float("nan"))
 )
+# Calculate total net contribution for each scenario and year
+df_hs2_plot["Total_Contribution"] = (
+    df_hs2_plot.groupby(["Scenario", "year"])["Contribution"]
+    .transform("sum")
+)
 
+# Percentage contribution to overall net change
+df_hs2_plot["Pct_Contribution"] = (
+    df_hs2_plot["Contribution"]
+    / df_hs2_plot["Total_Contribution"].replace(0, float("nan"))
+    * 100
+)
 # ---------------------------------------------------------
 # 23. Prepare plotting data
 # ---------------------------------------------------------
@@ -1605,15 +1616,16 @@ for group in hs2_groups:
 
             marker_color=hs2_colors[group],
 
-            customdata=group_df[
-                ["Share", "CIF_FOB_Change"]
+           customdata=group_df[
+                ["Pct_Contribution", "Share", "CIF_FOB_Change"]
             ].to_numpy(),
-
+            
             hovertemplate=(
                 "<b>%{fullData.name}</b><br>"
                 "Contribution to Overall Change: %{y:,.2f} pp<br>"
-                "Trade Value Share: %{customdata[0]:.1%}<br>"
-                "HS2 CIF/FOB Change: %{customdata[1]:,.2f}%"
+                "% Contribution: %{customdata[0]:,.2f}%<br>"
+                "Trade Value Share: %{customdata[1]:.1%}<br>"
+                "HS2 CIF/FOB Change: %{customdata[2]:,.2f}%"
                 "<extra></extra>"
             )
         )
