@@ -27,7 +27,7 @@ selected_country_iso = st.session_state.get(
     None
 )
 
-
+#
 
 # ---------------------------------------------------------
 # 2. Page title
@@ -38,49 +38,259 @@ st.title("Seaborne Trade Portfolios")
 
 
 
+# meta_stats_d = {
+#     "iso_code": "str", "iso_country": "str", "gdp": "str", 
+#     #"comtrade_im_usd": "float", "im_val_usd": "float", "comtrade_ex_usd": "float", "comtrade_ex_usd": "float", 
+# }
+# meta_stats = pd.read_csv(
+#     "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
+#     dtype=meta_stats_d
+# )
+# meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
+# #st.write(meta_stats_country)
+
+# # print message regarding origin of trade data
+# mot_inferred = "with Mode of Transport observed in the data rather than estimated" \
+#     if "*" in meta_stats_country.import_portfolio.values[0] \
+#     else "with Mode of Transport estimated from the data rather than observed"
+
+# st.write(
+#     "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}.".format(
+#         meta_stats_country.iso_country.values[0],
+#         meta_stats_country.year.values[0],
+#         mot_inferred
+# ))
+
+# st.write(
+#     "The total value of imports modelled in the exercise is USD{0}, out of a total of USD{1} \
+#     observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
+#     each USD of imported goods, with each kilogram travelling an average of {3} nautical miles.".format(
+#         meta_stats_country.im_val_usd.values[0],
+#         meta_stats_country.comtrade_im_usd.values[0],
+#         meta_stats_country.im_WtV_kg_per_usd.values[0],
+#         meta_stats_country.im_dist_to_market_nm.values[0]
+# ))
+
+# st.write(
+#     "The total value of exports modelled in the exercise is USD{0}, out of a total of USD{1} \
+#     observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
+#     each USD of exported goods, with each kilogram travelling an average of {3} nautical miles.".format(
+#         meta_stats_country.ex_val_usd.values[0],
+#         meta_stats_country.comtrade_ex_usd.values[0],
+#         meta_stats_country.ex_WtV_kg_per_usd.values[0],
+#         meta_stats_country.ex_dist_to_market_nm.values[0]
+# ))
+# ---------------------------------------------------------
+# Load country metadata
+# ---------------------------------------------------------
+
 meta_stats_d = {
-    "iso_code": "str", "iso_country": "str", "gdp": "str", 
-    #"comtrade_im_usd": "float", "im_val_usd": "float", "comtrade_ex_usd": "float", "comtrade_ex_usd": "float", 
+    "iso_code": "str",
+    "iso_country": "str",
+    "gdp": "str"
 }
-meta_stats = pd.read_csv(
-    "https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/meta-stats.csv",
-    dtype=meta_stats_d
+
+@st.cache_data
+def load_meta_stats():
+    return pd.read_csv(
+        "https://raw.githubusercontent.com/"
+        "UCL-ShippingGroup/Impact-Tracker/main/"
+        "datasets/meta-stats.csv",
+        dtype=meta_stats_d
+    )
+
+meta_stats = load_meta_stats()
+
+# Ensure ISO code is consistently three digits
+meta_stats["iso_code"] = (
+    meta_stats["iso_code"].str.zfill(3)
 )
-meta_stats_country = meta_stats[(meta_stats.iso_code == selected_country_iso)]
-#st.write(meta_stats_country)
 
-# print message regarding origin of trade data
-mot_inferred = "with Mode of Transport observed in the data rather than estimated" \
-    if "*" in meta_stats_country.import_portfolio.values[0] \
-    else "with Mode of Transport estimated from the data rather than observed"
+selected_iso = str(selected_country_iso).zfill(3)
 
-st.write(
-    "Trade data for {0} was sourced for the year {1} from the UN Comtrade platform, {2}.".format(
-        meta_stats_country.iso_country.values[0],
-        meta_stats_country.year.values[0],
-        mot_inferred
-))
+meta_stats_country = meta_stats[
+    meta_stats["iso_code"] == selected_iso
+]
 
-st.write(
-    "The total value of imports modelled in the exercise is USD{0}, out of a total of USD{1} \
-    observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
-    each USD of imported goods, with each kilogram travelling an average of {3} nautical miles.".format(
-        meta_stats_country.im_val_usd.values[0],
-        meta_stats_country.comtrade_im_usd.values[0],
-        meta_stats_country.im_WtV_kg_per_usd.values[0],
-        meta_stats_country.im_dist_to_market_nm.values[0]
-))
+if meta_stats_country.empty:
+    st.warning(
+        f"No trade metadata available for {selected_country}."
+    )
+    st.stop()
 
-st.write(
-    "The total value of exports modelled in the exercise is USD{0}, out of a total of USD{1} \
-    observed in the original Comtrade portfolio. An average of {2} kgs were associated with \
-    each USD of exported goods, with each kilogram travelling an average of {3} nautical miles.".format(
-        meta_stats_country.ex_val_usd.values[0],
-        meta_stats_country.comtrade_ex_usd.values[0],
-        meta_stats_country.ex_WtV_kg_per_usd.values[0],
-        meta_stats_country.ex_dist_to_market_nm.values[0]
-))
+# Select the country's data
+stats = meta_stats_country.iloc[0]
 
+
+# ---------------------------------------------------------
+# Clean numerical values
+# ---------------------------------------------------------
+
+def clean_number(value):
+
+    if pd.isna(value):
+        return None
+
+    value = str(value).strip()
+
+    # Remove common formatting characters
+    value = (
+        value
+        .replace(",", "")
+        .replace("$", "")
+        .replace("USD", "")
+        .replace("kg", "")
+        .replace("nm", "")
+        .strip()
+    )
+
+    return pd.to_numeric(value, errors="coerce")
+
+
+# ---------------------------------------------------------
+# Format currency
+# ---------------------------------------------------------
+
+def format_currency(value):
+
+    value = clean_number(value)
+
+    if pd.isna(value):
+        return "N/A"
+
+    if abs(value) >= 1e9:
+        return f"${value / 1e9:,.2f}bn"
+
+    elif abs(value) >= 1e6:
+        return f"${value / 1e6:,.2f}m"
+
+    else:
+        return f"${value:,.2f}"
+
+
+# ---------------------------------------------------------
+# Format other numbers
+# ---------------------------------------------------------
+
+def format_number(value, decimals=2):
+
+    value = clean_number(value)
+
+    if pd.isna(value):
+        return "N/A"
+
+    return f"{value:,.{decimals}f}"
+
+def modelled_percentage(modelled, original):
+
+    modelled = clean_number(modelled)
+    original = clean_number(original)
+
+    if pd.isna(modelled) or pd.isna(original) or original == 0:
+        return None
+
+    percentage = modelled / original * 100
+
+    return f"{percentage:.1f}% of original"
+
+# ---------------------------------------------------------
+# Trade data source information
+# ---------------------------------------------------------
+
+mot_inferred = (
+    "Mode of Transport observed in the data"
+    if "*" in str(stats["import_portfolio"])
+    else "Mode of Transport estimated from the data rather than observed."
+)
+
+st.info(
+    f"Trade data for **{stats['iso_country']}** "
+    f"was sourced from UN Comtrade for **{stats['year']}**, "
+    f"with {mot_inferred}."
+)
+
+
+# ---------------------------------------------------------
+# Imports metrics
+# ---------------------------------------------------------
+
+st.subheader("Imports", divider="grey")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        label="Modelled Import Value",
+        value=format_currency(stats["im_val_usd"]),
+        delta=modelled_percentage(
+            stats["im_val_usd"],
+            stats["comtrade_im_usd"]
+        ),
+        delta_color="off",
+        border=True
+    )
+
+with col2:
+    st.metric(
+        label="Original Comtrade Value",
+        value=format_currency(stats["comtrade_im_usd"]),
+        border=True
+    )
+
+with col3:
+    st.metric(
+        label="Average Weight per USD",
+        value=f"{format_number(stats['im_WtV_kg_per_usd'])} kg",
+        border=True
+    )
+
+with col4:
+    st.metric(
+        label="Average Distance to Market",
+        value=f"{format_number(stats['im_dist_to_market_nm'], 0)} nm",
+        border=True
+    )
+
+
+# ---------------------------------------------------------
+# Exports metrics
+# ---------------------------------------------------------
+
+st.subheader("Exports", divider="grey")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        label="Modelled Export Value",
+        value=format_currency(stats["ex_val_usd"]),
+        delta=modelled_percentage(
+            stats["ex_val_usd"],
+            stats["comtrade_ex_usd"]
+        ),
+        delta_color="off",
+        border=True
+    )
+with col2:
+    st.metric(
+        label="Original Comtrade Value",
+        value=format_currency(stats["comtrade_ex_usd"]),
+        border=True
+    )
+
+with col3:
+    st.metric(
+        label="Average Weight per USD",
+        value=f"{format_number(stats['ex_WtV_kg_per_usd'])} kg",
+        border=True
+    )
+
+with col4:
+    st.metric(
+        label="Average Distance to Market",
+        value=f"{format_number(stats['ex_dist_to_market_nm'], 0)} nm",
+        border=True
+    )
 
 st.subheader(
     f"Trade Portfolios for {selected_country}",
@@ -230,58 +440,59 @@ def load_trade_data(country, iso_code, filename):
 #     df = pd.read_csv(file_path)
 
 #     return df
-from pathlib import Path
+# from pathlib import Path
 
-base_dir = Path(__file__).resolve().parent
+# base_dir = Path(__file__).resolve().parent
 
-st.write("### Data Loading Diagnostics")
+# st.write("### Data Loading Diagnostics")
 
-st.write("Current script:", __file__)
-st.write("Base directory:", str(base_dir))
-st.write("Selected country:", repr(selected_country))
-st.write("Selected file:", repr(selected_file))
+# st.write("Current script:", __file__)
+# st.write("Base directory:", str(base_dir))
+# st.write("Selected country:", repr(selected_country))
+# st.write("Selected file:", repr(selected_file))
 
-file_path = (
-    base_dir
-    / "impact"
-    / selected_country
-    / selected_file
-)
+# file_path = (
+#     base_dir
+#     / "impact"
+#     / selected_country
+#     / selected_file
+# )
 
-st.write("Expected file path:", str(file_path))
-st.write("File exists:", file_path.is_file())
+# st.write("Expected file path:", str(file_path))
+# st.write("File exists:", file_path.is_file())
 
-if file_path.is_file():
+# if file_path.is_file():
 
-    st.write(
-        "File size:",
-        f"{file_path.stat().st_size / 1e6:,.2f} MB"
-    )
+#     st.write(
+#         "File size:",
+#         f"{file_path.stat().st_size / 1e6:,.2f} MB"
+#     )
 
-    with open(file_path, "rb") as f:
-        first_line = f.readline()
+#     with open(file_path, "rb") as f:
+#         first_line = f.readline()
 
-    st.write(
-        "Git LFS pointer:",
-        first_line.startswith(
-            b"version https://git-lfs.github.com/spec/v1"
-        )
-    )
+#     st.write(
+#         "Git LFS pointer:",
+#         first_line.startswith(
+#             b"version https://git-lfs.github.com/spec/v1"
+#         )
+#     )
 
-else:
+# else:
 
-    st.write("Parent folder exists:", file_path.parent.is_dir())
+#     st.write("Parent folder exists:", file_path.parent.is_dir())
 
-    if file_path.parent.is_dir():
-        st.write(
-            "Files available:",
-            [p.name for p in file_path.parent.iterdir()]
-        )
+#     if file_path.parent.is_dir():
+#         st.write(
+#             "Files available:",
+#             [p.name for p in file_path.parent.iterdir()]
+#         )
 
 try:
 
     df = load_trade_data(
         selected_country,
+        selected_country_iso,
         selected_file
     )
 

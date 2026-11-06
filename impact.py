@@ -39,12 +39,12 @@ trade_flow = st.segmented_control(
 metric = st.segmented_control(
     "What measure of cost are you interested in?",
     options=[
-        "Maritime Transport Cost",
-        "Maritime Logistics Cost",
         "CIF/FOB price of Imports/Exports",
-        "MTC as % of GDP"
+        # "Maritime Logistics Cost",
+        "Maritime Transport Cost"
+        # "MTC as % of GDP"
     ],
-    default="Maritime Transport Cost",
+    default="CIF/FOB price of Imports/Exports",
     key="economic_metric"
 )
 
@@ -56,22 +56,22 @@ dataset_map = {
     "Import": {
         "Maritime Transport Cost":
             "impact_im_total_costs_usd_v0.64.csv",
-        "Maritime Logistics Cost":
-            "impact_im_total_costs_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_im_total_costs_pct_ciffob_v0.64.csv",
         "CIF/FOB price of Imports/Exports":
             "impact_im_total_costs_pct_cif_v0.64.csv",
-        "MTC as % of GDP":
-            "impact_im_total_costs_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_im_total_costs_pct_gdp_v0.64.csv"
     },
     "Export": {
         "Maritime Transport Cost":
             "impact_ex_total_costs_usd_v0.64.csv",
-        "Maritime Logistics Cost":
-            "impact_ex_total_costs_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_ex_total_costs_pct_ciffob_v0.64.csv",
         "CIF/FOB price of Imports/Exports":
             "impact_ex_total_costs_pct_fob_v0.64.csv",
-        "MTC as % of GDP":
-            "impact_ex_total_costs_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_ex_total_costs_pct_gdp_v0.64.csv"
     }
 }
 
@@ -454,479 +454,479 @@ st.plotly_chart(
 )
 
 
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
+# import streamlit as st
+# import pandas as pd
+# import plotly.graph_objects as go
 
-from plotly.subplots import make_subplots
-from urllib.parse import quote
-from urllib.error import HTTPError, URLError
+# from plotly.subplots import make_subplots
+# from urllib.parse import quote
+# from urllib.error import HTTPError, URLError
 
 
-# ---------------------------------------------------------
-# 1. Section title
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 1. Section title
+# # ---------------------------------------------------------
 
-st.subheader(
-    "Economic Impact Relative to BAU",
-    divider="grey"
-)
+# st.subheader(
+#     "Economic Impact Relative to BAU",
+#     divider="grey"
+# )
 
-# Get selected country from home page
-selected_country = st.session_state.get(
-    "iso_country",
-    None
-)
+# # Get selected country from home page
+# selected_country = st.session_state.get(
+#     "iso_country",
+#     None
+# )
 
-if not selected_country:
-    st.warning("Please select a country on the home page.")
-    st.stop()
+# if not selected_country:
+#     st.warning("Please select a country on the home page.")
+#     st.stop()
 
 
-# ---------------------------------------------------------
-# 2. Import / Export segmented control
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 2. Import / Export segmented control
+# # ---------------------------------------------------------
 
-trade_flow_bar = st.segmented_control(
-    "Which Trade flow are you interested in?",
-    options=["Import", "Export"],
-    default="Import",
-    key="economic_bar_trade_flow"
-)
+# trade_flow_bar = st.segmented_control(
+#     "Which Trade flow are you interested in?",
+#     options=["Import", "Export"],
+#     default="Import",
+#     key="economic_bar_trade_flow"
+# )
 
 
-# ---------------------------------------------------------
-# 3. Dataset mapping
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 3. Dataset mapping
+# # ---------------------------------------------------------
 
-dataset_map_bar = {
+# dataset_map_bar = {
 
-    "Import": {
+#     "Import": {
 
-        "Maritime Transport Cost":
-            "impact_im_costs_to_bau_pct_bau_v0.64.csv",
+#         "Maritime Transport Cost":
+#             "impact_im_costs_to_bau_pct_bau_v0.64.csv",
 
-        "Maritime Logistics Cost":
-            "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
+#         "Maritime Logistics Cost":
+#             "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
 
-        "CIF/FOB price of Imports/Exports":
-            "impact_im_costs_to_bau_pct_cif_v0.64.csv",
+#         "CIF/FOB price of Imports/Exports":
+#             "impact_im_costs_to_bau_pct_cif_v0.64.csv",
 
-        "MTC as % of GDP":
-            "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
-    },
+#         "MTC as % of GDP":
+#             "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+#     },
 
-    "Export": {
+#     "Export": {
 
-        "Maritime Transport Cost":
-            "impact_ex_costs_to_bau_pct_bau_v0.64.csv",
+#         "Maritime Transport Cost":
+#             "impact_ex_costs_to_bau_pct_bau_v0.64.csv",
 
-        "Maritime Logistics Cost":
-            "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
-
-        "CIF/FOB price of Imports/Exports":
-            "impact_ex_costs_to_bau_pct_fob_v0.64.csv",
+#         "Maritime Logistics Cost":
+#             "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
+
+#         "CIF/FOB price of Imports/Exports":
+#             "impact_ex_costs_to_bau_pct_fob_v0.64.csv",
 
-        "MTC as % of GDP":
-            "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
-    }
-}
-
-
-# ---------------------------------------------------------
-# 4. Load country datasets
-# ---------------------------------------------------------
-
-base_url = (
-    "https://raw.githubusercontent.com/"
-    "UCL-ShippingGroup/Impact-Tracker/main/impact/"
-)
-
-
-@st.cache_data
-def load_bar_data(country, iso_code, filename):
-    iso_code = str(iso_code).zfill(3)
-    folder_name = f"{iso_code} - {str(country).strip()}"
-    country_folder = quote(
-        folder_name,
-        safe=""
-    )
+#         "MTC as % of GDP":
+#             "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+#     }
+# }
+
+
+# # ---------------------------------------------------------
+# # 4. Load country datasets
+# # ---------------------------------------------------------
+
+# base_url = (
+#     "https://raw.githubusercontent.com/"
+#     "UCL-ShippingGroup/Impact-Tracker/main/impact/"
+# )
+
+
+# @st.cache_data
+# def load_bar_data(country, iso_code, filename):
+#     iso_code = str(iso_code).zfill(3)
+#     folder_name = f"{iso_code} - {str(country).strip()}"
+#     country_folder = quote(
+#         folder_name,
+#         safe=""
+#     )
 
-    url = (
-        base_url
-        + country_folder
-        + "/results/"
-        + filename
-    )
-
-    return pd.read_csv(url)
-try:
-    df = load_bar_data(
-        selected_country,
-        st.session_state.iso_code,
-        selected_file
-    )
-
-except (FileNotFoundError, HTTPError) as e:
-    st.error(str(e))
-    st.stop()
-
-# ---------------------------------------------------------
-# 5. Load, melt and combine the four datasets
-# ---------------------------------------------------------
-
-years = [
-    "2029", "2032", "2035", "2038",
-    "2041", "2044", "2047", "2050"
-]
-
-measures = [
-    "Maritime Transport Cost",
-    "Maritime Logistics Cost",
-    "CIF/FOB price of Imports/Exports",
-    "MTC as % of GDP"
-]
-
-all_dfs = []
-
-for measure in measures:
-
-    filename = dataset_map_bar[
-        trade_flow_bar
-    ][measure]
-
-    try:
-        df = load_bar_data(
-            selected_country,
-            filename
-        )
-
-    except (HTTPError, URLError, OSError) as e:
-
-        st.error(
-            f"Could not load {filename}: {e}"
-        )
-        st.stop()
-
-    # Clean column names
-    df.columns = (
-        df.columns.astype(str).str.strip()
-    )
-
-    if "Scenario" not in df.columns:
-        st.error(
-            f"Scenario column missing in {filename}"
-        )
-        st.stop()
-
-    available_years = [
-        year for year in years
-        if year in df.columns
-    ]
-
-    if not available_years:
-        st.error(
-            f"No year columns found in {filename}"
-        )
-        st.stop()
-
-    # Melt dataset
-    df_long = df.melt(
-        id_vars=["Scenario"],
-        value_vars=available_years,
-        var_name="Year",
-        value_name="Value"
-    )
-
-    # Add measure identifier
-    df_long["Measure"] = measure
-
-    all_dfs.append(df_long)
-
-
-# Combine the four melted datasets
-combined_df = pd.concat(
-    all_dfs,
-    ignore_index=True
-)
-
-
-# ---------------------------------------------------------
-# 6. Clean data
-# ---------------------------------------------------------
-
-combined_df["Year"] = (
-    combined_df["Year"].astype(int)
-)
-
-combined_df["Value"] = pd.to_numeric(
-    combined_df["Value"],
-    errors="coerce"
-)
-
-combined_df["Scenario"] = (
-    combined_df["Scenario"]
-    .astype(str)
-    .str.strip()
-    .str.strip("'\"")
-    .str.lower()
-)
+#     url = (
+#         base_url
+#         + country_folder
+#         + "/results/"
+#         + filename
+#     )
+
+#     return pd.read_csv(url)
+# try:
+#     df = load_bar_data(
+#         selected_country,
+#         st.session_state.iso_code,
+#         selected_file
+#     )
+
+# except (FileNotFoundError, HTTPError) as e:
+#     st.error(str(e))
+#     st.stop()
+
+# # ---------------------------------------------------------
+# # 5. Load, melt and combine the four datasets
+# # ---------------------------------------------------------
+
+# years = [
+#     "2029", "2032", "2035", "2038",
+#     "2041", "2044", "2047", "2050"
+# ]
+
+# measures = [
+#     "Maritime Transport Cost",
+#     "Maritime Logistics Cost",
+#     "CIF/FOB price of Imports/Exports",
+#     "MTC as % of GDP"
+# ]
+
+# all_dfs = []
+
+# for measure in measures:
+
+#     filename = dataset_map_bar[
+#         trade_flow_bar
+#     ][measure]
+
+#     try:
+#         df = load_bar_data(
+#             selected_country,
+#             filename
+#         )
+
+#     except (HTTPError, URLError, OSError) as e:
+
+#         st.error(
+#             f"Could not load {filename}: {e}"
+#         )
+#         st.stop()
+
+#     # Clean column names
+#     df.columns = (
+#         df.columns.astype(str).str.strip()
+#     )
+
+#     if "Scenario" not in df.columns:
+#         st.error(
+#             f"Scenario column missing in {filename}"
+#         )
+#         st.stop()
+
+#     available_years = [
+#         year for year in years
+#         if year in df.columns
+#     ]
+
+#     if not available_years:
+#         st.error(
+#             f"No year columns found in {filename}"
+#         )
+#         st.stop()
+
+#     # Melt dataset
+#     df_long = df.melt(
+#         id_vars=["Scenario"],
+#         value_vars=available_years,
+#         var_name="Year",
+#         value_name="Value"
+#     )
+
+#     # Add measure identifier
+#     df_long["Measure"] = measure
+
+#     all_dfs.append(df_long)
+
+
+# # Combine the four melted datasets
+# combined_df = pd.concat(
+#     all_dfs,
+#     ignore_index=True
+# )
+
+
+# # ---------------------------------------------------------
+# # 6. Clean data
+# # ---------------------------------------------------------
+
+# combined_df["Year"] = (
+#     combined_df["Year"].astype(int)
+# )
+
+# combined_df["Value"] = pd.to_numeric(
+#     combined_df["Value"],
+#     errors="coerce"
+# )
+
+# combined_df["Scenario"] = (
+#     combined_df["Scenario"]
+#     .astype(str)
+#     .str.strip()
+#     .str.strip("'\"")
+#     .str.lower()
+# )
 
-scenario_lookup = {
-    "as-is": "NZF",
-    "nzf": "NZF",
-    "levy": "Levy",
-    "brazil": "Brazil",
-    "liscr": "LISCR",
-    "direct": "Direct"
-}
+# scenario_lookup = {
+#     "as-is": "NZF",
+#     "nzf": "NZF",
+#     "levy": "Levy",
+#     "brazil": "Brazil",
+#     "liscr": "LISCR",
+#     "direct": "Direct"
+# }
 
-combined_df["Scenario"] = (
-    combined_df["Scenario"]
-    .map(scenario_lookup)
-)
+# combined_df["Scenario"] = (
+#     combined_df["Scenario"]
+#     .map(scenario_lookup)
+# )
 
-scenarios = [
-    "NZF",
-    "Levy",
-    "Brazil",
-    "LISCR",
-    "Direct"
-]
+# scenarios = [
+#     "NZF",
+#     "Levy",
+#     "Brazil",
+#     "LISCR",
+#     "Direct"
+# ]
 
-# Exclude BAU and unrecognised scenarios
-combined_df = combined_df[
-    combined_df["Scenario"].isin(scenarios)
-].copy()
+# # Exclude BAU and unrecognised scenarios
+# combined_df = combined_df[
+#     combined_df["Scenario"].isin(scenarios)
+# ].copy()
 
-combined_df = combined_df.dropna(
-    subset=["Value"]
-)
+# combined_df = combined_df.dropna(
+#     subset=["Value"]
+# )
 
-# Check that each measure has one value
-# per scenario and year
-if combined_df.duplicated(
-    ["Scenario", "Year", "Measure"]
-).any():
+# # Check that each measure has one value
+# # per scenario and year
+# if combined_df.duplicated(
+#     ["Scenario", "Year", "Measure"]
+# ).any():
 
-    st.error(
-        "Duplicate scenario/year/measure "
-        "observations found in the datasets."
-    )
-    st.stop()
+#     st.error(
+#         "Duplicate scenario/year/measure "
+#         "observations found in the datasets."
+#     )
+#     st.stop()
 
-if combined_df.empty:
-    st.warning("No data available for the selected trade flow.")
-    st.stop()
+# if combined_df.empty:
+#     st.warning("No data available for the selected trade flow.")
+#     st.stop()
 
 
-# ---------------------------------------------------------
-# 7. Measure colours
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 7. Measure colours
+# # ---------------------------------------------------------
 
-measure_colors = {
+# measure_colors = {
 
-    "Maritime Transport Cost": "#2563eb",
+#     "Maritime Transport Cost": "#2563eb",
 
-    "Maritime Logistics Cost": "#e87936",
+#     "Maritime Logistics Cost": "#e87936",
 
-    "CIF/FOB price of Imports/Exports": "#16a085",
+#     "CIF/FOB price of Imports/Exports": "#16a085",
 
-    "MTC as % of GDP": "#9664c7"
-}
+#     "MTC as % of GDP": "#9664c7"
+# }
 
 
-# ---------------------------------------------------------
-# 8. Create five vertically arranged bar charts
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 8. Create five vertically arranged bar charts
+# # ---------------------------------------------------------
 
-fig = make_subplots(
+# fig = make_subplots(
 
-    rows=5,
-    cols=1,
+#     rows=5,
+#     cols=1,
 
-    shared_xaxes=True,
+#     shared_xaxes=True,
 
-    vertical_spacing=0.07,
+#     vertical_spacing=0.07,
 
-    subplot_titles=scenarios
-)
+#     subplot_titles=scenarios
+# )
 
 
-# ---------------------------------------------------------
-# 9. Add grouped bars to each scenario
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 9. Add grouped bars to each scenario
+# # ---------------------------------------------------------
 
-for i, scenario in enumerate(scenarios):
+# for i, scenario in enumerate(scenarios):
 
-    scenario_df = combined_df[
-        combined_df["Scenario"] == scenario
-    ].copy()
+#     scenario_df = combined_df[
+#         combined_df["Scenario"] == scenario
+#     ].copy()
 
-    for measure in measures:
+#     for measure in measures:
 
-        subset = scenario_df[
-            scenario_df["Measure"] == measure
-        ].copy()
+#         subset = scenario_df[
+#             scenario_df["Measure"] == measure
+#         ].copy()
 
-        subset = subset.sort_values("Year")
+#         subset = subset.sort_values("Year")
 
-        fig.add_trace(
+#         fig.add_trace(
 
-            go.Bar(
+#             go.Bar(
 
-                x=subset["Year"].astype(str),
+#                 x=subset["Year"].astype(str),
 
-                y=subset["Value"],
+#                 y=subset["Value"],
 
-                name=measure,
+#                 name=measure,
 
-                marker_color=measure_colors[measure],
+#                 marker_color=measure_colors[measure],
 
-                offsetgroup=measure,
+#                 offsetgroup=measure,
 
-                legendgroup=measure,
+#                 legendgroup=measure,
 
-                # Show legend only once
-                showlegend=(i == 0),
+#                 # Show legend only once
+#                 showlegend=(i == 0),
 
-                hovertemplate=(
-                    "<b>" + scenario + "</b><br>"
-                    + "Measure: " + measure + "<br>"
-                    + "Year: %{x}<br>"
-                    + "Impact relative to BAU: "
-                    + "%{y:,.2f}%"
-                    + "<extra></extra>"
-                )
-            ),
+#                 hovertemplate=(
+#                     "<b>" + scenario + "</b><br>"
+#                     + "Measure: " + measure + "<br>"
+#                     + "Year: %{x}<br>"
+#                     + "Impact relative to BAU: "
+#                     + "%{y:,.2f}%"
+#                     + "<extra></extra>"
+#                 )
+#             ),
 
-            row=i + 1,
-            col=1
-        )
+#             row=i + 1,
+#             col=1
+#         )
 
 
-# ---------------------------------------------------------
-# 10. Common y-axis range for comparisons
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 10. Common y-axis range for comparisons
+# # ---------------------------------------------------------
 
-min_value = min(
-    0,
-    combined_df["Value"].min()
-)
+# min_value = min(
+#     0,
+#     combined_df["Value"].min()
+# )
 
-max_value = max(
-    0,
-    combined_df["Value"].max()
-)
+# max_value = max(
+#     0,
+#     combined_df["Value"].max()
+# )
 
-padding = max(
-    (max_value - min_value) * 0.1,
-    1
-)
+# padding = max(
+#     (max_value - min_value) * 0.1,
+#     1
+# )
 
-for row in range(1, 6):
+# for row in range(1, 6):
 
-    fig.update_yaxes(
-        title_text="Change (%)",
-        ticksuffix="%",
+#     fig.update_yaxes(
+#         title_text="Change (%)",
+#         ticksuffix="%",
 
-        range=[
-            min_value - padding,
-            max_value + padding
-        ],
+#         range=[
+#             min_value - padding,
+#             max_value + padding
+#         ],
 
-        zeroline=True,
-        zerolinecolor="grey",
+#         zeroline=True,
+#         zerolinecolor="grey",
 
-        showgrid=True,
-        gridcolor="rgba(200,200,200,0.3)",
+#         showgrid=True,
+#         gridcolor="rgba(200,200,200,0.3)",
 
-        row=row,
-        col=1
-    )
+#         row=row,
+#         col=1
+#     )
 
 
-# ---------------------------------------------------------
-# 11. X-axis formatting
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 11. X-axis formatting
+# # ---------------------------------------------------------
 
-year_labels = [
-    "2029", "2032", "2035", "2038",
-    "2041", "2044", "2047", "2050"
-]
+# year_labels = [
+#     "2029", "2032", "2035", "2038",
+#     "2041", "2044", "2047", "2050"
+# ]
 
-for row in range(1, 6):
+# for row in range(1, 6):
 
-    fig.update_xaxes(
+#     fig.update_xaxes(
 
-        type="category",
+#         type="category",
 
-        categoryorder="array",
-        categoryarray=year_labels,
+#         categoryorder="array",
+#         categoryarray=year_labels,
 
-        tickmode="array",
-        tickvals=year_labels,
+#         tickmode="array",
+#         tickvals=year_labels,
 
-        showgrid=False,
+#         showgrid=False,
 
-        row=row,
-        col=1
-    )
+#         row=row,
+#         col=1
+#     )
 
-fig.update_xaxes(
-    title_text="Year",
-    row=5,
-    col=1
-)
+# fig.update_xaxes(
+#     title_text="Year",
+#     row=5,
+#     col=1
+# )
 
 
-# ---------------------------------------------------------
-# 12. Overall layout
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 12. Overall layout
+# # ---------------------------------------------------------
 
-fig.update_layout(
+# fig.update_layout(
 
-    height=1750,
+#     height=1750,
 
-    template="plotly_white",
+#     template="plotly_white",
 
-    barmode="group",
+#     barmode="group",
 
-    bargap=0.25,
-    bargroupgap=0.03,
+#     bargap=0.25,
+#     bargroupgap=0.03,
 
-    hovermode="closest",
+#     hovermode="closest",
 
-    margin=dict(
-        l=80,
-        r=30,
-        t=80,
-        b=130
-    ),
+#     margin=dict(
+#         l=80,
+#         r=30,
+#         t=80,
+#         b=130
+#     ),
 
-    legend=dict(
-        title=None,
+#     legend=dict(
+#         title=None,
 
-        orientation="h",
+#         orientation="h",
 
-        yanchor="top",
-        y=-0.045,
+#         yanchor="top",
+#         y=-0.045,
 
-        xanchor="center",
-        x=0.5
-    )
-)
+#         xanchor="center",
+#         x=0.5
+#     )
+# )
 
 
-# ---------------------------------------------------------
-# 13. Display figure
-# ---------------------------------------------------------
+# # ---------------------------------------------------------
+# # 13. Display figure
+# # ---------------------------------------------------------
 
-st.plotly_chart(
-    fig,
-    use_container_width=True,
-    key="economic_impact_grouped_bars"
-)
+# st.plotly_chart(
+#     fig,
+#     use_container_width=True,
+#     key="economic_impact_grouped_bars"
+# )
 
 
 import streamlit as st
@@ -974,12 +974,12 @@ trade_flow_bar1 = st.segmented_control(
 metric_bar = st.segmented_control(
     "What measure of cost relative to a BAU scenario are you interested in?",
     options=[
-        "Maritime Transport Cost",
-        "Maritime Logistics Cost",
         "CIF/FOB price of Imports/Exports",
-        "MTC as % of GDP"
+        # "Maritime Logistics Cost",
+        "Maritime Transport Cost"
+        # "MTC as % of GDP"
     ],
-    default="Maritime Transport Cost",
+    default="CIF/FOB price of Imports/Exports",
     key="economic_bar_metric"
 )
 
@@ -995,14 +995,14 @@ dataset_map_bar = {
         "Maritime Transport Cost":
             "impact_im_costs_to_bau_pct_bau_v0.64.csv",
 
-        "Maritime Logistics Cost":
-            "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_im_costs_to_bau_pct_ciffob_v0.64.csv",
 
         "CIF/FOB price of Imports/Exports":
             "impact_im_costs_to_bau_pct_cif_v0.64.csv",
 
-        "MTC as % of GDP":
-            "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_im_costs_to_bau_pct_gdp_v0.64.csv"
     },
 
     "Export": {
@@ -1010,14 +1010,14 @@ dataset_map_bar = {
         "Maritime Transport Cost":
             "impact_ex_costs_to_bau_pct_bau_v0.64.csv",
 
-        "Maritime Logistics Cost":
-            "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_ex_costs_to_bau_pct_ciffob_v0.64.csv",
 
         "CIF/FOB price of Imports/Exports":
             "impact_ex_costs_to_bau_pct_fob_v0.64.csv",
 
-        "MTC as % of GDP":
-            "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
+        # "MTC as % of GDP":
+        #     "impact_ex_costs_to_bau_pct_gdp_v0.64.csv"
     }
 }
 
@@ -1030,6 +1030,7 @@ selected_file = dataset_map_bar[
 # 5. Load country data
 # ---------------------------------------------------------
 
+
 base_url = (
     "https://raw.githubusercontent.com/"
     "UCL-ShippingGroup/Impact-Tracker/main/impact/"
@@ -1037,10 +1038,17 @@ base_url = (
 
 
 @st.cache_data
-def load_bar_data(country, filename):
+def load_bar_data(country, iso_code, filename):
 
+    # Ensure ISO code is three digits
+    iso_code = str(iso_code).zfill(3)
+
+    # Construct folder name: 008 - Albania
+    folder_name = f"{iso_code} - {str(country).strip()}"
+
+    # URL encode folder name
     country_folder = quote(
-        str(country).strip(),
+        folder_name,
         safe=""
     )
 
@@ -1057,6 +1065,7 @@ def load_bar_data(country, filename):
 try:
     df = load_bar_data(
         selected_country,
+        st.session_state.iso_code,
         selected_file
     )
 

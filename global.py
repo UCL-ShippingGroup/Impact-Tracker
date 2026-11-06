@@ -18,25 +18,25 @@ trade_flow = st.segmented_control(
 cost_measure = st.segmented_control(
     "What measure of cost relative to a BAU scenario are you interested in?",
     options=[
-        "Maritime Transport Cost",
-        "Maritime Logistics Cost",
         "CIF/FOB price of Imports/Exports",
+       # "Maritime Logistics Cost",
+        "Maritime Transport Cost",
         "MTC as % of GDP"
     ],
-    default="Maritime Transport Cost",
+    default="CIF/FOB price of Imports/Exports",
     key="cost_measure"
 )
 
 scenario = st.segmented_control(
     "Which Scenario would you like to view?",
     options=[
-        "NZF",
+        "NZF as-is",
         "Levy",
         "Brazil",
         "LISCR",
         "Direct"
     ],
-    default="NZF",
+    default="NZF as-is",
     key="scenario"
 )
 
@@ -49,8 +49,8 @@ dataset_map = {
         "Maritime Transport Cost":
             "impact_im_costs_to_bau_pct_bau_v0.64_combined.csv",
 
-        "Maritime Logistics Cost":
-            "impact_im_costs_to_bau_pct_ciffob_v0.64_combined.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_im_costs_to_bau_pct_ciffob_v0.64_combined.csv",
 
         "CIF/FOB price of Imports/Exports":
             "impact_im_costs_to_bau_pct_cif_v0.64_combined.csv",
@@ -63,8 +63,8 @@ dataset_map = {
         "Maritime Transport Cost":
             "impact_ex_costs_to_bau_pct_bau_v0.64_combined.csv",
 
-        "Maritime Logistics Cost":
-            "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
+        # "Maritime Logistics Cost":
+        #     "impact_ex_costs_to_bau_pct_ciffob_v0.64_combined.csv",
 
         "CIF/FOB price of Imports/Exports":
             "impact_ex_costs_to_bau_pct_fob_v0.64_combined.csv",
@@ -128,7 +128,7 @@ df_long["Scenario"] = (
 )
 
 df_long["Scenario"] = df_long["Scenario"].replace({
-    "as-is": "NZF"
+    "as-is": "NZF as-is"
 })
 
 #Filter selected scenario
