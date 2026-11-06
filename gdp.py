@@ -295,11 +295,11 @@ st.plotly_chart(fig, width='stretch')
 # #st.markdown("##### Country Comparison")
 # st.caption("Select countries you wish to compare. To zoom into specific time scales, create a box over the desired area and the graph will automatically zoom in") 
 
-# df_2 = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/country_gdp.csv")
-# ssp_1 = df_2[df_2['Scenario'] == 'SSP1-2.6']
-# ssp_2 = df_2[df_2['Scenario'] == 'SSP2-4.5']  
-# ssp_3 = df_2[df_2['Scenario'] == 'SSP3-7.0']  
-# ssp_5 = df_2[df_2['Scenario'] == 'SSP5-8.5']  
+df_2 = pd.read_csv("https://raw.githubusercontent.com/UCL-ShippingGroup/Impact-Tracker/main/datasets/country_gdp.csv")
+ssp_1 = df_2[df_2['Scenario'] == 'SSP1-2.6']
+ssp_2 = df_2[df_2['Scenario'] == 'SSP2-4.5']  
+ssp_3 = df_2[df_2['Scenario'] == 'SSP3-7.0']  
+ssp_5 = df_2[df_2['Scenario'] == 'SSP5-8.5']  
 
 # comparison_countries = st.multiselect(
 #     "Select Countries",
