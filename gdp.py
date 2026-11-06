@@ -5,6 +5,10 @@ import altair as alt
 import plotly.express as px
 import time
 from urllib.parse import quote
+
+from country_selector import country_selector
+
+country_selector()
 input_dir = "https://raw.githubusercontent.com/james-stewart-808/inventory-tracker/main/datasets/"
 
 def download_as_csv(file, label, filename):
