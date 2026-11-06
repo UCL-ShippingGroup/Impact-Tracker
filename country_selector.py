@@ -42,11 +42,7 @@ def load_country_iso_codes():
     return country_iso_codes
 
 
-# Save country selection independently of the widget
-def save_country_selection():
-    st.session_state["selected_country"] = (
-        st.session_state["_country_widget"]
-    )
+
 
 
 def country_selector():
@@ -55,14 +51,8 @@ def country_selector():
 
     countries = country_iso_codes.iso_country.unique().tolist()
 
-    # Set default country only once
-    if st.session_state.get("selected_country") not in countries:
-        st.session_state["selected_country"] = countries[2]
-
-    # Restore saved selection whenever a page loads
-    st.session_state["_country_widget"] = (
-        st.session_state["selected_country"]
-    )
+    # Default country, only used for the initial selection
+    default_index = 2
 
     # Country selector in sidebar
     with st.sidebar:
@@ -72,18 +62,20 @@ def country_selector():
         country_choice = st.selectbox(
             "Select a country",
             countries,
-            key="_country_widget",
-            on_change=save_country_selection
+            index=default_index,
+            key="selected_country",
+            persist_state="session"
         )
 
-    # Get ISO information for selected country
+    # Get ISO information for the selected country
     selected_row = country_iso_codes[
-        country_iso_codes.iso_country == country_choice
+        country_iso_codes["iso_country"] == country_choice
     ].iloc[0]
 
-    # Update global session state variables
+    # Update session state variables
     st.session_state["iso_country"] = country_choice
     st.session_state["iso_2"] = selected_row["iso_2"]
     st.session_state["iso_3"] = selected_row["iso_3"]
     st.session_state["iso_code"] = selected_row["iso_code"]
+
 
