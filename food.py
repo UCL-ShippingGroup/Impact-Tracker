@@ -160,6 +160,11 @@ scenario_names = {
    # "direct": "Direct"
 }
 
+#All scednarios except Direct
+df_long = df_long[
+    df_long["Scenario"].str.lower() != "direct"
+].copy()
+
 df_long["Scenario"] = (
     df_long["Scenario"]
     .str.lower()
