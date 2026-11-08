@@ -17,9 +17,9 @@ def download_as_csv(file, label, filename):
             label=label,
             file_name=filename)
 
-st.sidebar.markdown(
-    "Costs of Climate Change data sourced from Kahn et al. (2021) and Mohaddes and Raissi (2024)."
-)
+# st.sidebar.markdown(
+#     "Costs of Climate Change data sourced from Kahn et al. (2021) and Mohaddes and Raissi (2024)."
+# )
 
 
 
