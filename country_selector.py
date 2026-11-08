@@ -34,10 +34,20 @@ def load_country_iso_codes():
         country_iso_codes.iso_country == "Namibia", "iso_2"
     ] = "NA"
 
+    # country_iso_codes.loc[
+    #     country_iso_codes.iso_country == "Congo, Democratic Republic of the",
+    #     "iso_country"
+    # ] = "Democratic Republic of the Congo"
+
     country_iso_codes.loc[
-        country_iso_codes.iso_country == "Congo, Democratic Republic of the",
+        country_iso_codes.iso_country == "United Kingdom of Great Britain and Northern Ireland",
         "iso_country"
-    ] = "Democratic Republic of the Congo"
+    ] = "United Kingdom"
+
+    country_iso_codes.loc[
+        country_iso_codes.iso_country == "United States of America",
+        "iso_country"
+    ] = "United States"
 
     return country_iso_codes
 
