@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+from country_selector import country_selector
+
+country_selector()
 
 st.set_page_config(layout='wide')
 
@@ -1285,5 +1288,437 @@ st.plotly_chart(
     fig,
     width='stretch',
     key="economic_impact_grouped_bars1"
+)
+
+
+
+import plotly.graph_objects as go
+
+# ---------------------------------------------------------
+# 13. HS2 diverging stacked bar chart
+# ---------------------------------------------------------
+
+st.subheader(
+    "HS2 Product Category Contributions to CIF/FOB Changes"
+)
+
+st.caption(
+    "Contribution of the 25 largest HS2 product categories "
+    "by trade value to the overall percentage change in "
+    "CIF/FOB costs relative to BAU. All remaining categories "
+    "are grouped as 'All Other HS2'."
+)
+
+# ---------------------------------------------------------
+# 14. Import / Export segmented control
+# ---------------------------------------------------------
+
+hs2_trade_flow = st.segmented_control(
+    "Which Trade flow are you interested in?",
+    options=["Import", "Export"],
+    default="Import",
+    key="hs2_contribution_trade_flow"
+)
+
+# ---------------------------------------------------------
+# 15. Dataset mapping
+# ---------------------------------------------------------
+
+hs2_dataset_map = {
+    "Import": {
+        "share": "hs2_total_usd_im_v0.64.csv",
+        "change": "hs2_total_costs_pct_cif_im_v0.64.csv",
+        "value_col": "cifvalue"
+    },
+    "Export": {
+        "share": "hs2_total_usd_ex_v0.64.csv",
+        "change": "hs2_total_costs_pct_cif_ex_v0.64.csv",
+        "value_col": "fobvalue"
+    }
+}
+
+share_file = hs2_dataset_map[hs2_trade_flow]["share"]
+change_file = hs2_dataset_map[hs2_trade_flow]["change"]
+value_col = hs2_dataset_map[hs2_trade_flow]["value_col"]
+
+# ---------------------------------------------------------
+# 16. Load selected country's HS2 datasets
+# ---------------------------------------------------------
+
+try:
+    df_hs2_share = load_country_data(
+        selected_country,
+        st.session_state.iso_code,
+        share_file
+    )
+
+    df_hs2_change = load_country_data(
+        selected_country,
+        st.session_state.iso_code,
+        change_file
+    )
+
+except Exception as e:
+    st.error(
+        f"Unable to load HS2 contribution data "
+        f"for {selected_country}."
+    )
+    st.exception(e)
+    st.stop()
+
+# ---------------------------------------------------------
+# 17. Prepare HS2 trade value shares
+# ---------------------------------------------------------
+
+df_hs2_share.columns = (
+    df_hs2_share.columns.astype(str).str.strip()
+)
+
+df_hs2_share["HS2_desc"] = (
+    df_hs2_share["HS2_desc"].astype(str).str.strip()
+)
+
+df_hs2_share["pct_val"] = pd.to_numeric(
+    df_hs2_share["pct_val"],
+    errors="coerce"
+)
+
+df_hs2_share[value_col] = pd.to_numeric(
+    df_hs2_share[value_col],
+    errors="coerce"
+)
+
+# Convert percentage shares to proportions
+df_hs2_share["Share"] = (
+    df_hs2_share["pct_val"] / 100
+)
+
+# ---------------------------------------------------------
+# 18. Identify top 25 HS2 categories by trade value
+# ---------------------------------------------------------
+
+top_25_hs2 = (
+    df_hs2_share
+    .sort_values(value_col, ascending=False)
+    .head(25)["HS2_desc"]
+    .tolist()
+)
+
+# Assign all remaining categories to "All Other HS2"
+df_hs2_share["HS2_Group"] = (
+    df_hs2_share["HS2_desc"].where(
+        df_hs2_share["HS2_desc"].isin(top_25_hs2),
+        "All Other HS2"
+    )
+)
+
+# ---------------------------------------------------------
+# 19. Prepare HS2 percentage change data
+# ---------------------------------------------------------
+
+df_hs2_change.columns = (
+    df_hs2_change.columns.astype(str).str.strip()
+)
+
+df_hs2_change["HS2_desc"] = (
+    df_hs2_change["HS2_desc"].astype(str).str.strip()
+)
+
+# Only include 2029, 2041 and 2050
+selected_years = ["29", "41", "50"]
+
+scenario_cols = [
+    col for col in df_hs2_change.columns
+    if col.split("_")[-1] in selected_years
+    and col.split("_")[0] in [
+        "levy", "asis", "brazil", "liscr", "direct"
+    ]
+]
+
+# Melt dataset
+df_hs2_change_long = df_hs2_change.melt(
+    id_vars=["HS2_desc"],
+    value_vars=scenario_cols,
+    var_name="Scenario_Year",
+    value_name="CIF_FOB_Change"
+)
+
+# Extract scenario and year
+df_hs2_change_long[["Scenario", "year"]] = (
+    df_hs2_change_long["Scenario_Year"].str.rsplit(
+        "_", n=1, expand=True
+    )
+)
+
+df_hs2_change_long["year"] = (
+    df_hs2_change_long["year"].astype(int) + 2000
+)
+
+df_hs2_change_long["CIF_FOB_Change"] = pd.to_numeric(
+    df_hs2_change_long["CIF_FOB_Change"],
+    errors="coerce"
+)
+
+# ---------------------------------------------------------
+# 20. Format scenario names
+# ---------------------------------------------------------
+
+scenario_names = {
+    "asis": "NZF as-is",
+    "levy": "Levy",
+    "brazil": "Brazil",
+    "liscr": "LISCR",
+    "direct": "Direct"
+}
+
+scenario_order = [
+    "NZF as-is",
+    "Levy",
+    "Brazil",
+    "LISCR",
+    "Direct"
+]
+
+df_hs2_change_long["Scenario"] = (
+    df_hs2_change_long["Scenario"]
+    .str.lower()
+    .map(scenario_names)
+)
+
+df_hs2_change_long = df_hs2_change_long[
+    df_hs2_change_long["Scenario"].isin(scenario_order)
+].copy()
+
+# ---------------------------------------------------------
+# 21. Merge shares with percentage changes
+# ---------------------------------------------------------
+
+df_hs2_contribution = df_hs2_change_long.merge(
+    df_hs2_share[
+        ["HS2_desc", "HS2_Group", "Share"]
+    ],
+    on="HS2_desc",
+    how="left",
+    validate="many_to_one"
+)
+
+if (
+    df_hs2_contribution["Share"].isna().any()
+    or df_hs2_contribution["CIF_FOB_Change"].isna().any()
+):
+    st.error(
+        "Missing HS2 category shares or CIF/FOB change values."
+    )
+    st.stop()
+
+# Weighted percentage-point contribution
+df_hs2_contribution["Contribution"] = (
+    df_hs2_contribution["Share"]
+    * df_hs2_contribution["CIF_FOB_Change"]
+)
+
+# ---------------------------------------------------------
+# 22. Combine all remaining HS2 categories
+# ---------------------------------------------------------
+
+df_hs2_plot = (
+    df_hs2_contribution
+    .groupby(
+        ["HS2_Group", "Scenario", "year"],
+        as_index=False,
+        observed=True
+    )
+    .agg(
+        Contribution=("Contribution", "sum"),
+        Share=("Share", "sum")
+    )
+)
+
+# Reconstruct category-level percentage changes
+# This gives the correct weighted average for All Other HS2
+df_hs2_plot["CIF_FOB_Change"] = (
+    df_hs2_plot["Contribution"]
+    / df_hs2_plot["Share"].replace(0, float("nan"))
+)
+# Calculate total net contribution for each scenario and year
+df_hs2_plot["Total_Contribution"] = (
+    df_hs2_plot.groupby(["Scenario", "year"])["Contribution"]
+    .transform("sum")
+)
+
+# Percentage contribution to overall net change
+df_hs2_plot["Pct_Contribution"] = (
+    df_hs2_plot["Contribution"]
+    / df_hs2_plot["Total_Contribution"].replace(0, float("nan"))
+    * 100
+)
+# ---------------------------------------------------------
+# 23. Prepare plotting data
+# ---------------------------------------------------------
+
+df_hs2_plot["Year_Label"] = (
+    df_hs2_plot["year"].astype(str)
+)
+
+# Explicit scenario order
+df_hs2_plot["Scenario"] = pd.Categorical(
+    df_hs2_plot["Scenario"],
+    categories=scenario_order,
+    ordered=True
+)
+
+df_hs2_plot = df_hs2_plot.sort_values(
+    ["year", "Scenario", "HS2_Group"]
+)
+
+# Keep top 25 in order of trade value
+hs2_groups = top_25_hs2.copy()
+
+# Add remaining categories at the end
+if "All Other HS2" in df_hs2_plot["HS2_Group"].values:
+    hs2_groups.append("All Other HS2")
+
+# Consistent colour assigned to each HS2 category
+colors = (
+    px.colors.qualitative.Plotly
+    + px.colors.qualitative.D3
+    + px.colors.qualitative.Set3
+    + px.colors.qualitative.Dark24
+)
+
+hs2_colors = {
+    group: colors[i % len(colors)]
+    for i, group in enumerate(top_25_hs2)
+}
+
+# Grey for all other HS2 categories
+hs2_colors["All Other HS2"] = "#888888"
+
+# ---------------------------------------------------------
+# 24. Create diverging stacked bar chart
+# ---------------------------------------------------------
+
+fig_hs2_contribution = go.Figure()
+
+for group in hs2_groups:
+
+    group_df = df_hs2_plot[
+        df_hs2_plot["HS2_Group"] == group
+    ].copy()
+
+    fig_hs2_contribution.add_trace(
+        go.Bar(
+            x=[
+                group_df["Year_Label"].tolist(),
+                group_df["Scenario"].astype(str).tolist()
+            ],
+
+            y=group_df["Contribution"],
+
+            name=group,
+
+            marker_color=hs2_colors[group],
+
+           customdata=group_df[
+                ["Pct_Contribution", "Share", "CIF_FOB_Change"]
+            ].to_numpy(),
+            
+            hovertemplate=(
+                "<b>%{fullData.name}</b><br>"
+                "Contribution to Overall Change: %{y:,.2f} pp<br>"
+                "% Contribution: %{customdata[0]:,.2f}%<br>"
+                "Trade Value Share: %{customdata[1]:.1%}<br>"
+                "HS2 CIF/FOB Change: %{customdata[2]:,.2f}%"
+                "<extra></extra>"
+            )
+        )
+    )
+
+# ---------------------------------------------------------
+# 25. Chart titles and labels
+# ---------------------------------------------------------
+
+if hs2_trade_flow == "Import":
+
+    chart_title = (
+        "Top 25 HS2 Contributions to Total CIF Change"
+    )
+
+    y_axis_title = (
+        "Contribution to CIF Change (percentage points)"
+    )
+
+else:
+
+    chart_title = (
+        "Top 25 HS2 Contributions to Total FOB Change"
+    )
+
+    y_axis_title = (
+        "Contribution to FOB Change (percentage points)"
+    )
+
+# ---------------------------------------------------------
+# 26. Chart layout
+# ---------------------------------------------------------
+
+fig_hs2_contribution.update_layout(
+    title=chart_title,
+
+    template="plotly_white",
+
+    barmode="relative",
+
+    xaxis_title="Year / Scenario",
+
+    yaxis_title=y_axis_title,
+
+    hovermode="closest",
+
+    legend=dict(
+        title="HS2 Product Category",
+        orientation="h",
+        yanchor="top",
+        y=-0.2,
+        xanchor="center",
+        x=0.5
+    ),
+
+    margin=dict(
+        l=80,
+        r=30,
+        t=60,
+        b=150
+    ),
+
+    height=650
+)
+
+fig_hs2_contribution.update_yaxes(
+    tickformat=",.2f",
+    zeroline=True,
+    zerolinecolor="grey",
+    zerolinewidth=2,
+    showgrid=True,
+    gridcolor="rgba(200,200,200,0.3)"
+)
+
+# Explicit year and scenario order
+fig_hs2_contribution.update_xaxes(
+    categoryorder="array",
+    categoryarray=[
+        [year] * len(scenario_order)
+        for year in ["2029", "2041", "2050"]
+    ]
+)
+
+# ---------------------------------------------------------
+# 27. Display chart
+# ---------------------------------------------------------
+
+st.plotly_chart(
+    fig_hs2_contribution,
+    use_container_width=True,
+    key="hs2_contribution_chart"
 )
 

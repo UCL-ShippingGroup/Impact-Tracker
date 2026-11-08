@@ -3,6 +3,10 @@ import pandas as pd
 import plotly.express as px
 from urllib.parse import quote
 
+from country_selector import country_selector
+
+country_selector()
+
 # ---------------------------------------------------------
 # 1. Page title and selected country
 # ---------------------------------------------------------
@@ -17,7 +21,6 @@ if selected_country is None:
 
 st.subheader(f"Food Security Impact: {selected_country}")
 
-
 # ---------------------------------------------------------
 # 2. Select measure
 # ---------------------------------------------------------
@@ -25,10 +28,10 @@ st.subheader(f"Food Security Impact: {selected_country}")
 measure = st.segmented_control(
     "What measure of cost are you Interested in?",
     options=[
-        "MTC",
-        "CIF Price of Imports Relative to BAU"
+        "CIF Price of Imports Relative to BAU",
+        "MTC"
     ],
-    default="MTC",
+    default="CIF Price of Imports Relative to BAU",
     key="food_impact_measure"
 )
 
@@ -48,11 +51,41 @@ selected_iso_code = st.session_state.iso_code
 # Ensure ISO code is three digits
 selected_iso_code = str(selected_iso_code).zfill(3)
 
-# Construct country folder name
+# Construct folder name: 008 - Albania
 folder_name = f"{selected_iso_code} - {selected_country.strip()}"
 
 # URL encode folder name
 country_url = quote(folder_name, safe="")
+
+
+@st.cache_data
+def load_food_data(country):
+
+    country_path = base_url + country + "/"
+
+    # Load MTC dataset
+    df_mtc = pd.read_csv(
+        country_path + "food_total_costs_usd_tot_v0.03.csv"
+    )
+
+    # Load CIF dataset
+    df_cif = pd.read_csv(
+        country_path + "food_total_costs_pct_cif_tot_v0.03.csv"
+    )
+
+    return df_mtc, df_cif
+
+
+# Load datasets for selected country
+try:
+    df_mtc, df_cif = load_food_data(country_url)
+
+except Exception as e:
+    st.error(
+        f"Unable to load food data for {selected_country}."
+    )
+    st.exception(e)
+    st.stop()
 
 # ---------------------------------------------------------
 # 4. Select dataset and axis labels
@@ -209,36 +242,18 @@ st.subheader("Food Import Impact by Food Group")
 
 
 # ---------------------------------------------------------
-# 9. Select measure and scenario
+# 9. Select measure
 # ---------------------------------------------------------
 
 measure_food = st.segmented_control(
     "What measure of cost are you Interested in?",
     options=[
-        "MTC",
-        "CIF Price of Imports Relative to BAU"
+        "CIF Price of Imports Relative to BAU",
+        "MTC"
     ],
-    default="MTC",
+    default="CIF Price of Imports Relative to BAU",
     key="food_group_measure"
 )
-
-scenario_options = {
-    "BAU": "bau",
-    "Levy": "levy",
-    "NZF as-is": "asis",
-    "Brazil": "brazil",
-    "LISCR": "liscr",
-    "Direct": "direct"
-}
-
-scenario_food = st.segmented_control(
-    "Which Scenario are you interested in?",
-    options=list(scenario_options.keys()),
-    default="BAU",
-    key="food_group_scenario"
-)
-
-selected_scenario = scenario_options[scenario_food]
 
 
 # ---------------------------------------------------------
@@ -282,13 +297,13 @@ if measure_food == "MTC":
 
     df_food = df_mtc_food.copy()
     y_axis_title_food = "MTC (US$)"
-    chart_title_food = "Food Import MTC by Food Group"
+    chart_title_food = "Food Import MTC by Scenario"
 
 else:
 
     df_food = df_cif_food.copy()
     y_axis_title_food = "CIF Price of Imports Relative to BAU (%)"
-    chart_title_food = "Food Import CIF Price Change by Food Group"
+    chart_title_food = "Food Import CIF Price Change by Scenario"
 
 
 # ---------------------------------------------------------
@@ -300,15 +315,51 @@ df_food = df_food[
     != "total"
 ].copy()
 
+df_food["food_group"] = (
+    df_food["food_group"]
+    .astype(str)
+    .str.strip()
+)
+
 
 # ---------------------------------------------------------
-# 13. Reshape data from wide to long
+# 13. Select food group
 # ---------------------------------------------------------
 
+food_group_options = sorted(
+    df_food["food_group"].dropna().unique().tolist()
+)
+
+if not food_group_options:
+    st.warning("No food groups available.")
+    st.stop()
+
+selected_food_group = st.segmented_control(
+    "Which Food Group are you interested in?",
+    options=food_group_options,
+    default=food_group_options[0],
+    key="food_group_selection"
+)
+
+
+# ---------------------------------------------------------
+# 14. Filter selected food group and reshape data
+# ---------------------------------------------------------
+
+df_food = df_food[
+    df_food["food_group"] == selected_food_group
+].copy()
+
+# Identify scenario/year columns
 scenario_cols_food = df_food.columns[
     df_food.columns.str.match(r"^[A-Za-z0-9]+_\d{2,4}$")
 ].tolist()
 
+if not scenario_cols_food:
+    st.warning("No scenario/year columns found.")
+    st.stop()
+
+# Reshape from wide to long
 df_food_long = df_food.melt(
     id_vars=["food_group"],
     value_vars=scenario_cols_food,
@@ -330,6 +381,22 @@ df_food_long["year"] = df_food_long["year"].apply(
     lambda x: x + 2000 if x < 100 else x
 )
 
+# Scenario names
+scenario_names = {
+    "bau": "BAU",
+    "levy": "Levy",
+    "asis": "NZF as-is",
+    "brazil": "Brazil",
+    "liscr": "LISCR",
+    "direct": "Direct"
+}
+
+df_food_long["Scenario"] = (
+    df_food_long["Scenario"]
+    .str.lower()
+    .map(scenario_names)
+)
+
 # Ensure numeric values
 df_food_long["Value"] = pd.to_numeric(
     df_food_long["Value"],
@@ -337,21 +404,21 @@ df_food_long["Value"] = pd.to_numeric(
 )
 
 df_food_long = df_food_long.dropna(
-    subset=["Value"]
+    subset=["Scenario", "Value"]
 )
 
+# Set scenario order
+scenario_order = [
+    "BAU",
+    "NZF as-is",
+    "Levy",
+    "Brazil",
+    "LISCR",
+    "Direct"
+]
 
-# ---------------------------------------------------------
-# 14. Filter selected scenario
-# ---------------------------------------------------------
-
-df_food_plot = df_food_long[
-    df_food_long["Scenario"].str.lower()
-    == selected_scenario
-].copy()
-
-df_food_plot = df_food_plot.sort_values(
-    ["food_group", "year"]
+df_food_long = df_food_long.sort_values(
+    ["Scenario", "year"]
 )
 
 
@@ -360,30 +427,40 @@ df_food_plot = df_food_plot.sort_values(
 # ---------------------------------------------------------
 
 fig_food = px.line(
-    df_food_plot,
+    df_food_long,
     x="year",
     y="Value",
-    color="food_group",
+    color="Scenario",
     markers=True,
-    title=chart_title_food,
+    title=f"{chart_title_food}: {selected_food_group}",
+    category_orders={
+        "Scenario": scenario_order
+    },
     labels={
         "year": "Year",
         "Value": y_axis_title_food,
-        "food_group": "Food Group"
-    },
-    hover_data={"Value": ":,.2f"}
+        "Scenario": "Scenario"
+    }
 )
 
+# Format hover
 fig_food.update_traces(
     marker=dict(size=9),
-    line=dict(width=2.5)
+    line=dict(width=2.5),
+    hovertemplate=(
+        "<b>%{fullData.name}</b><br>"
+        "Year: %{x}<br>"
+        + y_axis_title_food + ": %{y:,.2f}"
+        + "<extra></extra>"
+    )
 )
 
 fig_food.update_layout(
     xaxis_title="Year",
     yaxis_title=y_axis_title_food,
+    hovermode="closest",
     legend=dict(
-        title="Food Group",
+        title="Scenario",
         orientation="h",
         yanchor="top",
         y=-0.2,
@@ -400,19 +477,17 @@ fig_food.update_layout(
 
 fig_food.update_xaxes(
     tickmode="array",
-    tickvals=sorted(df_food_plot["year"].unique())
+    tickvals=sorted(df_food_long["year"].unique())
 )
 
 fig_food.update_yaxes(
-    tickformat=",.0f"
+    tickformat=",.2f"
 )
 
 st.plotly_chart(
     fig_food,
     use_container_width=True
 )
-
-
 # ---------------------------------------------------------
 # 16. Food Import Composition
 # ---------------------------------------------------------
@@ -738,7 +813,18 @@ df_contribution["Contribution"] = (
     df_contribution["Share"]
     * df_contribution["CIF_Change"]
 )
+# Calculate total net contribution for each scenario and year
+df_contribution["Total_Contribution"] = (
+    df_contribution.groupby(["Scenario", "year"])["Contribution"]
+    .transform("sum")
+)
 
+# Calculate each food group's percentage contribution
+df_contribution["Pct_Contribution"] = (
+    df_contribution["Contribution"]
+    / df_contribution["Total_Contribution"].replace(0, float("nan"))
+    * 100
+)
 
 # ---------------------------------------------------------
 # 26. Prepare plotting data
@@ -793,13 +879,15 @@ for group in food_groups:
             name=group,
             marker_color=food_colors[group],
             customdata=group_df[
-                ["Share", "CIF_Change"]
+                ["Pct_Contribution", "Share", "CIF_Change"]
             ].to_numpy(),
+            
             hovertemplate=(
-                "Food Group: %{fullData.name}<br>"
+                "<b>%{fullData.name}</b><br>"
                 "Contribution to Overall CIF Change: %{y:,.2f} pp<br>"
-                "Import Value Share: %{customdata[0]:.1%}<br>"
-                "%{fullData.name} CIF Change: %{customdata[1]:,.2f}%"
+                "% Contribution: %{customdata[0]:,.2f}%<br>"
+                "Food Import Value Share: %{customdata[1]:.1%}<br>"
+                "Food Group CIF Change: %{customdata[2]:,.2f}%"
                 "<extra></extra>"
             )
         )
