@@ -38,7 +38,7 @@ scenario = st.segmented_control(
         "Levy",
         "Brazil",
         "LISCR",
-        "Direct"
+     #   "Direct"
     ],
     default="NZF as-is",
     key="scenario"

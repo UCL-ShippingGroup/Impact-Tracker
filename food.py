@@ -157,8 +157,13 @@ scenario_names = {
     "asis": "As Is",
     "brazil": "Brazil",
     "liscr": "LISCR",
-    "direct": "Direct"
+   # "direct": "Direct"
 }
+
+#All scednarios except Direct
+df_long = df_long[
+    df_long["Scenario"].str.lower() != "direct"
+].copy()
 
 df_long["Scenario"] = (
     df_long["Scenario"]
@@ -388,7 +393,7 @@ scenario_names = {
     "asis": "NZF as-is",
     "brazil": "Brazil",
     "liscr": "LISCR",
-    "direct": "Direct"
+ #   "direct": "Direct"
 }
 
 df_food_long["Scenario"] = (
@@ -414,7 +419,7 @@ scenario_order = [
     "Levy",
     "Brazil",
     "LISCR",
-    "Direct"
+ #   "Direct"
 ]
 
 df_food_long = df_food_long.sort_values(
@@ -767,7 +772,7 @@ scenario_names = {
     "asis": "NZF as-is",
     "brazil": "Brazil",
     "liscr": "LISCR",
-    "direct": "Direct"
+ #   "direct": "Direct"
 }
 
 df_change_long["Scenario"] = (
@@ -782,7 +787,7 @@ scenario_order = [
     "NZF as-is",
     "Brazil",
     "LISCR",
-    "Direct"
+#    "Direct"
 ]
 
 df_change_long = df_change_long[
