@@ -242,7 +242,7 @@ scenario_lookup = {
     "levy": "Levy",
     "brazil": "Brazil",
     "liscr": "LISCR",
-    "direct": "Direct"
+#    "direct": "Direct"
 }
 
 df_long["Scenario"] = (
@@ -258,7 +258,7 @@ scenarios = [
     "Levy",
     "Brazil",
     "LISCR",
-    "Direct"
+#    "Direct"
 ]
 
 df_long = df_long[
@@ -330,7 +330,7 @@ scenario_colors = {
     "Levy": "#d62728",
     "Brazil": "#2ca02c",
     "LISCR": "#9467bd",
-    "Direct": "#ff7f0e"
+#    "Direct": "#ff7f0e"
 }
 
 # ---------------------------------------------------------
@@ -1123,7 +1123,7 @@ scenario_lookup = {
     "levy": "Levy",
     "brazil": "Brazil",
     "liscr": "LISCR",
-    "direct": "Direct"
+#    "direct": "Direct"
 }
 
 df_long["Scenario"] = (
@@ -1140,7 +1140,7 @@ scenarios = [
     "Levy",
     "Brazil",
     "LISCR",
-    "Direct"
+#    "Direct"
 ]
 
 df_long = df_long[
@@ -1169,7 +1169,7 @@ scenario_colors = {
     "Levy": "#d62728",
     "Brazil": "#2ca02c",
     "LISCR": "#9467bd",
-    "Direct": "#ff7f0e"
+#    "Direct": "#ff7f0e"
 }
 
 
@@ -1431,7 +1431,8 @@ scenario_cols = [
     col for col in df_hs2_change.columns
     if col.split("_")[-1] in selected_years
     and col.split("_")[0] in [
-        "levy", "asis", "brazil", "liscr", "direct"
+        "levy", "asis", "brazil", "liscr",
+        #"direct"
     ]
 ]
 
@@ -1468,7 +1469,7 @@ scenario_names = {
     "levy": "Levy",
     "brazil": "Brazil",
     "liscr": "LISCR",
-    "direct": "Direct"
+ #   "direct": "Direct"
 }
 
 scenario_order = [
@@ -1476,7 +1477,7 @@ scenario_order = [
     "Levy",
     "Brazil",
     "LISCR",
-    "Direct"
+#    "Direct"
 ]
 
 df_hs2_change_long["Scenario"] = (
