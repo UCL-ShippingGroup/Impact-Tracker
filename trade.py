@@ -372,20 +372,27 @@ else:
 # ---------------------------------------------------------
 
 from pathlib import Path
+from urllib.parse import quote
+import os
+import tempfile
+import requests
+import pandas as pd
+import streamlit as st
 
-# Get the directory where your Streamlit app is located
 base_dir = Path(__file__).resolve().parent
 
-@st.cache_data
+LFS_POINTER = b"version https://git-lfs.github.com/spec/v1"
+
+@st.cache_data(show_spinner="Loading trade data...")
 def load_trade_data(country, iso_code, filename):
 
     # Ensure ISO code is three digits
     iso_code = str(iso_code).zfill(3)
 
-    # Construct folder name: 008 - Albania
+    # Construct country folder
     country_folder = f"{iso_code} - {str(country).strip()}"
 
-    # Construct the local file path
+    # Original local file path
     file_path = (
         base_dir
         / "impact"
@@ -393,29 +400,127 @@ def load_trade_data(country, iso_code, filename):
         / filename
     )
 
-    # Check whether the file exists
-    if not file_path.is_file():
-        raise FileNotFoundError(
-            f"File not found: {file_path}"
-        )
+    # Check if a file is a genuine CSV
+    def valid_csv(path):
+        if not path.is_file():
+            return False
 
-    # Check whether Git LFS has downloaded
-    # the actual CSV rather than just a pointer
-    with open(file_path, "rb") as f:
-        first_line = f.readline()
+        with open(path, "rb") as f:
+            first_line = f.readline()
 
-    if first_line.startswith(
-        b"version https://git-lfs.github.com/spec/v1"
-    ):
-        raise RuntimeError(
-            f"{filename} is still a Git LFS pointer. "
-            "The actual CSV has not been downloaded."
-        )
+        return not first_line.startswith(LFS_POINTER)
 
-    # Read the actual CSV
-    df = pd.read_csv(file_path)
+    # Use local CSV if available
+    if valid_csv(file_path):
+        return pd.read_csv(file_path)
 
-    return df
+    # Store downloaded LFS files in temporary storage
+    cache_path = (
+        Path(tempfile.gettempdir())
+        / "impact_tracker_lfs"
+        / country_folder
+        / filename
+    )
+
+    if valid_csv(cache_path):
+        return pd.read_csv(cache_path)
+
+    # GitHub media URL for Git LFS files
+    relative_path = (
+        f"impact/{country_folder}/{filename}"
+    )
+
+    encoded_path = quote(relative_path, safe="/")
+
+    url = (
+        "https://media.githubusercontent.com/media/"
+        "UCL-ShippingGroup/Impact-Tracker/main/"
+        + encoded_path
+    )
+
+    # Download the actual dataset
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = cache_path.with_name(cache_path.name + ".part")
+
+    try:
+        with requests.get(
+            url,
+            stream=True,
+            timeout=(15, 180)
+        ) as response:
+
+            response.raise_for_status()
+
+            with open(temp_path, "wb") as f:
+                for chunk in response.iter_content(
+                    chunk_size=1024 * 1024
+                ):
+                    if chunk:
+                        f.write(chunk)
+
+        # Verify GitHub returned the actual CSV
+        if not valid_csv(temp_path):
+            raise RuntimeError(
+                f"GitHub returned an LFS pointer "
+                f"instead of the CSV: {filename}"
+            )
+
+        # Validate CSV before caching it
+        df = pd.read_csv(temp_path)
+
+        os.replace(temp_path, cache_path)
+
+        return df
+
+    finally:
+        if temp_path.exists():
+            temp_path.unlink()
+
+# from pathlib import Path
+
+# # Get the directory where your Streamlit app is located
+# base_dir = Path(__file__).resolve().parent
+
+# @st.cache_data
+# def load_trade_data(country, iso_code, filename):
+
+#     # Ensure ISO code is three digits
+#     iso_code = str(iso_code).zfill(3)
+
+#     # Construct folder name: 008 - Albania
+#     country_folder = f"{iso_code} - {str(country).strip()}"
+
+#     # Construct the local file path
+#     file_path = (
+#         base_dir
+#         / "impact"
+#         / country_folder
+#         / filename
+#     )
+
+#     # Check whether the file exists
+#     if not file_path.is_file():
+#         raise FileNotFoundError(
+#             f"File not found: {file_path}"
+#         )
+
+#     # Check whether Git LFS has downloaded
+#     # the actual CSV rather than just a pointer
+#     with open(file_path, "rb") as f:
+#         first_line = f.readline()
+
+#     if first_line.startswith(
+#         b"version https://git-lfs.github.com/spec/v1"
+#     ):
+#         raise RuntimeError(
+#             f"{filename} is still a Git LFS pointer. "
+#             "The actual CSV has not been downloaded."
+#         )
+
+#     # Read the actual CSV
+#     df = pd.read_csv(file_path)
+
+#     return df
 
 # from pathlib import Path
 
