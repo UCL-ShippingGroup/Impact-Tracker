@@ -2,12 +2,54 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+import streamlit as st
+from country_selector import country_selector
+
+# Country selector in sidebar
+country_selector()
+st.set_page_config(layout='wide')
+# Homepage
+st.title("The Net-Zero Framework (NZF) Impact Tracker")
+st.subheader("Overview",
+            divider='grey')
+
+st.write("The NZF Impact Tracker has been set up to offer support for upcoming negotiations on the potential adoption of the IMO
+Net-Zero Framework to reduce emissions from global shipping. Publicly available on the UCL Shipping and Oceans Research 
+Group’s website, the ‘NZF Economic Impacts Tracker’ empowers delegations with key data that can be used to compare
+trade-offs across four key policy options currently under consideration. 
+
+The tool offers detailed statistical data for many countries not well-represented within previous impact assessment 
+processes, including Least Developed Countries, Small-Island Developing States and other particularly exposed economies 
+for which only regionally aggregated results have previously been available. Building upon methods developed during the
+IMO-led Comprehensive Impact Assessment process, the supporting methodology combines bespoke trade statistics with 
+international vessel voyage data to estimate NZF economic impacts at a granular level across thousands of individual 
+trade flows on the importer and exporter side.   
+
+ The results, made publicly available via the dashboard, enable users to better understand likely maritime transport cost 
+and price changes to mercantile commodity flows for a given country of interest. Crucially, the tool offers users the 
+chance to gauge how NZF impacts can be expected to manifest on food security-relevant commodities, as well as how aggregate
+NZF-induced impacts compare against the costs of climate change expected to 2050.")
+
+ st.subheader("Country Selection", divider="grey")
+
+st.write(
+    f"Currently selected country: **{st.session_state.iso_country}**"
+)
+
+st.write(
+    "Use the country selector in the sidebar to switch between "
+    "countries. Your selection will apply across all pages "
+    "of the dashboard."
+)
+
+st.divider()
+
 from country_selector import country_selector
 
 country_selector()
 
-st.set_page_config(layout='wide')
-st.title('Global Overview')
+
+st.subheader('The Global Picture')
 st.divider()
 
 #Segmented controls
@@ -988,3 +1030,20 @@ if not (
         "The charts show available countries."
     )
 
+st.markdown(
+    """
+    ##### Disclaimer
+
+    The content on this website is for informational and educational
+    purposes only. It should not be considered as financial,
+    investment, or legal advice. We are not financial advisors,
+    and the information provided is not a substitute for
+    professional advice from a qualified expert who is aware
+    of your individual circumstances. Always conduct your own
+    research and consult with a licensed financial professional
+    before making any investment or financial decisions.
+    Any reliance you place on the information provided on this
+    site is strictly at your own risk. We are not liable for any
+    losses or damages incurred from the use of this information.
+    """
+)
