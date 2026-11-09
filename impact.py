@@ -25,7 +25,10 @@ if not selected_country:
 st.title(
     f"Economic Impact of NZF Scenarios on {selected_country}"
 )
-
+st.write(
+    """
+    The first measure shows the change in Maritime Transport Costs as a percentage of the CIF value of imports or FOB value of exports. The second measure shows the overall change in maritime transport costs.
+    """
 st.divider()
 
 # ---------------------------------------------------------
