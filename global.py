@@ -47,9 +47,9 @@ st.write(
 
 st.divider()
 
-from country_selector import country_selector
+# from country_selector import country_selector
 
-country_selector()
+# country_selector()
 
 
 st.subheader('The Global Picture')
