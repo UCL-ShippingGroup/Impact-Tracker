@@ -47,7 +47,7 @@ st.write(
     Further insight into the average weight per USD and distance to market by HS2 commidity group is also provided allowing users to see what major commodity trades are likely to drive up costs.
     Finally a pie chart showing the contrast in value and weight proportion of comodities allows show how overall value and weight match proportionally.
     Further information about how these portfolios are derived can be found in the technical annex.
-    """ )
+    """)
 
 
 # meta_stats_d = {
