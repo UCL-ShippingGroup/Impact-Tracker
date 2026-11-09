@@ -325,7 +325,7 @@ st.plotly_chart(
 import plotly.graph_objects as go
 
 st.subheader("Global Cumulative GHG Emissions", divider="grey")
-
+st.caption("Cumulative global emissions for each scenario, as well as emissions reduction relative to a BAU scenario for each scenario.")
 
 # Segmented control
 
