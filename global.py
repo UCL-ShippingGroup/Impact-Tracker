@@ -33,7 +33,7 @@ st.write(
             NZF-induced impacts compare against the costs of climate change expected to 2050.
             """)
 
- st.subheader("Country Selection", divider="grey")
+st.subheader("Country Selection", divider="grey")
 
 st.write(
     f"Currently selected country: **{st.session_state.iso_country}**"
