@@ -52,8 +52,8 @@ st.divider()
 # country_selector()
 
 
-st.subheader('The Global Picture')
-st.divider()
+st.subheader('The Global Picture', divider='grey')
+
 
 #Segmented controls
 
