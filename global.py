@@ -13,22 +13,25 @@ st.title("The Net-Zero Framework (NZF) Impact Tracker")
 st.subheader("Overview",
             divider='grey')
 
-st.write("The NZF Impact Tracker has been set up to offer support for upcoming negotiations on the potential adoption of the IMO
-Net-Zero Framework to reduce emissions from global shipping. Publicly available on the UCL Shipping and Oceans Research 
-Group’s website, the ‘NZF Economic Impacts Tracker’ empowers delegations with key data that can be used to compare
-trade-offs across four key policy options currently under consideration. 
-
-The tool offers detailed statistical data for many countries not well-represented within previous impact assessment 
-processes, including Least Developed Countries, Small-Island Developing States and other particularly exposed economies 
-for which only regionally aggregated results have previously been available. Building upon methods developed during the
-IMO-led Comprehensive Impact Assessment process, the supporting methodology combines bespoke trade statistics with 
-international vessel voyage data to estimate NZF economic impacts at a granular level across thousands of individual 
-trade flows on the importer and exporter side.   
-
- The results, made publicly available via the dashboard, enable users to better understand likely maritime transport cost 
-and price changes to mercantile commodity flows for a given country of interest. Crucially, the tool offers users the 
-chance to gauge how NZF impacts can be expected to manifest on food security-relevant commodities, as well as how aggregate
-NZF-induced impacts compare against the costs of climate change expected to 2050.")
+st.write(
+         """   
+            The NZF Impact Tracker has been set up to offer support for upcoming negotiations on the potential adoption of the IMO
+            Net-Zero Framework to reduce emissions from global shipping. Publicly available on the UCL Shipping and Oceans Research 
+            Group’s website, the ‘NZF Economic Impacts Tracker’ empowers delegations with key data that can be used to compare
+            trade-offs across four key policy options currently under consideration. 
+            
+            The tool offers detailed statistical data for many countries not well-represented within previous impact assessment 
+            processes, including Least Developed Countries, Small-Island Developing States and other particularly exposed economies 
+            for which only regionally aggregated results have previously been available. Building upon methods developed during the
+            IMO-led Comprehensive Impact Assessment process, the supporting methodology combines bespoke trade statistics with 
+            international vessel voyage data to estimate NZF economic impacts at a granular level across thousands of individual 
+            trade flows on the importer and exporter side.   
+            
+             The results, made publicly available via the dashboard, enable users to better understand likely maritime transport cost 
+            and price changes to mercantile commodity flows for a given country of interest. Crucially, the tool offers users the 
+            chance to gauge how NZF impacts can be expected to manifest on food security-relevant commodities, as well as how aggregate
+            NZF-induced impacts compare against the costs of climate change expected to 2050.
+            """)
 
  st.subheader("Country Selection", divider="grey")
 
