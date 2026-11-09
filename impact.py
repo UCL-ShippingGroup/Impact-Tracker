@@ -27,8 +27,23 @@ st.title(
 )
 st.write(
     """
+    The NZF Economic Impact page provides a detailed assessment of the potential changes in seaborne trade costs associated with different Net-Zero Framework (NZF) scenarios.
+    Users can compare the economic implications of alternative policy scenarios for a selected country's imports and exports, examining both the overall magnitude of cost changes
+    and the contributions of individual commodity groups.
+   
+    The first two charts illustrate the evolution of maritime transport costs across scenarios and their percentage change relative to a Business as Usual (BAU) baseline, respectively.
+    These are measured in terms of the change in Maritime Transport Costs as a percentage of the CIF value of imports or FOB value of exports by default
+    whilst the second measure shows the overall change in maritime transport costs (MTC).
+    These measures provide complementary perspectives on the scale of potential cost impacts and their significance relative to the value of traded goods.
     
-    The first measure shows the change in Maritime Transport Costs as a percentage of the CIF value of imports or FOB value of exports. The second measure shows the overall change in maritime transport costs.
+    The final chart provides a more detailed breakdown of the economic impacts across HS2 commodity groups, allowing users to identify which categories contribute most significantly to overall 
+    changes in trade costs. Each commodity's contribution is calculated by weighting its percentage change in CIF/FOB costs by its share of total trade value. This enables users to distinguish between 
+    commodities experiencing large relative cost increases and those making the greatest contribution to the overall economic impact.
+    By hovering over individual segments, users can examine each commodity group's percentage change in CIF/FOB costs, its share of total trade value, and its contribution to the overall 
+    change in percentage points. This allows direct comparisons between a commodity's economic importance within the trade portfolio and its contribution to the modelled impacts. 
+    The 25 largest HS2 commodity groups by trade value are displayed individually, while all remaining categories are aggregated into a single group. This provides a detailed 
+    view of the most economically significant trade flows while retaining their relationship to the overall portfolio.
+    Further information on the methodology and calculation of these economic impacts is available in the Technical Annex.
     """)
 st.divider()
 
