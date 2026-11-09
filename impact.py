@@ -27,7 +27,7 @@ st.title(
 )
 st.write(
     """
-    The NZF Economic Impact page provides a detailed assessment of the potential changes in seaborne trade costs associated with different Net-Zero Framework (NZF) scenarios.
+    The NZF Economic Impact page provides a detailed assessment of the potential changes in seaborne trade costs associated with different NZF scenarios.
     Users can compare the economic implications of alternative policy scenarios for a selected country's imports and exports, examining both the overall magnitude of cost changes
     and the contributions of individual commodity groups.
    
