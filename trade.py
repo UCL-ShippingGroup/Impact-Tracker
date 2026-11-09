@@ -37,7 +37,17 @@ selected_country_iso = st.session_state.get(
 
 st.title("Seaborne Trade Portfolios")
 
-
+st.write(
+    """
+    The country level Seabourne portfolio allows users to view a detailed break down of their import and export trade flows. Initial headline statistics offer a direct comparison between the overall 
+    value of the original comtrade portfolio and what proportion was able to be captured through modelling, as well as offering a direct trade deficit insight. We also show the average weight per USD and 
+    average distance to market as these are key indicators that are likely to drive higher NZF impacts if they are are high.  
+    
+    The first bar charts give a breakdown of the 25 largest trade flows, whilst the next two provide a breakdown by partner economy and HS2 commidity group.
+    Further insight into the average weight per USD and distance to market by HS2 commidity group is also provided allowing users to see what major commodity trades are likely to drive up costs.
+    Finally a pie chart showing the contrast in value and weight proportion of comodities allows show how overall value and weight match proportionally.
+    Further information about how these portfolios are derived can be found in the technical annex.
+    """ 
 
 
 # meta_stats_d = {
@@ -202,7 +212,7 @@ def modelled_percentage(modelled, original):
 mot_inferred = (
     "Mode of Transport observed in the data"
     if "*" in str(stats["import_portfolio"])
-    else "Mode of Transport estimated from the data rather than observed."
+    else "Mode of Transport estimated from the data rather than observed"
 )
 
 st.info(
