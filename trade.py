@@ -39,14 +39,18 @@ st.title("Seaborne Trade Portfolios")
 
 st.write(
     """
-    The country level Seabourne portfolio allows users to view a detailed break down of their import and export trade flows. Initial headline statistics offer a direct comparison between the overall 
-    value of the original comtrade portfolio and what proportion was able to be captured through modelling, as well as offering a direct trade deficit insight. We also show the average weight per USD and 
-    average distance to market as these are key indicators that are likely to drive higher NZF impacts if they are are high.  
+    The Seaborne Trade Portfolios page provides a detailed overview of a country's maritime import and export trade, allowing users to explore the composition, characteristics and 
+    geographical distribution of its trade flows. Headline statistics compare the total value of trade reported in the original UN Comtrade dataset with the proportion captured by the 
+    modelling framework. Additional indicators, including average weight per USD of trade and average distance to market, provide insights into the characteristics of each country's
+    trade portfolio. These measures are particularly relevant when assessing potential exposure to the costs associated with the IMO's Net-Zero Framework (NZF), as heavier and longer-distance
+    trade flows may be more sensitive to changes in maritime transport costs.
     
-    The first bar chart give a breakdown of the 25 largest trade flows, whilst the next two provide a breakdown by partner economy and HS2 commidity group.
-    Further insight into the average weight per USD and distance to market by HS2 commidity group is also provided allowing users to see what major commodity trades are likely to drive up costs.
-    Finally, a pie chart showing the value and weight proportion of each comodity within the total portfolio allows direct comparison between value and weight and how they match in terms of proportion of the portfolio.
-    Further information about how these portfolios are derived can be found in the technical annex.
+    The first three bar charts highlight the 25 largest trade flows, trading partners and HS2 commodity groups, allowing users to identify the most significant components of a country's import and export portfolios.
+    Further analysis explores the average weight per USD and distance to market across the 25 largest HS2 commodity groups by trade value. 
+    This helps identify commodities whose physical characteristics and transport requirements may contribute to greater exposure to NZF-related costs.
+    Finally, the trade composition charts compare the proportion of total trade value and net weight attributable to each HS2 commodity group. 
+    By examining differences between value and weight shares, users can identify commodities that contribute disproportionately to the physical volume of trade relative to their economic value.
+    Further information on the methodology and construction of these trade portfolios is available in the Technical Annex.
     """)
 
 
