@@ -53,7 +53,7 @@ st.write(
 
 
 st.subheader('The Global Picture', divider='grey')
-
+st.caption("This map gives users an introduction to the data by offering a global overview of the modelled impact of the Net Zero Framework scenarios for all countries through to 2050, relative to a BAU scenario.") 
 
 #Segmented controls
 
