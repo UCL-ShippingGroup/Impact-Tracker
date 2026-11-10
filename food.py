@@ -206,6 +206,15 @@ df_long = df_long.sort_values(
     ["Scenario", "year"]
 )
 
+scenario_colors = {
+    "BAU": "#444444",
+    "NZF": "#1f77b4",
+    "Levy": "#d62728",
+    "Brazil": "#2ca02c",
+    "LISCR": "#9467bd",
+#    "Direct": "#ff7f0e"
+}
+
 
 # ---------------------------------------------------------
 # 7. Create line chart
@@ -216,6 +225,7 @@ fig = px.line(
     x="year",
     y="Value",
     color="Scenario",
+    color_discrete_map=scenario_colors,
     markers=True,
     title=chart_title,
     labels={
