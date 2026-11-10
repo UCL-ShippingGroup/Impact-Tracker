@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-st.write("Streamlit version:", st.__version__)
+#st.write("Streamlit version:", st.__version__)
 # logo at the top of sidebar
 st.markdown(
     """
