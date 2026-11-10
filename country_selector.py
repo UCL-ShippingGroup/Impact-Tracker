@@ -29,16 +29,16 @@ def load_country_iso_codes():
         dtype=country_iso_codes_d
     ).rename(columns=country_iso_codes_r)
 
-    #meta_stats = pd.read_csv(
-    #    "https://raw.githubusercontent.com/"
-    #    "UCL-ShippingGroup/Impact-Tracker/main/"
-    #    "datasets/meta-stats.csv",
-    #    dtype={
-    #        "iso_code": "str",
-    #        "iso_country": "str",
-    #        "gdp": "str"
-    #    }
-    #)
+    meta_stats = pd.read_csv(
+        "https://raw.githubusercontent.com/"
+        "UCL-ShippingGroup/Impact-Tracker/main/"
+        "datasets/meta-stats.csv",
+        dtype={
+            "iso_code": "str",
+            "iso_country": "str",
+            "gdp": "str"
+        }
+    )
 
     #country_iso_codes = country_iso_codes[(country_iso_codes.iso_code.isin(meta_stats.iso_code.values))]
 
