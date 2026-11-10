@@ -62,6 +62,11 @@ def load_country_iso_codes():
         "iso_country"
     ] = "United States"
 
+    country_iso_codes.loc[
+        country_iso_codes.iso_country == "Tanzania, United Republic of",
+        "iso_country"
+    ] = "Tanzania"
+
     return country_iso_codes
 
 
