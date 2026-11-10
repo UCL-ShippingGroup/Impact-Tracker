@@ -13,6 +13,27 @@ country_selector()
 
 st.title("Food Security")
 
+st.write(
+    """
+    The Food Security page provides a detailed assessment of the potential economic impacts of different NZF scenarios on a country's seaborne food imports.
+    By examining changes in maritime transport costs across different food groups, the analysis highlights how the composition of a country's food import portfolio may influence its exposure to NZF-related cost increases.
+    The first chart illustrates the evolution of total food import costs across different NZF scenarios. Users can examine these impacts through the same measures used in the impact page. The second chart provides a more detailed 
+    breakdown of these impacts by food group, 
+    allowing users to compare how different categories of food imports respond to alternative NZF scenarios. This helps identify food groups that may be particularly exposed to changes 
+    in maritime transport costs and highlights differences in the distribution of potential economic impacts across the food import portfolio.
+    
+    The Food Import Composition charts examine the proportion of total food import value and weight attributable to each food group. Comparing these measures provides insight into the structure of 
+    a country's food imports, particularly where certain food groups account for a disproportionately large share of physical import weight relative to their economic value. 
+   
+    Finally, the Food Group Contributions chart examines how individual food groups contribute to the overall percentage change in food import CIF costs relative to BAU. Each 
+    group's contribution is calculated by weighting its percentage change in CIF costs by its share of total food import value. This allows users to distinguish between food 
+    groups experiencing the largest relative cost increases and those contributing most significantly to the overall economic impact.
+    By hovering over individual segments, users can examine each food group's percentage change in CIF costs, its proportion of total food import value, and 
+    its weighted contribution to the overall change. This enables direct comparisons between the economic importance of different food groups and their contribution to changes in overall food import costs.
+    Together, these visualisations provide insight into the potential economic pressures that alternative NZF scenarios may place on food imports, particularly for countries with a 
+    high dependence on seaborne trade. While changes in import costs do not directly measure food security outcomes, they can help identify potential vulnerabilities within national food import portfolios.
+    Further information on the methodology, food group classifications and calculation of economic impacts is available in the Technical Annex.
+
 selected_country = st.session_state.get("iso_country", None)
 
 if selected_country is None:
