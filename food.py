@@ -33,6 +33,7 @@ st.write(
     Together, these visualisations provide insight into the potential economic pressures that alternative NZF scenarios may place on food imports, particularly for countries with a 
     high dependence on seaborne trade. While changes in import costs do not directly measure food security outcomes, they can help identify potential vulnerabilities within national food import portfolios.
     Further information on the methodology, food group classifications and calculation of economic impacts is available in the Technical Annex.
+    """)
 
 selected_country = st.session_state.get("iso_country", None)
 
