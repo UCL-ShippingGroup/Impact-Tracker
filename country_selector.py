@@ -40,7 +40,7 @@ def load_country_iso_codes():
         }
     )
 
-    #country_iso_codes = country_iso_codes[(country_iso_codes.iso_code.isin(meta_stats.iso_code.values))]
+    country_iso_codes = country_iso_codes[(country_iso_codes.iso_code.isin(meta_stats.iso_code.values))]
 
     # Fix Namibia ISO issue
     country_iso_codes.loc[
