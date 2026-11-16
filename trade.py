@@ -1043,7 +1043,7 @@ except (FileNotFoundError, OSError) as e:
 
 if characteristic_measure == "Average Weight per USD":
 
-    measure_col = "kg_per_usd_netWgt"
+    measure_col = "kg_per_usd_cepii"
     measure_label = "Average Weight per USD (kg/USD)"
     measure_unit = "kg/USD"
 
@@ -1238,7 +1238,7 @@ st.subheader(
 pie_df = df_characteristics.copy()
 
 # Convert numerical columns
-for col in [trade_value_col, "pct_val", "pct_net_wgt"]:
+for col in [trade_value_col, "pct_val", "pct_vol"]:
 
     pie_df[col] = pd.to_numeric(
         pie_df[col],
@@ -1255,7 +1255,7 @@ pie_df = (
     .agg({
         trade_value_col: "sum",
         "pct_val": "sum",
-        "pct_net_wgt": "sum"
+        "pct_vol": "sum"
     })
 )
 
@@ -1405,7 +1405,7 @@ with col2:
 
     fig_weight = create_hs2_pie_chart(
         pie_df,
-        "pct_net_wgt",
+        "pct_vol",
         f"{characteristic_flow} - Share of Net Weight"
     )
 
