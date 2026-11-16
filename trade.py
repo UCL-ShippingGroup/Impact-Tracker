@@ -1282,7 +1282,7 @@ pie_df = (
     .groupby("Commodity", as_index=False)
     .agg({
         "pct_val": "sum",
-        "pct_net_wgt": "sum"
+        "pct_vol": "sum"
     })
 )
 
